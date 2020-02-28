@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        python2和python3的区别 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#python2和python3的区别"><span class="toc-text">python2和python3的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#python3-6中dict有序"><span class="toc-text">python3.6中dict有序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于哈希表"><span class="toc-text">关于哈希表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#python3-dict性能优化"><span class="toc-text">python3 dict性能优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#range和xrange区别"><span class="toc-text">range和xrange区别</span></a></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        python2和python3的区别
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-12-23 08:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#python中高级面试题" title="python中高级面试题">python中高级面试题</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="python2和python3的区别"><a href="#python2和python3的区别" class="headerlink" title="python2和python3的区别"></a>python2和python3的区别</h1><p>print语句被python3废弃，只能使用print函数</p>
+<p>Python3中字符串是Unicode (utf-8)编码，支持中文做标识符。</p>
+<p>python2中是ASCII编码，需要更改字符集才能正常支持中文，所以在.py文件中会看到#– coding: UTF-8 –</p>
+<p>异常处理 Python2中try:…except Exception, e:…，在Python3中改为了try:…except Exception as e:…</p>
+<p>Python3中不再使用xrange方法，只有range方法。</p>
+<p>range在Python2中返回列表，而在Python3中返回range可迭代对象。</p>
+<p>在Python2中有两个不等运算符!=和&lt;&gt;，在Python3中去掉了&lt;&gt;，只有!=符号表示不等</p>
+<p>在Python2中双反引号<code>可以替代repr函数，在Python3中去掉了双反引号的表是方法，只能用repr</code>方法。</p>
+<p>StringIO模块现在被合并到新的io模组内。new, md5, gopherlib等模块被删除。</p>
+<p>httplib, BaseHTTPServer, CGIHTTPServer, SimpleHTTPServer, Cookie, cookielib被合并到http包内。</p>
+<p>取消了exec语句，只剩下exec()函数。</p>
+<p>在Python2中long是比int取值范围更大的整数，Python3中取消了long类型，int的取值范围扩大到之前的long类型范围。</p>
+<p>列表推导 不再支持[n for n in a,b]语法，改为[n for n in (a,b)]或[n for n in [a,b]]</p>
+<p>python 2 中通过input输入的类型是int，只有通过raw_input()输入的类型才是str。</p>
+<p>python 3中通过input输入的类型都是str，去掉了row_input()方法。</p>
+<h2 id="python3-6中dict有序"><a href="#python3-6中dict有序" class="headerlink" title="python3.6中dict有序"></a>python3.6中dict有序</h2><p>有序是指遍历时的输出顺序与输入顺序相同</p>
+<h2 id="关于哈希表"><a href="#关于哈希表" class="headerlink" title="关于哈希表"></a>关于哈希表</h2><ol>
+<li>散列表概念 散列表（Hash table，也叫哈希表），是根据关键码值(Key value)而直接进行访问的数据结构。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。</li>
+<li>哈希函数 给定表M，存在函数f(key)，对任意给定的关键字值key，代入函数后若能得到包含该关键字的记录在表中的地址，则称表M为哈希(Hash）表，函数f(key)为哈希(Hash) 函数。 （相关：是不是可以这样理解，数组可以通过下标进行访问，时间复杂度是O(1)，对于不连续存储的数据结构，如果知道下标也可以直接进行访问，所以可以通过哈希函数将key映射成数组下标，进行访问）</li>
+<li>冲突 不同的key经过hash函数运行后得到相同的值，产生冲突；</li>
+<li>冲突解决方式</li>
+<li>开放寻址：线性探测、二次探测、伪随机数序列（python的dict解决冲突用的这个，具体的策略没有看太明白）</li>
+<li>再哈希法：将哈希值再哈希，然后存储；</li>
+<li>链地址法：hash过后值相同的存储在链表里；</li>
+<li>公共溢出区</li>
+</ol>
+<p>python实现dict无序到有序：</p>
+<ol>
+<li><p>原先的内存布局entries为哈希表，表中直接存储PyDictKeyEntry（hash、key、value），也就是说当当前位置为空的时候存的是（0， null， null）浪费了大量内存；</p>
+</li>
+<li><p>python3.6: indices充当哈希表，存储的entries的index，使用index去访问存有PyDictKeyEntry的数组</p>
+</li>
+</ol>
+<h2 id="python3-dict性能优化"><a href="#python3-dict性能优化" class="headerlink" title="python3 dict性能优化"></a>python3 dict性能优化</h2><p>节省存储空间：将存储PyDictKeyEntry的稀疏数组更改为存储int的稀疏数组； 之前的dict_entry是稀疏表，经压缩后在密集表上循环，使用更少的内存； 调整大小更快，并且触及更少的内存。 目前，每一个散列/键/值条目在一个过程中被移动或复制调整。 在新的布局中，只有索引是更新。 大多数情况下，散列/键/值条目从不移动（除了偶尔交换填充删除留下的空洞）。</p>
+<h2 id="range和xrange区别"><a href="#range和xrange区别" class="headerlink" title="range和xrange区别"></a>range和xrange区别</h2><p>range返回的是一个包含所有元素的列表，xrange返回的是一个生成器，生成器是一个可迭代对象，在对生成器进行迭代时，元素是逐个被创建的。而列表需要根据列表长度而开辟出相应的内存空间用来遍历，一般来看，在对大序列进行迭代的时候，因为xrange的特性，所以它会比较节约内存。</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

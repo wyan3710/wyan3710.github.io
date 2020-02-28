@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        微服务和RPC框架具体操作 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#9012年，你需要Thrift这样一个RPC框架来拯救一下传统HTTP接口了"><span class="toc-text">9012年，你需要Thrift这样一个RPC框架来拯救一下传统HTTP接口了</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        微服务和RPC框架具体操作
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2018-02-23 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#微服务和RPC框架" title="微服务和RPC框架">微服务和RPC框架</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="9012年，你需要Thrift这样一个RPC框架来拯救一下传统HTTP接口了"><a href="#9012年，你需要Thrift这样一个RPC框架来拯救一下传统HTTP接口了" class="headerlink" title="9012年，你需要Thrift这样一个RPC框架来拯救一下传统HTTP接口了"></a>9012年，你需要Thrift这样一个RPC框架来拯救一下传统HTTP接口了</h1><p>​    目前市面上类似Django的drf框架基于json的http接口解决方案大行其道，人们也热衷于在接口不多、系统与系统交互较少的情况下使用它，http接口的优点就是简单、直接、开发方便，门槛低，利用现成的http协议进行传输。</p>
+<p>​    但是事情往往有两面，如果是一个大型的网站，内部子系统较多、接口非常多的情况下，RPC框架的好处就显示出来了，首先就是长链接，不必每次通信都要像http 一样去3次握手4次挥手，减少了网络开销；其次就是RPC框架一般都有注册中心，有丰富的监控管理；发布、下线接口、动态扩展等，对调用方来说是无感知、统一化的操作。第三个来说就是安全性。最后就是最近流行的服务化架构、服务化治理，RPC框架是一个强力的支撑。</p>
+<p>​    论复杂度，RPC框架肯定是高于简单的HTTP接口的。但毋庸置疑，HTTP接口由于受限于HTTP协议，需要带HTTP请求头，导致传输起来效率或者说安全性不如RPC，目前市面上流行的rpc框架有dubbo/hessian Thrift，阿里开源的dubbo固然还不错，但是本人更倾向于facebook开源的Thrift框架，这款框架在github上好评如潮，这一次我们使用的就是基于Thrift的thriftpy2框架。</p>
+<p>​    Thrift是一种接口描述语言和二进制通讯协议，它被用来定义和创建跨语言的服务，这是维基百科的描述。简单来说就是你可以按照Thrift定义语法编写.thrift,然后用Thrift命令行生成各种语言的代码，比如OC、Java、C++、JS，调用这些代码就可以完成客户端与服务器的通信了，不需要自己去写网络请求、数据解析等接口。</p>
+<p>​    其实在本人的实际教学工作中主要考虑到这两个优点：</p>
+<p>​    RPC。通过简单定义Thrift描述语言文件，使用Thrift -gen命令可以生成多种语言的代码，这些代码包含了网络通信,数据编解码的功能。这就免去了前后台编写这部分繁琐的代码，同时也统一了前后台的实现逻辑。</p>
+<p>​    Thrift的二进制数据的编码比json更加紧凑、减少了无用的数据的传输。</p>
+<p>​    </p>
+<p>​    安装:</p>
+<p>​    </p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 <span class="keyword">install</span> thriftpy2</span><br></pre></td></tr></table></figure>
+<p>​    首先定义 thrift 通讯文件，无论是server端还是clinet端都是基于这个文件进行通信 pingpong.thrift</p>
+<p>​    </p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">service</span> <span class="title">PingPong</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> ping(),</span><br><span class="line">    <span class="built_in">string</span> check_login(</span><br><span class="line">        <span class="number">1</span>: <span class="built_in">string</span> username,</span><br><span class="line">        <span class="number">2</span>: <span class="built_in">string</span> password</span><br><span class="line">    ),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    可以看到我们定义了两个方法，一个有参一个无参，第一个方法用来检测接口是否通信成功，也就是传统的ping命令，第二个方法顾名思义，用户登录</p>
+<p>​    然后建立一个thrift_server.py 建立服务端的代码</p>
+<p>​    </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> thriftpy2</span><br><span class="line">pingpong_thrift = thriftpy2.load(<span class="string">"pingpong.thrift"</span>, module_name=<span class="string">"pingpong_thrift"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> thriftpy2.rpc <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dispatcher</span><span class="params">(object)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">ping</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">"pong"</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">check_login</span><span class="params">(self,username,password)</span>:</span></span><br><span class="line">        print(username,password)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'123'</span></span><br><span class="line"></span><br><span class="line">server = make_server(pingpong_thrift.PingPong, Dispatcher(), <span class="string">'127.0.0.1'</span>, <span class="number">6000</span>)</span><br><span class="line">server.serve()</span><br></pre></td></tr></table></figure>
+<p>​    服务端首先读取通信文件，然后建立起一个服务，监听6000端口，等待客户端请求，实际上服务端的方法也是主要业务逻辑编写的地方。</p>
+<p>​    随后建立一个thrift_client.py文件，编写客户端代码</p>
+<p>​    </p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import thriftpy2</span><br><span class="line">pingpong_thrift = thriftpy2.load(<span class="string">"pingpong.thrift"</span>, module_name=<span class="string">"pingpong_thrift"</span>)</span><br><span class="line"></span><br><span class="line">from thriftpy2<span class="selector-class">.rpc</span> import make_client</span><br><span class="line"></span><br><span class="line">client = make_client(pingpong_thrift<span class="selector-class">.PingPong</span>, <span class="string">'127.0.0.1'</span>, <span class="number">6000</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">print</span><span class="params">(client.ping()</span></span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">print</span><span class="params">(client.check_login(<span class="string">'admin'</span>,<span class="string">'123456'</span>)</span></span>)</span><br></pre></td></tr></table></figure>
+<p>​    我们看到客户端同样读取通信文件，严格按照通信文件的方法调用方式进行传参调用，获取返回值</p>
+<p>​    运行服务器端的服务</p>
+<p>​    </p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">python3</span> thrift_server.<span class="keyword">py</span></span><br></pre></td></tr></table></figure>
+<p>​    然后再执行客户端脚本python3 thrift_client.py</p>
+<p>​    <img src="https://v3u.cn/v3u/Public/js/editor/attached/image/20190827/20190827084349_38931.png" alt="img"></p>
+<p>​    可以看到服务端和客户端就可以通信了</p>
+<p>​    可以说非常简单，这里着重提到的一点是Thrift的数据编解码，我们知道传统http接口通常以json为数据介质，json中一个对象类似于这样的：{“key”:”content”},但实际上这个对象只有“content”才是我们真正想要的数据，而“key”这个字符串并不是我们实际需要的，只是为了做一个标记，方便我们查找“content”。而Thrift则可以省去“key”这个多余的字符串。</p>
+<p>​    定义thrift的结构里的属性名称实际上在thrift数据二进制编解码是被忽略的（thrift的json编解码未验证），这个名称的作用只是作为生成的OC代码类的属性名称。这也解释了为什么Thrift的二进制编码会比平时使用的json更省流量。同时也说明了只要我们在.thrift文件中定义struct的时候保证struct的属性的顺序不变，即使通信双方使用了各自使用不同的属性名称也不会有问题。</p>
+<p>​    随着请求并发量的提高，简单的HTTP肯定达不到预期的效果，Thrift或许才是你寻找的答案。</p>
+<p>​    </p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

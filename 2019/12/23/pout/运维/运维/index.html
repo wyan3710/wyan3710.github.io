@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        运维 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#服务环境背景话术"><span class="toc-text">服务环境背景话术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux查看系统负载常用命令"><span class="toc-text">Linux查看系统负载常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自动化运维系统"><span class="toc-text">自动化运维系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#背景"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#项目地址"><span class="toc-text">项目地址</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工单系统"><span class="toc-text">工单系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是Docker"><span class="toc-text">什么是Docker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker与虚拟机比较"><span class="toc-text">Docker与虚拟机比较</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker构架"><span class="toc-text">Docker构架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker优势"><span class="toc-text">Docker优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker核心概念"><span class="toc-text">Docker核心概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker隔离性"><span class="toc-text">Docker隔离性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nginx负载均衡"><span class="toc-text">Nginx负载均衡</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nginx架构"><span class="toc-text">Nginx架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nginx负载均衡策略"><span class="toc-text">Nginx负载均衡策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Supervisor"><span class="toc-text">Supervisor</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fastdfs"><span class="toc-text">Fastdfs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自动化部署-Jenkins"><span class="toc-text">自动化部署 Jenkins</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        运维
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-12-23 08:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#运维" title="运维">运维</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h2 id="服务环境背景话术"><a href="#服务环境背景话术" class="headerlink" title="服务环境背景话术"></a>服务环境背景话术</h2><p>使用 Siege 和 ab 作为压测工具</p>
+<p>强调我们的日均pv在千万级，也就是每天的pv在1000万左右，日活(uv)在80万左右，QPS(每秒请求数)1000左右 峰值1200，时间段在晚上，因为晚上看视频的人多，并发数最高</p>
+<p>而经过测试，我们单台服务器的极限值是300左右（uwsgi+django）</p>
+<p>单台mysql连接数维持在1200个左右</p>
+<p>所以nginx负载均衡部署了8台机器，其中两台作为备用机</p>
+<p>mysql主从分离集群部署了4台从机，其中一台作为备用机</p>
+<p>前端做了cdn缓存和做了gizp压缩 webpack优化，精简http请求数，视频缩略图延迟加载</p>
+<p>基本在打出富裕(超出极限负载30%左右)的前提下，在高并发高负载环境下可以正常运营(但是不排除特殊情况下出现的宕机，比如ddos攻击)</p>
+<h2 id="Linux查看系统负载常用命令"><a href="#Linux查看系统负载常用命令" class="headerlink" title="Linux查看系统负载常用命令"></a>Linux查看系统负载常用命令</h2><figure class="highlight tcl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">top   查看实时负载，<span class="number">3</span>秒一刷新</span><br><span class="line"></span><br><span class="line">cat /<span class="keyword">proc</span>/cpuinfo ：即可查看CPU信息，几个processor即为几个CPU；</span><br><span class="line"></span><br><span class="line">sar：可以监控系统所有资源状态，sar -n<span class="title"> DEV查网卡流量历史、sar</span> -q 查看历史负载，最有用的就是查网卡流量，流量过大：rxpck/s大于4000,或者rxKB/s大于5000，则很有可能被攻击了，需要抓包分析；</span><br><span class="line"></span><br><span class="line">free：查看当前系统的总内存大小以及使用内存的情况；</span><br><span class="line"></span><br><span class="line">ps：查看进程，ps<span class="title"> aux</span> 或者<span class="title"> ps</span> -elf，常和管道符一起使用，查看某个进程或者它的数量；</span><br><span class="line"></span><br><span class="line">netstat：查看端口，netstat -lnp用于打印当前系统启动了哪些端口，netstat -an用于打印网络连接状况；</span><br><span class="line"></span><br><span class="line">tcpdump：抓包工具分析数据包，知道有哪些IP在攻击；可以将内容写入指定文件1.cap中，显示包的内容，不加-w屏幕上显示数据流向；</span><br><span class="line"></span><br><span class="line">wireshark：抓包工具，可以临时用该命令查看当前服务器上的web请</span><br></pre></td></tr></table></figure>
+<h2 id="自动化运维系统"><a href="#自动化运维系统" class="headerlink" title="自动化运维系统"></a>自动化运维系统</h2><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>在软件开发生命周期中，遇到了两次瓶颈。第一次瓶颈是在需求阶段和开发阶段之间，针对不断变化的需求，对软件开发者提出了高要求，后来出现了敏捷方法论，强调适应需求、快速迭代、持续交付。第二个瓶颈是在开发阶段和构建部署阶段之间，大量完成的开发任务可能阻塞在部署阶段，影响交付，于是有了自动化运维系统(DevOps)。</p>
+<p>DevOps的三大原则：</p>
+<p>1、基础设施即代码（Infrastructure as Code） DeveOps的基础是将重复的事情使用自动化脚本或软件来实现，例如Docker（容器化）、Jenkins（持续集成）、Puppet（基础架构构建）、Vagrant（虚拟化平台）等</p>
+<p>2、持续交付（Continuous Delivery） 持续交付是在生产环境发布可靠的软件并交付给用户使用。而持续部署则不一定交付给用户使用。涉及到2个时间，TTR（Time to Repair）修复时间，TTM（Time To Marketing）产品上线时间。要做到高效交付可靠的软件，需要尽可能的减少这2个时间。部署可以有多种方式，比如蓝绿部署、金丝雀部署等。</p>
+<p>3、协同工作（Culture of Collaboration） 开发者和运维人员必须定期进行密切的合作。开发应该把运维角色理解成软件的另一个用户群体。协作有几个的建议：1、自动化（减少不必要的协作）；2、小范围（每次修改的内容不宜过多，减少发布的风险）；3、统一信息集散地（如wiki，让双方能够共享信息）；4、标准化协作工具（比如jenkins）</p>
+<p>在很多初创公司和中小型企业里，运维还停留在“刀耕火种”的原始状态，这里所说的“刀”和“火”就是运维人员的远程客户端，例如SecureCRT和Windows远程桌面。</p>
+<p>在这种工作方式下，服务器的安装、初始化，软件部署、服务发布和监控都是通过手动方式来完成的，需要运维人员登录到服务器上，一台一台去管理和维护。这种非并发的线性工作方式是制约效率的最大障碍。</p>
+<p>同时，因为手动的操作方式过于依赖运维人员的执行顺序和操作步骤，稍有不慎即可能导致服务器配置不一致，也就是同一组服务器的配置上出现差异。有时候，这种差异是很难直接检查出来的，例如在一个负载均衡组里面个别服务器的异常就很难发现。</p>
+<p>随着业务的发展，服务器数量越来越多，运维人员开始转向使用脚本和批量管理工具。脚本和批量管理工具与“刀耕火种”的工作方式相比，确实提升了效率和工程质量。</p>
+<h3 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h3><p>版本库地址： <a href="https://gitee.com/QiHanXiBei/spug/tree/master" target="_blank" rel="noopener">https://gitee.com/QiHanXiBei/spug/tree/master</a></p>
+<p>演示地址： <a href="https://spug.qbangmang.com" target="_blank" rel="noopener">https://spug.qbangmang.com</a> 用户名:admin 密码:spug</p>
+<p>具体功能话术：</p>
+<p>User 用户管理</p>
+<p>Rbac 权限管理</p>
+<p>CMDB 资产管理</p>
+<p>也就是服务器管理 通过后台对服务器集群进行管理</p>
+<p>其中可以对服务器进行配置，远程命令行连接，连接服务器挂载的docker服务器，对docker映射端口号进行修改和配置</p>
+<p>Task 任务计划管理</p>
+<p>可以对计划任务进行配置和管理，例如发送邮件，发送短信，定时重启服务等等</p>
+<p>CI/CD 部署、发布管理</p>
+<p>集成jenkins，将冗长的代码拉取，克隆完全编程在网页端一键式的部署流程</p>
+<p>Config File 配置文件管理</p>
+<p>对项目的config文件统一管理，对重要文件做到一键式迁移</p>
+<p>Monitor 监控</p>
+<p>对服务器监控，监控服务器的cpu和内存占用</p>
+<p>集成supervisor对后台服务做监控，是否宕机，服务进程监控</p>
+<p>对站点监控，对集群网站的带宽以及http请求进行监控</p>
+<p>Alarm 报警</p>
+<p>如果出现数据异常或者内存占用过高，cpu占用过高的情况，磁盘空间不够等紧急情况</p>
+<p>进行发邮件或者短信预警</p>
+<h2 id="工单系统"><a href="#工单系统" class="headerlink" title="工单系统"></a>工单系统</h2><p>1、解决的问题</p>
+<p>　　　　　　1. 工作流程不统一，大量复杂工作流程，让人眼花缭乱（工单的边界比较模糊）。</p>
+<p>　　　　　　2. 邮寄审批严重耗时、效率低下（特别是很多大部门leader被淹没在邮件中）。</p>
+<p>　　　　　　3. 多部门协同工作，进度无法把控（到处拉群讨论）。</p>
+<p>　　　　　　4. 大量人员每天做重复性工作，严重浪费人力成本。</p>
+<p>2、工单系统模块</p>
+<p>　　　　1） 用户管理</p>
+<p>　　　　　　　　用户表、部门表、角色表 （设置代理人）</p>
+<p>　　　　2）工单模板配置</p>
+<p>　　　　　　　　工单模板配置 ==》 审批流程配置 ==》 自动化工单配置</p>
+<p>　　　　3）工单实例化</p>
+<p>　　　　　　　　申请人工单 (审批中、被退回、完成)</p>
+<p>　　　　　　　　审批人子工单 （待处理、通过、退回、否决、确认）</p>
+<p>　　　　　　　　自动化工单 （待执行、完成、执行异常）</p>
+<p>　　　　4）工单通知</p>
+<p>　　　　　　　　邮件、企业微信、超时报警</p>
+<p>　　　　5）移动审批</p>
+<p>　　　　　　　　企业微信审批</p>
+<p>　　　　6）工单报表</p>
+<p>　　　　　　　　工单类型、工单处理量、满意度统计</p>
+<h2 id="什么是Docker"><a href="#什么是Docker" class="headerlink" title="什么是Docker"></a>什么是Docker</h2><p>Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。容器是完全使用沙箱机制，相互之间不会有任何接口。</p>
+<h2 id="Docker与虚拟机比较"><a href="#Docker与虚拟机比较" class="headerlink" title="Docker与虚拟机比较"></a>Docker与虚拟机比较</h2><p>作为一种轻量级的虚拟化方式，Docker在运行应用上跟传统的虚拟机方式相比具有显著优势：</p>
+<p>Docker容器很快，启动和停止可以在秒级实现，这相比传统的虚拟机方式要快得多。 Docker容器对系统资源需求很少，一台主机上可以同时运行数千个Docker容器。 Docker通过类似Git的操作来方便用户获取、分发和更新应用镜像，指令简明，学习成本较低。 Docker通过Dockerfile配置文件来支持灵活的自动化创建和部署机制，提高工作效率。</p>
+<p><img src="img/docker1.jpg" alt="img"></p>
+<p><img src="img/docker2.png" alt="img"></p>
+<h2 id="Docker构架"><a href="#Docker构架" class="headerlink" title="Docker构架"></a>Docker构架</h2><p>Docker使用C/S架构，Client 通过接口与Server进程通信实现容器的构建，运行和发布。client和server可以运行在同一台集群，也可以通过跨主机实现远程通信。</p>
+<h2 id="Docker优势"><a href="#Docker优势" class="headerlink" title="Docker优势"></a>Docker优势</h2><p>更高效的利用系统资源 由于容器不需要进行硬件虚拟以及运行完整操作系统等额外开销，Docker 对系统资源的利用率更高。无论是应用执行速度、内存损耗或者文件存储速度，都要比传统虚拟机技术更高效。因此，相比虚拟机技术，一个相同配置的主机，往往可以运行更多数量的应用。</p>
+<p>更快速的启动时间 传统的虚拟机技术启动应用服务往往需要数分钟，而 Docker 容器应用，由于直接运行于宿主内核，无需启动完整的操作系统，因此可以做到秒级、甚至毫秒级的启动时间。大大的节约了开发、测试、部署的时间。</p>
+<p>一致的运行环境 开发过程中一个常见的问题是环境一致性问题。由于开发环境、测试环境、生产环境不一致，导致有些 bug 并未在开发过程中被发现。而 Docker 的镜像提供了除内核外完整的运行时环境，确保了应用运行环境一致性，从而不会再出现 「这段代码在我机器上没问题啊」 这类问题。</p>
+<p>持续交付和部署 对开发和运维（DevOps）人员来说，最希望的就是一次创建或配置，可以在任意地方正常运行。</p>
+<p>使用 Docker 可以通过定制应用镜像来实现持续集成、持续交付、部署。开发人员可以通过 Dockerfile 来进行镜像构建，并结合 持续集成(Continuous Integration) 系统进行集成测试，而运维人员则可以直接在生产环境中快速部署该镜像，甚至结合 持续部署(Continuous Delivery/Deployment) 系统进行自动部署。</p>
+<p>而且使用 Dockerfile 使镜像构建透明化，不仅仅开发团队可以理解应用运行环境，也方便运维团队理解应用运行所需条件，帮助更好的生产环境中部署该镜像。</p>
+<p>更轻松的迁移 由于 Docker 确保了执行环境的一致性，使得应用的迁移更加容易。Docker 可以在很多平台上运行，无论是物理机、虚拟机、公有云、私有云，甚至是笔记本，其运行结果是一致的。因此用户可以很轻易的将在一个平台上运行的应用，迁移到另一个平台上，而不用担心运行环境的变化导致应用无法正常运行的情况。</p>
+<p>更轻松的维护和扩展 Docker 使用的分层存储以及镜像的技术，使得应用重复部分的复用更为容易，也使得应用的维护更新更加简单，基于基础镜像进一步扩展镜像也变得非常简单。此外，Docker 团队同各个开源项目团队一起维护了一大批高质量的 官方镜像，既可以直接在生产环境使用，又可以作为基础进一步定制，大大的降低了应用服务的镜像制作成本。</p>
+<h2 id="Docker核心概念"><a href="#Docker核心概念" class="headerlink" title="Docker核心概念"></a>Docker核心概念</h2><p>镜像(image) Docker 镜像（Image）就是一个只读的模板。例如：一个镜像可以包含一个完整的操作系统环境，里面仅安装了 Apache 或用户需要的其它应用程序。镜像可以用来创建 Docker 容器，一个镜像可以创建很多容器。Docker 提供了一个很简单的机制来创建镜像或者更新现有的镜像，用户甚至可以直接从其他人那里下载一个已经做好的镜像来直接使用。</p>
+<p>仓库(repository) 仓库（Repository）是集中存放镜像文件的场所。有时候会把仓库和仓库注册服务器（Registry）混为一谈，并不严格区分。实际上，仓库注册服务器上往往存放着多个仓库，每个仓库中又包含了多个镜像，每个镜像有不同的标签（tag）。</p>
+<p>仓库分为公开仓库（Public）和私有仓库（Private）两种形式。最大的公开仓库是 Docker Hub，存放了数量庞大的镜像供用户下载。国内的公开仓库包括 时速云 、网易云 等，可以提供大陆用户更稳定快速的访问。当然，用户也可以在本地网络内创建一个私有仓库。</p>
+<p>当用户创建了自己的镜像之后就可以使用 push 命令将它上传到公有或者私有仓库，这样下次在另外一台机器上使用这个镜像时候，只需要从仓库上 pull 下来就可以了。</p>
+<p>Docker 仓库的概念跟 Git 类似，注册服务器可以理解为 GitHub 这样的托管服务。</p>
+<p>容器(container) Docker 利用容器（Container）来运行应用。容器是从镜像创建的运行实例。它可以被启动、开始、停止、删除。每个容器都是相互隔离的、保证安全的平台。可以把容器看做是一个简易版的 Linux 环境（包括root用户权限、进程空间、用户空间和网络空间等）和运行在其中的应用程序。</p>
+<p>容器的定义和镜像几乎一模一样，也是一堆层的统一视角，唯一区别在于容器的最上面那一层是可读可写的。</p>
+<h2 id="Docker隔离性"><a href="#Docker隔离性" class="headerlink" title="Docker隔离性"></a>Docker隔离性</h2><p>Docker容器本质上是宿主机上的进程。Docker 通过namespace实现了资源隔离，通过cgroups实现资源限制，通过写时复制机制(Copy-on-write)实现了高效的文件操作。</p>
+<p>Linux内核实现namespace的主要目的之一就是实现轻量级虚拟化(容器)服务。在同一个namespace下的进程可以感知彼此的变化，而对外界的进程一无所知。这样就可以让容器中的进程产生错觉，仿佛自己置身于一个独立的系统环境中，以达到独立和隔离的目的。</p>
+<p>一般,Docker容器需要并且Linux内核也提供了这6种资源的namespace的隔离： UTS : 主机与域名 IPC : 信号量、消息队列和共享内存 PID : 进程编号 NETWORK : 网络设备、网络栈、端口等 Mount : 挂载点(文件系统) User : 用户和用户组 Pid namespace</p>
+<p>用户进程是lxc-start进程的子进程，不同用户的进程就是通过pid namespace隔离开的，且不同namespace中可以有相同PID,具有以下特征： 1、每个namespace中的pid是有自己的pid=1的进程(类似/sbin/init进程） 2、每个namespace中的进程只能影响自己的同一个namespace或子namespace中的进程 3、因为/proc包含正在运行的进程，因此而container中的pseudo-filesystem的/proc目录只能看到自己namespace中的进程 4、因为namespace允许嵌套，父进程可以影响子namespace进程，所以子namespace的进程可以在父namespace中看到，但是具有不同的pid Net namespace</p>
+<p>有了pid namespace ,每个namespace中的pid能够相互隔离，但是网络端口还是共享host的端口。网络隔离是通过netnamespace实现的， 每个net namespace有独立的network devices, IP address, IP routing tables, /proc/net目录，这样每个container的网络就能隔离开来， LXC在此基础上有5种网络类型，docker默认采用veth的方式将container中的虚拟网卡同host上的一个docker bridge连接在一起</p>
+<p>IPC namespace Container中进程交互还是采用linux常见的进程间交互方法(interprocess communication-IPC)包括常见的信号量、消息队列、内存共享。然而同VM不同， container的进程交互实际是host具有相同pid namespace中的进程间交互，因此需要在IPC资源申请时加入namespace信息，每个IPC资源有一个唯一的32bit ID Mnt namespace 类似chroot ,将一个进程放到一个特定的目录执行，mnt namespace允许不同namespace的进程看到的文件结构不同，这样每个namespace中的进程所看到的文件目录被隔离开了，同chroot不同，每个namespace中的container在/proc/mounts的信息只包含所在namespace 的mount point</p>
+<p>Uts namespace UTS(UNIX Time sharing System）namespace允许每个container拥有独立地hostname和domain name,使其在网络上被视作一个独立的节点而非Host上的一个进程</p>
+<p>User namespace 每个container可以有不同的user和group id ,也就是说可以container内部的用户在container内部执行程序而非 Host上的用户</p>
+<h2 id="Nginx负载均衡"><a href="#Nginx负载均衡" class="headerlink" title="Nginx负载均衡"></a>Nginx负载均衡</h2><p>正向代理，是在用户端的。比如需要访问某些国外网站，我们可能需要购买vpn。 并且vpn是在我们的用户浏览器端设置的(并不是在远端的服务器设置)。</p>
+<p>反向代理是作用在服务器端的，是一个虚拟ip(VIP)。对于用户的一个请求，会转发到多个后端处理器中的一台来处理该具体请求。</p>
+<p>Nginx一般作为反向代理服务器来实现反向代理来转发处理请求，同时也可以作为静态资源服务器来加快静态资源的获取和处理。</p>
+<p>反向代理是指以代理服务器来接受internet上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给internet上请求连接的客户端，此时代理服务器对外就表现为一个服务器。客户端是无感知代理的存在的，反向代理对外都是透明的，访问者者并不知道自己访问的是一个代理。因为客户端不需要任何配置就可以访问。</p>
+<p>作用：保证内网的安全，可以使用反向代理提供WAF功能，阻止web攻击；负载均衡，通过反向代理服务器来优化网站的负载</p>
+<p>具体搭建：<a href="https://v3u.cn/a_id_77" target="_blank" rel="noopener">https://v3u.cn/a_id_77</a></p>
+<p><img src="img/fandai.png" alt="img"></p>
+<h2 id="Nginx架构"><a href="#Nginx架构" class="headerlink" title="Nginx架构"></a>Nginx架构</h2><p><img src="img/nginx.png" alt="img"></p>
+<p>Nginx采用多进程方式，一个Master与多个Worker进程。客户端访问请求通过负载均衡配置来转发到不同的后端服务器依次来实现负载均衡。</p>
+<h2 id="Nginx负载均衡策略"><a href="#Nginx负载均衡策略" class="headerlink" title="Nginx负载均衡策略"></a>Nginx负载均衡策略</h2><p>Nginx负载均衡策略主要有 轮询，加权轮询，最少连接数以及IP Hash。</p>
+<p><img src="img/fuzai.jpg" alt="img"></p>
+<p>轮询策略： 实现请求的按顺序转发，即从服务srv1–srv2–srv3依次来处理请求</p>
+<p><img src="img/n1.png" alt="img"></p>
+<p>加权轮询策略： 请求将按照服务器的设置权重来实现请求转发和处理，如下所示，最终请求处理数将为3：1：1，一般情况下加权的依据是根据服务器配置来决定的，即配置好的机器分配的权重高 <img src="img/n2.png" alt="img"></p>
+<p>最少连接数策略： 请求将转发到连接数较少的服务器上 <img src="img/n3.png" alt="img"></p>
+<p>Ip Hash策略： web服务需要共享session,使用该策略可以实现某一客户端的请求固定转发至某一服务器 <img src="img/n4.png" alt="img"></p>
+<p>ip_hash算法的原理很简单，根据请求所属的客户端IP计算得到一个数值，然后把请求发往该数值对应的后端。</p>
+<p>所以同一个客户端的请求，都会发往同一台后端，除非该后端不可用了。ip_hash能够达到保持会话的效果。</p>
+<p>ip_hash是基于round robin的，判断后端是否可用的方法是一样的。</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for (i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123;  </span><br><span class="line">    hash = (hash * <span class="number">113</span> + iphp-&gt;addr[i]) % <span class="number">6271</span>; <span class="comment">//iphp-&gt;addr[i]为ip的点分十进制法的第i段</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>hash3就是计算所得的数值，它只和初始数值hash0以及客户端的IP有关。</p>
+<p>for循环 i取 012三个值，而ip的点分十进制表示方法将ip分成四段（如：192.168.1.1），但是这里循环时只是将ip的前三个端作为参数加入hash函数。这样做的目的是保证ip地址前三位相同的用户经过hash计算将分配到相同的后端server。</p>
+<p>作者的这个考虑是极为可取的，因此ip地址前三位相同通常意味着来着同一个局域网或者相邻区域，使用相同的后端服务让nginx在一定程度上更具有一致性。</p>
+<p>第二步，根据计算所得数值，找到对应的后端。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">w = hash3 % total_weight;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (w &gt;= peer-&gt;weight) &#123;</span><br><span class="line"></span><br><span class="line">    w -= peer-&gt;weight;</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> peer </span>= peer-&gt;next;</span><br><span class="line"></span><br><span class="line">    p++;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>total_weight为所有后端权重之和。遍历后端链表时，依次减去每个后端的权重，直到w小于某个后端的权重。</p>
+<p>选定的后端在链表中的序号为p。因为total_weight和每个后端的weight都是固定的，所以如果hash3值相同，</p>
+<p>则找到的后端相同。</p>
+<h2 id="Supervisor"><a href="#Supervisor" class="headerlink" title="Supervisor"></a>Supervisor</h2><p>Supervisor</p>
+<p>是用Python开发的一个client/server服务，是Linux/Unix系统下的一个进程管理工具，不支持Windows系统。它可以很方便的监听、启动、停止、重启一个或多个进程。用Supervisor管理的进程，当一个进程意外被杀死，supervisort监听到进程死后，会自动将它重新拉起，很方便的做到进程自动恢复的功能，不再需要自己写shell脚本来控制。</p>
+<p>说白了，它真正有用的功能是俩个将非daemon(守护进程)程序变成deamon方式运行对程序进行监控，当程序退出时，可以自动拉起程序。</p>
+<p>但是它无法控制本身就是daemon的服务。</p>
+<p>具体安装和配置流程参照</p>
+<h2 id="Fastdfs"><a href="#Fastdfs" class="headerlink" title="Fastdfs"></a>Fastdfs</h2><p>FastDFS是一个开源的分布式文件系统，它对文件进行管理，功能包括：文件存储、文件同步、文件访问（文件上传、文件下载）等，解决了大容量存储和负载均衡的问题。特别适合以文件为载体的在线服务，如相册网站、视频网站等等。可以说它就是为互联网而生，为大数据而生的。</p>
+<p>FastDFS服务端有两个角色：跟踪器（tracker）和存储节点（storage）。跟踪器主要做调度工作，在访问上起负载均衡的作用。 存储节点存储文件，完成文件管理的所有功能：存储、同步和提供存取接口，FastDFS同时对文件的meta data进行管理。跟踪器和存储节点都可以由多台服务器构成。跟踪器和存储节点中的服务器均可以随时增加或下线而不会影响线上服务。其中跟踪器中的所有服务器都是对等的，可以根据服务器的压力情况随时增加或减少。</p>
+<p><img src="img/fastdfs.png" alt="img"></p>
+<p>1 解决海量存储，同时存储容量扩展方便。</p>
+<p>2 解决文件内容重复,如果用户上传的文件重复(文件指纹一样)，那么系统只有存储一份数据，值得一提的是，这项技术目前被广泛应用在网盘中。</p>
+<p>3 结合Nginx提高网站读取图片的效率。</p>
+<p>具体搭建：<a href="https://v3u.cn/a_id_78" target="_blank" rel="noopener">https://v3u.cn/a_id_78</a> 通过python交互：<a href="https://v3u.cn/Index_a_id_79" target="_blank" rel="noopener">https://v3u.cn/Index_a_id_79</a></p>
+<p>其排重原理为：</p>
+<p>FastDFS的storage server每次上传均计算文件的hash值，然后从FastDHT服务器上进行查找比对，如果没有返回，则写入hash，并将文件保存；如果有返回，则建立一个新的文件链接（软链），不保存文件。</p>
+<h2 id="自动化部署-Jenkins"><a href="#自动化部署-Jenkins" class="headerlink" title="自动化部署 Jenkins"></a>自动化部署 Jenkins</h2><p>Jenkins是目前非常流行的一款持续集成工具，可以帮助大家把更新后的代码自动部署到服务器上运行，整个流程非常自动化，你可以理解为部署命令操作的可视化界面。</p>
+<p>部署流程:</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        redis缓存雪崩 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#缓存雪崩"><span class="toc-text">缓存雪崩</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#好处："><span class="toc-text">好处：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#缓存穿透"><span class="toc-text">缓存穿透</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#缓存击穿"><span class="toc-text">缓存击穿</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        redis缓存雪崩
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-05-20 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#Redis" title="Redis">Redis</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#数据库" title="数据库">数据库</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h1><blockquote>
+<p>缓存雪崩通俗简单的理解就是：由于原有缓存失效（或者数据未加载到缓存中），新缓存未到期间（缓存正常从Redis中获取，如下图）所有原本应该访问缓存的请求都去查询数据库了，而对数据库CPU和内存造成巨大压力，严重的会造成数据库宕机，造成系统的崩溃。</p>
+<p><img src="https://github.com/doocs/advanced-java/raw/master/images/redis-caching-avalanche.png" alt="redis-caching-avalanche"></p>
+</blockquote>
+<ul>
+<li>解决方法：<ul>
+<li>事前：redis 高可用，主从+哨兵，redis cluster，避免全盘崩溃。</li>
+<li>事中：本地 ehcache 缓存 + hystrix 限流&amp;降级，避免 MySQL 被打死。</li>
+<li>事后：redis 持久化，一旦重启，自动从磁盘上加载数据，快速恢复缓存数据。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://github.com/doocs/advanced-java/raw/master/images/redis-caching-avalanche-solution.png" alt="redis-caching-avalanche-solution"></p>
+<h3 id="好处："><a href="#好处：" class="headerlink" title="好处："></a>好处：</h3><ul>
+<li>数据库绝对不会死，限流组件确保了每秒只有多少个请求能通过。</li>
+<li>只要数据库不死，就是说，对用户来说，2/5 的请求都是可以被处理的。</li>
+<li>只要有 2/5 的请求可以被处理，就意味着你的系统没死，对用户来说，可能就是点击几次刷不出来页面，但是多点几次，就可以刷出来一次。</li>
+</ul>
+<h1 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h1><blockquote>
+<p>缓存穿透是指查询一个一定<strong>不存在的数据</strong>。由于缓存不命中，并且出于容错考虑，如果从<strong>数据库查不到数据则不写入缓存</strong>，这将导致这个不存在的数据<strong>每次请求都要到数据库去查询</strong>，失去了缓存的意义。</p>
+</blockquote>
+<p><img src="https://github.com/doocs/advanced-java/raw/master/images/redis-caching-penetration.png" alt="redis-caching-penetration"></p>
+<p>对于系统A，假设一秒 5000 个请求，结果其中 4000 个请求是黑客发出的恶意攻击。</p>
+<p>黑客发出的那 4000 个攻击，缓存中查不到，每次你去数据库里查，也查不到。</p>
+<p>举个栗子。数据库 id 是从 1 开始的，结果黑客发过来的请求 id 全部都是负数。这样的话，缓存中不会有，请求每次都“视缓存于无物”，直接查询数据库。这种恶意攻击场景的缓存穿透就会直接把数据库给打死。</p>
+<p>解决方式很简单，每次系统 A 从数据库中只要没查到，就写一个空值到缓存里去，比如 <code>set -999 UNKNOWN</code>。然后设置一个过期时间，这样的话，下次有相同的 key 来访问的时候，在缓存失效之前，都可以直接从缓存中取数据。</p>
+<h1 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h1><blockquote>
+<p>​     缓存击穿，是指一个key非常热点，在不停的扛着大并发，大并发集中对这一个点进行访问，当这个key在失效的瞬间，持续的大并发就穿破缓存，直接请求数据库，就像在一个屏障上凿开了一个洞。</p>
+</blockquote>
+<ul>
+<li>解决方法：<ul>
+<li>可以将热点数据设置为永远不过期；或者基于redis or zookeeper 实现互斥锁，等待第一个请求构建完缓存之后，再释放锁，进而其他请求才能通过该key访问数据。</li>
+</ul>
+</li>
+</ul>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

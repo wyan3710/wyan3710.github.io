@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        centos7彻底卸载mysql和通过yum安装mysql.md - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#彻底卸载mysql"><span class="toc-text">彻底卸载mysql</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#安装mysql"><span class="toc-text">安装mysql</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        centos7彻底卸载mysql和通过yum安装mysql.md
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-09-09 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="彻底卸载mysql"><a href="#彻底卸载mysql" class="headerlink" title="彻底卸载mysql"></a>彻底卸载mysql</h1><ul>
+<li><p><strong>查看是否有安装的mysql</strong> </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rpm -qa | grep -i mysql <span class="comment">// 查看命令1</span></span><br><span class="line">yum <span class="built_in">list</span> install mysql* <span class="comment">// 查看命令2         二选一查看</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>卸载mysql安装包</strong> </p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">yum</span> <span class="selector-tag">remove</span> <span class="selector-tag">mysql</span> <span class="selector-tag">mysql-server</span> <span class="selector-tag">mysql-libs</span> <span class="selector-tag">compat-mysql51</span></span><br><span class="line"><span class="selector-tag">yum</span> <span class="selector-tag">remove</span> <span class="selector-tag">mysql-community-release</span></span><br><span class="line"><span class="selector-tag">rpm</span> <span class="selector-tag">-e</span> <span class="selector-tag">--nodeps</span> <span class="selector-tag">mysql-community-libs-5</span><span class="selector-class">.7</span><span class="selector-class">.22-1</span><span class="selector-class">.el7</span><span class="selector-class">.x86_64</span></span><br><span class="line"><span class="selector-tag">rpm</span> <span class="selector-tag">-e</span> –<span class="selector-tag">nodeps</span> <span class="selector-tag">mysql57-community-release-el7-11</span><span class="selector-class">.noarch</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">总之删到通过上面两种命令查不出来任何有关<span class="selector-tag">mysql</span>的东西。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>删除残留的mysql目录或文件：</strong> </p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">查询mysql安装目录</span><br><span class="line">whereis mysql  或   find / -name mysql</span><br><span class="line"></span><br><span class="line">删除查询出的目录</span><br><span class="line">rm -rf /usr/lib64/mysql</span><br><span class="line">rm -rf /usr/share/mysql</span><br><span class="line">rm -rf /usr/bin/mysql</span><br><span class="line">rm -rf /etc/logrotate.d/mysql</span><br><span class="line">rm -rf /var/<span class="class"><span class="keyword">lib</span>/<span class="title">mysql</span></span></span><br><span class="line">rm -rf /var/<span class="class"><span class="keyword">lib</span>/<span class="title">mysql</span>/<span class="title">mysql</span></span></span><br><span class="line"></span><br><span class="line">总之删到通过上面两种命令查不出来任何有关mysql的东西。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>继续删除</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">删除mysql 配置文件</span><br><span class="line"></span><br><span class="line">rm –rf <span class="string">/usr/my.cnf</span></span><br><span class="line">rm -rf <span class="string">/root/.mysql_sercret</span></span><br><span class="line"></span><br><span class="line">删除mysql开机自启动服务</span><br><span class="line">chkconfig <span class="params">--list</span> | grep -i mysql</span><br><span class="line">chkconfig <span class="params">--del</span> mysqld  <span class="string">//</span> 服务名为你设置时候自己设置的名字</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>至此就卸载干净了 </p>
+</li>
+</ul>
+<h1 id="安装mysql"><a href="#安装mysql" class="headerlink" title="安装mysql"></a>安装mysql</h1><ul>
+<li><p><strong>下载并安装mysql的YUM源：</strong> </p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">选择一个目录下载并安装</span><br><span class="line"></span><br><span class="line">mkdir soft</span><br><span class="line">cd soft</span><br><span class="line"></span><br><span class="line">wget http:<span class="comment">//dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm // 下载mysql yum源</span></span><br><span class="line">rpm -ivh mysql57-community-release-el7-<span class="number">11</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span> <span class="comment">// 安装yum源</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>接下在就是正式安装mysql了</strong> </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum <span class="keyword">install</span> mysql-community-<span class="keyword">server</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>启动mysql</strong> </p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">service mysqld start</span><br><span class="line"></span><br><span class="line">如果出现以下错误：</span><br><span class="line"><span class="builtin-name">ERROR</span> 1045 (28000): Access denied <span class="keyword">for</span><span class="built_in"> user </span>‘root’@’localhost’ (using password: <span class="literal">NO</span>)</span><br><span class="line"></span><br><span class="line">首先停止mysql服务</span><br><span class="line">service mysqld stop</span><br><span class="line"></span><br><span class="line">再以不检查权限的方式启动</span><br><span class="line">mysqld --skip-grant-tables &amp;</span><br><span class="line"></span><br><span class="line">又出现以下错误：</span><br><span class="line">[<span class="builtin-name">ERROR</span>] Fatal error: Please read “Security” section of the<span class="built_in"> manual </span><span class="keyword">to</span> <span class="builtin-name">find</span> out how <span class="keyword">to</span> <span class="builtin-name">run</span> mysqld as root!</span><br><span class="line"></span><br><span class="line">执行命令以root权限启动</span><br><span class="line">mysqld <span class="attribute">--user</span>=root --skip-grant-tables &amp;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>如果没有报错，登录 mysql</strong> ：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">mysql</span> –uroot </span><br><span class="line">如果报错试一下</span><br><span class="line">mysql –uroot -p直接回车</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>设置密码</strong> </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> mysql.user <span class="keyword">SET</span> authentication_string=<span class="keyword">PASSWORD</span>(<span class="string">'密码'</span>) <span class="keyword">where</span> <span class="keyword">USER</span>=<span class="string">'root'</span>;</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">'root'</span>@<span class="string">'localhost'</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">'密码'</span>;</span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">PASSWORD</span> <span class="keyword">FOR</span> root=<span class="keyword">PASSWORD</span>(<span class="string">'密码'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">flush</span> <span class="keyword">privileges</span>; // 刷新设置立即生效</span><br><span class="line"></span><br><span class="line">exit  // 退出,或者使用 quit 命令</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>再次进入</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql -uroot –<span class="selector-tag">p</span> <span class="comment">// 会提示输入密码</span></span><br><span class="line">输入密码，成功则密码设置完成了</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>设置root权限的远程访问</strong> </p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -pvmware</span><br><span class="line">mysql&gt;use mysql;</span><br><span class="line">mysql&gt;update <span class="keyword">user</span> <span class="title">set</span> host = '%' where <span class="keyword">user</span> <span class="title">= 'root</span>';</span><br><span class="line">mysql&gt;flush privileges;</span><br><span class="line">mysql&gt;select host, <span class="keyword">user</span> <span class="title">from</span> user</span><br><span class="line"></span><br><span class="line">然后就可以通过navicat(或者其他工具)远程连接了</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

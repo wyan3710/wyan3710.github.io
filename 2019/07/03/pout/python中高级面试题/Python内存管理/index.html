@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Python内存管理 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#在Python中是如何管理内存的"><span class="toc-text">在Python中是如何管理内存的</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Python内存管理
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-07-03 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#python中高级面试题" title="python中高级面试题">python中高级面试题</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="在Python中是如何管理内存的"><a href="#在Python中是如何管理内存的" class="headerlink" title="在Python中是如何管理内存的"></a>在Python中是如何管理内存的</h1><p>Python有一个私有堆空间来保存所有的对象和数据结构。作为开发者，我们无法访问它，是解释器在管理它。但是有了核心API后，我们可以访问一些工具。Python内存管理器控制内存分配。</p>
+<p>另外，内置垃圾回收器会回收使用所有的未使用内存，所以使其适用于堆空间。</p>
+<p>一、垃圾回收：python不像C++，Java等语言一样，他们可以不用事先声明变量类型而直接对变量进行赋值。对Python语言来讲，对象的类型和内存都是在运行时确定的。这也是为什么我们称Python语言为动态类型的原因(这里我们把动态类型可以简单的归结为对变量内存地址的分配是在运行时自动判断变量类型并对变量进行赋值)。</p>
+<p>二、引用计数：Python采用了类似Windows内核对象一样的方式来对内存进行管理。每一个对象，都维护这一个对指向该对对象的引用的计数。当变量被绑定在一个对象上的时候，该变量的引用计数就是1，(还有另外一些情况也会导致变量引用计数的增加),系统会自动维护这些标签，并定时扫描，当某标签的引用计数变为0的时候，该对就会被回收。</p>
+<p>1 对象存储</p>
+<p>在Python中万物皆对象</p>
+<p>不存在基本数据类型，<code>0, 1.2, True, False, &quot;abc&quot;</code>等，这些全都是对象</p>
+<p>所有对象, 都会在内存中开辟一块空间进行存储</p>
+<p>2.1 会根据不同的类型以及内容, 开辟不同的空间大小进行存储 2.2 返回该空间的地址给外界接收(称为”引用”), 用于后续对这个对象的操作 2.3 可通过 id() 函数获取内存地址(10进制) 2.4 通过 hex() 函数可以查看对应的16进制地址</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class Person:</span><br><span class="line">    pass</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">p</span> = Person()</span><br><span class="line"><span class="function"><span class="title">print</span><span class="params">(p)</span></span></span><br><span class="line"><span class="function"><span class="title">print</span><span class="params">(id(p)</span></span>)</span><br><span class="line"><span class="function"><span class="title">print</span><span class="params">(hex(id(p)</span></span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt;&gt; 打印结果</span><br><span class="line"></span><br><span class="line">&lt;__main__<span class="selector-class">.Person</span> <span class="selector-tag">object</span> at <span class="number">0</span>x107030470&gt;</span><br><span class="line"><span class="number">4412605552</span></span><br><span class="line"><span class="number">0</span>x107030470</span><br></pre></td></tr></table></figure>
+<p>对于整数和短小的字符, Python会进行缓存; 不会创建多个相同对象</p>
+<p>此时, 被多次赋值, 只会有多份引用</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">num1 = <span class="number">2</span></span><br><span class="line">num2 = <span class="number">2</span></span><br><span class="line">print(id(num1), id(num2))</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt;&gt; 打印结果</span><br><span class="line"></span><br><span class="line"><span class="number">4366584464</span> <span class="number">4366584464</span></span><br></pre></td></tr></table></figure>
+<p>容器对象, 存储的其他对象, 仅仅是其他对象的引用, 并不是其他对象本身</p>
+<p>4.1 比如字典, 列表, 元组这些”容器对象” 4.2 全局变量是由一个大字典进行引用 4.3 可通过 global() 查看</p>
+<p>2 对象回收 2.1 引用计数器 2.1.1概念</p>
+<p>一个对象, 会记录着自身被引用的个数 每增加一个引用, 这个对象的引用计数会自动+1 每减少一个引用, 这个对象的引用计数会自动-1</p>
+<p>引用计数+1场景</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>、对象被创建</span><br><span class="line">    <span class="built_in">p1</span> = Person()</span><br><span class="line"><span class="number">2</span>、对象被引用</span><br><span class="line">    <span class="built_in">p2</span> = <span class="built_in">p1</span></span><br><span class="line"><span class="number">3</span>、对象被作为参数，传入到一个函数中</span><br><span class="line">    log(<span class="built_in">p1</span>)</span><br><span class="line">    这里注意会+<span class="number">2</span>, 因为内部有两个属性引用着这个参数</span><br><span class="line"><span class="number">4</span>、对象作为一个元素，存储在容器中</span><br><span class="line">    l = [<span class="built_in">p1</span>]</span><br></pre></td></tr></table></figure>
+<p>引用计数-1场景</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>、对象的别名被显式销毁</span><br><span class="line">    del p1</span><br><span class="line"><span class="number">2</span>、对象的别名被赋予新的对象</span><br><span class="line">    p1 = <span class="number">123</span></span><br><span class="line"><span class="number">3</span>、一个对象离开它的作用域</span><br><span class="line">    一个函数执行完毕时</span><br><span class="line">    内部的局部变量关联的对象, 它的引用计数就会<span class="number">-1</span></span><br><span class="line"><span class="number">4</span>、对象所在的容器被销毁，或从容器中删除对象</span><br></pre></td></tr></table></figure>
+<p>查看引用计数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">p1 = Person() <span class="comment"># 1</span></span><br><span class="line"></span><br><span class="line">print(sys.getrefcount(p1)) <span class="comment"># 2</span></span><br><span class="line"></span><br><span class="line">p2 = p1 <span class="comment"># 2</span></span><br><span class="line"></span><br><span class="line">print(sys.getrefcount(p1)) <span class="comment"># 3</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">del</span> p2 <span class="comment"># 1</span></span><br><span class="line">print(sys.getrefcount(p1)) <span class="comment"># 2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">del</span> p1</span><br><span class="line"><span class="comment"># print(sys.getrefcount(p1)) #error，因为上一行代码执行类p1对象已经销毁</span></span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt;&gt; 打印结果</span><br><span class="line"></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>循环引用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 循环引用</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dog</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">p = Person() </span><br><span class="line">d = Dog()   </span><br><span class="line"></span><br><span class="line">p.pet = d </span><br><span class="line">d.master = p</span><br></pre></td></tr></table></figure>
+<p>对象间互相引用，导致对象不能通过引用计数器进行销毁</p>
+<p>手动触发垃圾回收，挥手循环引用</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">import objgraph</span><br><span class="line">import gc</span><br><span class="line"></span><br><span class="line">class Person:</span><br><span class="line">    pass</span><br><span class="line"></span><br><span class="line">class Dog:</span><br><span class="line">    pass</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">p</span> = Person()</span><br><span class="line">d = Dog()</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">p</span><span class="selector-class">.pet</span> = d</span><br><span class="line">d<span class="selector-class">.master</span> = p</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="selector-tag">del</span> p</span><br><span class="line"><span class="selector-tag">del</span> d</span><br><span class="line"></span><br><span class="line">gc.collect() #手动触发垃圾回收</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">print</span><span class="params">(objgraph.count(<span class="string">"Person"</span>)</span></span>)</span><br><span class="line"><span class="function"><span class="title">print</span><span class="params">(objgraph.count(<span class="string">"Dog"</span>)</span></span>)</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt;&gt; 打印结果</span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        WebSocket - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#WebSocket心跳检测和重连机制"><span class="toc-text">WebSocket心跳检测和重连机制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-心跳重连原由"><span class="toc-text">1. 心跳重连原由</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#前端断开"><span class="toc-text">前端断开</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#后端断开"><span class="toc-text">后端断开</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-心跳重连的简单实现"><span class="toc-text">2. 心跳重连的简单实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#最后总结下"><span class="toc-text">最后总结下 </span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        WebSocket
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-12-23 08:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#WebSocket" title="WebSocket">WebSocket</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#后端技术" title="后端技术">后端技术</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="WebSocket心跳检测和重连机制"><a href="#WebSocket心跳检测和重连机制" class="headerlink" title="WebSocket心跳检测和重连机制"></a>WebSocket心跳检测和重连机制</h1><h2 id="1-心跳重连原由"><a href="#1-心跳重连原由" class="headerlink" title="1. 心跳重连原由"></a>1. 心跳重连原由</h2><p>心跳和重连的目的用一句话概括就是客户端和服务端保证彼此还活着，避免丢包发生。</p>
+<p><code>websocket</code>连接断开有以下两证情况：</p>
+<h3 id="前端断开"><a href="#前端断开" class="headerlink" title="前端断开"></a>前端断开</h3><p>在使用<code>websocket</code>过程中，可能会出现网络断开的情况，比如信号不好，或者网络临时关闭，这时候websocket的连接已经断开，而不同浏览器有不同的机制，触发<code>onclose</code>的时机也不同，并不会理想执行<code>websocket</code>的<code>onclose</code>方法，我们无法知道是否断开连接，也就无法进行重连操作。</p>
+<h3 id="后端断开"><a href="#后端断开" class="headerlink" title="后端断开"></a>后端断开</h3><p>如果后端因为一些情况需要断开ws，在可控情况下，会下发一个断连的消息通知，之后才会断开，我们便会重连。<br>如果因为一些异常断开了连接，我们是不会感应到的，所以如果我们发送了心跳一定时间之后，后端既没有返回心跳响应消息，前端又没有收到任何其他消息的话，我们就能断定后端主动断开了。</p>
+<p>因此需要一种机制来检测客户端和服务端是否处于正常连接的状态。通过在指定时间间隔发送心跳包来保证连接正常，如果连接出现问题，就需要手动触发<code>onclose</code>事件，这时候便可进行重连操作。因此<code>websocket</code>心跳重连就应运而生。</p>
+<h2 id="2-心跳重连的简单实现"><a href="#2-心跳重连的简单实现" class="headerlink" title="2. 心跳重连的简单实现"></a>2. 心跳重连的简单实现</h2><p>2.1 通过createWebSocket创建连接</p>
+<p>2.2 创建init方法，初始化一些监听事件，如果希望websocket连接一直保持, 我们会在close或者error上绑定重新连接方法。</p>
+<p>　2.3 重连操作，通过设置<code>lockReconnect</code>变量避免重复连接</p>
+<p>　2.4 心跳检测</p>
+<p>　　有的时候，客户端发送3次心跳包服务端均未回复才判定为失去连接，所以这时需要加上计数来判断。</p>
+<h1 id="最后总结下"><a href="#最后总结下" class="headerlink" title="最后总结下 "></a><strong>最后总结下 </strong></h1><p><strong>我们确认了后端单台服务器的处理能力有限，因此。我们需要做集群。其次我们为了不让前端关闭或回收，后端不响应。我们需要设置心跳，定时清除无关的连接。</strong><br><strong>最后，我们需要有消息确认机制，做到保证消息的100%接收。</strong></p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

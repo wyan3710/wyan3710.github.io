@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Mysql慢查询 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一-设置方法"><span class="toc-text">一. 设置方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方法一：全局变量设置"><span class="toc-text">方法一：全局变量设置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#设置慢查询日志的日志文件位置"><span class="toc-text">设置慢查询日志的日志文件位置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#设置是否对未使用索引的SQL进行记录"><span class="toc-text">设置是否对未使用索引的SQL进行记录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#设置只要SQL执行时间超过n秒的就记录"><span class="toc-text">设置只要SQL执行时间超过n秒的就记录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#启用mysql慢查询日志"><span class="toc-text">启用mysql慢查询日志</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法二：配置文件设置"><span class="toc-text">方法二：配置文件设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看设置后的参数"><span class="toc-text">查看设置后的参数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二-慢查询日志记录的内容"><span class="toc-text">二. 慢查询日志记录的内容</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Mysql慢查询
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-05-23 08:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#MySql" title="MySql">MySql</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#数据库" title="数据库">数据库</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h2 id="一-设置方法"><a href="#一-设置方法" class="headerlink" title="一. 设置方法"></a>一. 设置方法</h2><p>使用慢查询日志里捕获</p>
+<p>启用之前需要先进行一些设置</p>
+<p> 开启通用日志查询： set global general_log=on;</p>
+<p>关闭通用日志查询： set globalgeneral_log=off;</p>
+<p>设置通用日志输出为表方式： set globallog_output=’TABLE’;</p>
+<p>设置通用日志输出为文件方式： set globallog_output=’FILE’;</p>
+<p>设置通用日志输出为表和文件方式：set global log_output=’FILE,TABLE’;</p>
+<h3 id="方法一：全局变量设置"><a href="#方法一：全局变量设置" class="headerlink" title="方法一：全局变量设置"></a>方法一：全局变量设置</h3><h4 id="设置慢查询日志的日志文件位置"><a href="#设置慢查询日志的日志文件位置" class="headerlink" title="设置慢查询日志的日志文件位置"></a>设置慢查询日志的日志文件位置</h4><figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> global <span class="comment">slow_query_log_file =</span> <span class="comment">"D:/slow_log/slow_log.log"</span> ;</span><br></pre></td></tr></table></figure>
+<h4 id="设置是否对未使用索引的SQL进行记录"><a href="#设置是否对未使用索引的SQL进行记录" class="headerlink" title="设置是否对未使用索引的SQL进行记录"></a>设置是否对未使用索引的SQL进行记录</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> log_queries_not_using_indexes = <span class="keyword">on</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="设置只要SQL执行时间超过n秒的就记录"><a href="#设置只要SQL执行时间超过n秒的就记录" class="headerlink" title="设置只要SQL执行时间超过n秒的就记录"></a>设置只要SQL执行时间超过n秒的就记录</h4><figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> global <span class="comment">long_query_time = 0.001</span> ;</span><br></pre></td></tr></table></figure>
+<p>此处设置的0.001秒，便于测试，一般情况比这个大</p>
+<h4 id="启用mysql慢查询日志"><a href="#启用mysql慢查询日志" class="headerlink" title="启用mysql慢查询日志"></a>启用mysql慢查询日志</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> slow_query_log = <span class="keyword">on</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="方法二：配置文件设置"><a href="#方法二：配置文件设置" class="headerlink" title="方法二：配置文件设置"></a>方法二：配置文件设置</h3><p>修改配置文件my.cnf，在[mysqld]下的下方加入</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">slow_query_log</span> = <span class="literal">ON</span></span><br><span class="line"><span class="attr">log_queries_not_using_indexes</span> = <span class="literal">ON</span>;</span><br><span class="line"><span class="attr">slow_query_log_file</span> = /usr/local/mysql/data/slow.log</span><br><span class="line"><span class="attr">long_query_time</span> = <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h3 id="查看设置后的参数"><a href="#查看设置后的参数" class="headerlink" title="查看设置后的参数"></a>查看设置后的参数</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'slow_query%'</span>;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'long_query__time'</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="二-慢查询日志记录的内容"><a href="#二-慢查询日志记录的内容" class="headerlink" title="二. 慢查询日志记录的内容"></a>二. 慢查询日志记录的内容</h2><p>more /var/lib/mysql/izbp12xu0u9ja736dkjgcsz-slow.log</p>
+<figure class="highlight vbnet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Time                 Id Command    Argument</span><br><span class="line"><span class="meta"># Time: 2019-01-08T04:12:09.269315Z </span></span><br><span class="line"><span class="meta"># User@Host: h5_test[h5_test] @ localhost [::1]  Id:    12  </span></span><br><span class="line"><span class="meta"># Query_time: 0.000831  Lock_time: 0.000198 Rows_sent: 1  Rows_examined: 3  </span></span><br><span class="line">use mc_productdb;</span><br><span class="line"><span class="keyword">SET</span> timestamp=<span class="number">1546920729</span>;</span><br><span class="line"><span class="keyword">SELECT</span> t.customer_id,t.title,t.content </span><br><span class="line"><span class="keyword">FROM</span> (</span><br><span class="line"><span class="keyword">SELECT</span> customer_id  <span class="keyword">FROM</span> product_comment <span class="keyword">WHERE</span>  product_id =<span class="number">199726</span> <span class="keyword">AND</span> audit_status = <span class="number">1</span> LIMIT <span class="number">0</span>,<span class="number">15</span></span><br><span class="line">)a <span class="keyword">JOIN</span> product_comment t </span><br><span class="line"><span class="keyword">ON</span> a.customer_id = t.comment_id;</span><br></pre></td></tr></table></figure>
+<p>Time：执行查询的日期时间<br>User@Host：执行查询的用户和客户端IP<br>Id：是执行查询的线程Id<br>Query_time：SQL执行所消耗的时间<br>Lock_time：执行查询对记录锁定的时间<br>Rows_sent：查询返回的行数<br>Rows_examined：为了返回查询的数据所读取的行数</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

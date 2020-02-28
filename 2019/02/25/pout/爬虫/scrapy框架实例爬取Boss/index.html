@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Scrapy爬取Boss直聘 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#爬虫项目——Scrapy爬取Boss直聘"><span class="toc-text">爬虫项目——Scrapy爬取Boss直聘</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Scrapy添加代理爬取boss直聘，并存储到mongodb"><span class="toc-text">Scrapy添加代理爬取boss直聘，并存储到mongodb</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#最终爬取截图"><span class="toc-text">最终爬取截图</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#项目创建"><span class="toc-text">项目创建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#items"><span class="toc-text">items</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spider"><span class="toc-text">Spider</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Middleware添加ip代理"><span class="toc-text">Middleware添加ip代理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pipeline添加mongodb存储"><span class="toc-text">Pipeline添加mongodb存储</span></a></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Scrapy爬取Boss直聘
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-02-25 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#爬虫" title="爬虫">爬虫</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="爬虫项目——Scrapy爬取Boss直聘"><a href="#爬虫项目——Scrapy爬取Boss直聘" class="headerlink" title="爬虫项目——Scrapy爬取Boss直聘"></a>爬虫项目——Scrapy爬取Boss直聘</h1><h3 id="Scrapy添加代理爬取boss直聘，并存储到mongodb"><a href="#Scrapy添加代理爬取boss直聘，并存储到mongodb" class="headerlink" title="Scrapy添加代理爬取boss直聘，并存储到mongodb"></a>Scrapy添加代理爬取boss直聘，并存储到mongodb</h3><ul>
+<li><p>[最终爬取截图]</p>
+</li>
+<li><p>[项目创建]</p>
+</li>
+<li><ul>
+<li>items</li>
+<li>Spider</li>
+<li>Middleware添加ip代理</li>
+<li>Pipeline添加mongodb存储</li>
+</ul>
+</li>
+</ul>
+<h1 id="最终爬取截图"><a href="#最终爬取截图" class="headerlink" title="最终爬取截图"></a>最终爬取截图</h1><p><img src="https://img-blog.csdn.net/20180919104939869?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MjgzNjM1MQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
+<h1 id="项目创建"><a href="#项目创建" class="headerlink" title="项目创建"></a>项目创建</h1><p>本项目使用的是Windows系统下的Pycharm平台，Python版本为3.6</p>
+<p>使用<code>scrapy startproject scrapy_boss</code>创建scrapy项目</p>
+<h2 id="items"><a href="#items" class="headerlink" title="items"></a>items</h2><figure class="highlight monkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">from scrapy <span class="keyword">import</span> Item, <span class="keyword">Field</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BossItem</span>(<span class="title">Item</span>):</span></span><br><span class="line">    company_name = <span class="keyword">Field</span>()<span class="meta">  #公司名称</span></span><br><span class="line">    company_status = <span class="keyword">Field</span>()<span class="meta">  #公司规模</span></span><br><span class="line">    company_address = <span class="keyword">Field</span>()<span class="meta">  #公司地址</span></span><br><span class="line"></span><br><span class="line">    job_title = <span class="keyword">Field</span>()<span class="meta">  #职位名称</span></span><br><span class="line">    job_salary = <span class="keyword">Field</span>()<span class="meta">  #薪酬</span></span><br><span class="line">    job_detail = <span class="keyword">Field</span>()<span class="meta">  #职位描述、详情要求</span></span><br><span class="line"></span><br><span class="line">    job_experience = <span class="keyword">Field</span>()<span class="meta">  #工作经验</span></span><br><span class="line">    job_education = <span class="keyword">Field</span>()<span class="meta">  #学历要求</span></span><br><span class="line">    job_url = <span class="keyword">Field</span>()<span class="meta">  #发布页面</span></span><br><span class="line"><span class="number">12345678910111213141234567891011121314</span></span><br></pre></td></tr></table></figure>
+<h2 id="Spider"><a href="#Spider" class="headerlink" title="Spider"></a>Spider</h2><ul>
+<li>参数</li>
+</ul>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class BossSpider(Spider):</span><br><span class="line">   name = 'boss'</span><br><span class="line">   allowed_domains = ['www.zhipin.com']</span><br><span class="line">   <span class="meta"># start_urls = ['http:<span class="comment">//www.zhipin.com/']</span></span></span><br><span class="line"></span><br><span class="line">   headers = &#123;</span><br><span class="line">       'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',</span><br><span class="line">       'accept-encoding': 'gzip, deflate, br',</span><br><span class="line">       'accept-language': 'zh-CN,zh;q=0.9',</span><br><span class="line">       'cookie': '__c=<span class="number">1535347437</span>; __g=-; __l=l=%2Fwww.zhipin.com%2Fc<span class="number">10101010</span>0%2Fh_<span class="number">10101010</span>0%2F%3Fquery%3D%25E7%<span class="number">2588</span>%25AC%25E8%<span class="number">2599</span>%25AB%25E5%25B7%25A5%25E7%25A8%258B%25E5%25B8%<span class="number">2588</span>%26page%3D4%26ka%3Dpage-4&amp;r=; Hm_lvt_194df<span class="number">3105</span>ad<span class="number">7148</span>dcf2b98a91b5e727a=<span class="number">1533949950</span>,<span class="number">1534555474</span>,<span class="number">1535095432</span>,<span class="number">1535347437</span>; lastCity=<span class="number">10101010</span>0; toUrl=https%3A%2F%2Fwww.zhipin.com%2Fjob_detail%2F%3Fquery%3Dpython%26scity%3D<span class="number">10101010</span>0%26industry%3D%26position%3D; JSESSIONID=""; Hm_lpvt_194df<span class="number">3105</span>ad<span class="number">7148</span>dcf2b98a91b5e727a=<span class="number">1535348378</span>; __a=<span class="number">553480</span>3.<span class="number">1512627994.1535</span><span class="number">095432.15353474</span>37.264.8.4.260',</span><br><span class="line">       'referer': 'https://www.zhipin.com/job_detail/?query=python&amp;scity=<span class="number">10101010</span>0&amp;industry=&amp;position=',</span><br><span class="line">       'upgrade-insecure-requests': '1',</span><br><span class="line">       'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.<span class="number">3440.10</span>6 Safari/537.36'</span><br><span class="line">   &#125;</span><br><span class="line"><span class="number">12345678910111213141234567891011121314</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>解析index页</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">start_requests</span><span class="params">(self)</span>:</span></span><br><span class="line">        queries = [<span class="string">'hadoop'</span>, <span class="string">'spark'</span>, <span class="string">'hbase'</span>, <span class="string">'hive'</span>, <span class="string">r'大数据'</span>,</span><br><span class="line">                    <span class="string">r'数据分析'</span>, <span class="string">r'数据运营'</span>, <span class="string">r'数据挖掘'</span>, <span class="string">r'爬虫'</span>, <span class="string">r'抓取'</span>, <span class="string">r'可视化'</span>, <span class="string">r'数据开发'</span>, <span class="string">r'数据工程'</span>,</span><br><span class="line">                    <span class="string">r'数据处理'</span>, <span class="string">r'数据科学家'</span>, <span class="string">r'数据工程师'</span>, <span class="string">r'数据架构师'</span>, <span class="string">r'数据采集'</span>, <span class="string">r'数据建模'</span>, <span class="string">r'数据平台'</span>,</span><br><span class="line">                    <span class="string">r'数据研发'</span>, <span class="string">r'数据管理'</span>, <span class="string">r'数据统计'</span>, <span class="string">r'数据产品'</span>, <span class="string">r'数据方向'</span>, <span class="string">r'数据仓库'</span>, <span class="string">r'数据研究'</span>,</span><br><span class="line">                    <span class="string">r'数据算法'</span>, <span class="string">r'数据蜘蛛'</span>, <span class="string">r'数据应用'</span>, <span class="string">r'数据技术'</span>, <span class="string">r'数据运维'</span>, <span class="string">r'数据支撑'</span>, <span class="string">r'数据安全'</span>,</span><br><span class="line">                    <span class="string">r'数据爬取'</span>, <span class="string">r'数据经理'</span>, <span class="string">r'金融数据'</span>, <span class="string">r'数据专员'</span>, <span class="string">r'数据主管'</span>, <span class="string">r'数据项目经理'</span>, <span class="string">r'数据整合'</span>,</span><br><span class="line">                    <span class="string">r'数据模型'</span>, <span class="string">r'财务数据'</span>, <span class="string">r'数据专家'</span>, <span class="string">r'数据报送'</span>, <span class="string">r'数据中心'</span>, <span class="string">r'数据移动'</span>, <span class="string">r'数据标准'</span>,</span><br><span class="line">                    <span class="string">r'数据推广'</span>, <span class="string">r'数据质量'</span>, <span class="string">r'数据检索'</span>, <span class="string">r'数据服务'</span>, <span class="string">r'数据搭建'</span>, <span class="string">r'数据实施'</span>, <span class="string">r'数据风控'</span>]</span><br><span class="line"></span><br><span class="line">        urls = []</span><br><span class="line">        <span class="keyword">for</span> query <span class="keyword">in</span> queries:</span><br><span class="line">            url = <span class="string">'https://www.zhipin.com/job_detail/?query=%s&amp;scity=101010100'</span>%query</span><br><span class="line">            urls.append(url)</span><br><span class="line">        <span class="keyword">for</span> url <span class="keyword">in</span> urls:</span><br><span class="line">            <span class="keyword">yield</span> Request(url=url, headers=self.headers, callback=self.parse_index)</span><br><span class="line"></span><br><span class="line"><span class="number">12345678910111213141516171234567891011121314151617</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>解析index页面构造url，并实现翻页</li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse_index</span><span class="params">(<span class="keyword">self</span>, response)</span></span><span class="symbol">:</span></span><br><span class="line">        sel = Selector(response)</span><br><span class="line">        url_prefix = <span class="string">'https://www.zhipin.com'</span></span><br><span class="line">        job_urls = sel.xpath(<span class="string">'//a[@data-index]/@href'</span>).extract()</span><br><span class="line">        <span class="keyword">for</span> job_url <span class="keyword">in</span> <span class="symbol">job_urls:</span></span><br><span class="line">            url = url_prefix + job_url</span><br><span class="line">            <span class="keyword">yield</span> Request(url=url,headers=<span class="keyword">self</span>.headers, callback=<span class="keyword">self</span>.parse_detail)</span><br><span class="line"></span><br><span class="line">        next_page_url = sel.xpath(<span class="string">'//a[@class="next"]/@href'</span>).extract()</span><br><span class="line">        <span class="keyword">if</span> len(next_page_url) != <span class="number">0</span><span class="symbol">:</span></span><br><span class="line">            next_page_url = url_prefix + <span class="string">''</span>.join(next_page_url)</span><br><span class="line">            <span class="keyword">yield</span> Request(url=next_page_url, headers=<span class="keyword">self</span>.headers, callback=<span class="keyword">self</span>.parse_index)</span><br><span class="line"><span class="number">123456789101112123456789101112</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>解析详情页</li>
+</ul>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">	 def parse_detail(self,response):</span><br><span class="line">	    <span class="keyword">item</span> = BossItem()</span><br><span class="line">	    </span><br><span class="line">	    <span class="keyword">item</span>[<span class="string">'company_name'</span>] = response.xpath(<span class="string">'//a[@ka="job-detail-company"]/text()'</span>).extract_first()</span><br><span class="line">        <span class="keyword">item</span>[<span class="string">'company_status'</span>] =  response.xpath(<span class="string">'//div[@class="info-company"]/p[1]/text()[1]'</span>).extract_first()</span><br><span class="line">        <span class="keyword">item</span>[<span class="string">'company_address'</span>] = response.xpath(<span class="string">'//div[@class="location-address"]/text()'</span>).extract_first()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">item</span>[<span class="string">'job_title'</span>] = response.xpath(<span class="string">'//div[@class="name"]/h1/text()'</span>).extract_first()</span><br><span class="line">        <span class="keyword">item</span>[<span class="string">'job_experience'</span>] = response.xpath(<span class="string">'//div[@class="job-primary detail-box"]/div[@class="info-primary"]/p/text()[2]'</span>).extract_first()</span><br><span class="line">        <span class="keyword">item</span>[<span class="string">'job_education'</span>] = response.xpath(<span class="string">'//div[@class="job-primary detail-box"]/div[@class="info-primary"]/p/text()[3]'</span>).extract_first()</span><br><span class="line">        <span class="keyword">item</span>[<span class="string">'job_salary'</span>] = response.xpath(<span class="string">'//span[@class="badge"]/text()'</span>).extract_first().<span class="built_in">replace</span>(<span class="string">"\n"</span>, <span class="string">""</span>).strip()</span><br><span class="line">        <span class="keyword">item</span>[<span class="string">'job_detail'</span>] = response.xpath(<span class="string">'//div[@class="job-sec"]/div[@class="text"]/text()'</span>).extract()</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">item</span>[<span class="string">'job_url'</span>] = response.url</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        yield <span class="keyword">item</span></span><br><span class="line"> </span><br><span class="line"><span class="number">123456789101112131415161718123456789101112131415161718</span></span><br></pre></td></tr></table></figure>
+<h2 id="Middleware添加ip代理"><a href="#Middleware添加ip代理" class="headerlink" title="Middleware添加ip代理"></a>Middleware添加ip代理</h2><p>此处借助了一个IP池，在本地提供了一个随机提取可用代理的端口。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProxyMiddleware</span>(<span class="title">object</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span><span class="params">(<span class="keyword">self</span>,request,spider)</span></span><span class="symbol">:</span></span><br><span class="line">        response = requests.get(<span class="string">'http://localhost:5555/random'</span>)</span><br><span class="line">        proxy = response.text</span><br><span class="line">        request.meta[<span class="string">'proxy'</span>] = <span class="string">"http://"</span>+proxy</span><br><span class="line"><span class="number">123456123456</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>settings<br>需要在settings中打开DownloaderMiddleware<br><img src="https://img-blog.csdn.net/20180919104821182?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MjgzNjM1MQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></li>
+</ul>
+<h2 id="Pipeline添加mongodb存储"><a href="#Pipeline添加mongodb存储" class="headerlink" title="Pipeline添加mongodb存储"></a>Pipeline添加mongodb存储</h2><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">import pymongo</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">scrapy_bossPipeline</span>(<span class="title">object</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_item</span><span class="params">(<span class="keyword">self</span>, item, spider)</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="keyword">return</span> item</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MongoPipeline</span>(<span class="title">object</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(<span class="keyword">self</span>,mongo_uri,mongo_db)</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="keyword">self</span>.mongo_uri = mongo_uri</span><br><span class="line">        <span class="keyword">self</span>.mongo_db = mongo_db</span><br><span class="line"></span><br><span class="line">    @classmethod</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">from_crawler</span><span class="params">(cls,crawler)</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="keyword">return</span>  cls(</span><br><span class="line">            mongo_uri = crawler.settings.get(<span class="string">'MONGO_URI'</span>),</span><br><span class="line">            mongo_db = crawler.settings.get(<span class="string">'MONGO_DB'</span>)</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">open_spider</span><span class="params">(<span class="keyword">self</span>,spider)</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="keyword">self</span>.client = pymongo.MongoClient(<span class="keyword">self</span>.mongo_uri)</span><br><span class="line">        <span class="keyword">self</span>.db = <span class="keyword">self</span>.client[<span class="keyword">self</span>.mongo_db]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_item</span><span class="params">(<span class="keyword">self</span>,item,spider)</span></span><span class="symbol">:</span></span><br><span class="line">        name = item.__class_<span class="number">_</span>.__name_<span class="number">_</span></span><br><span class="line">        <span class="keyword">self</span>.db[name].insert(dict(item))</span><br><span class="line">        <span class="keyword">return</span> item</span><br><span class="line"><span class="number">12345678910111213141516171819202122232425261234567891011121314151617181920212223242526</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>settings：</li>
+</ul>
+<p>需要在settings中添加</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SPIDER_MODULES = ['scrapy_boss.spiders']</span><br><span class="line">NEWSPIDER_MODULE = 'scrapy_boss.spiders'</span><br><span class="line"></span><br><span class="line">MONGO_URI = 'localhost'</span><br><span class="line">MONGO_DB = 'scrapy_boss'</span><br><span class="line">1234512345</span><br></pre></td></tr></table></figure>
+<p>并打开itemspipeline<br><img src="https://img-blog.csdn.net/20180919104602640?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MjgzNjM1MQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

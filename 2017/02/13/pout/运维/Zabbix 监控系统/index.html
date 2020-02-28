@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Zabbix 监控系统 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Zabbix-监控系统"><span class="toc-text">Zabbix 监控系统</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#什么是监控系统？"><span class="toc-text">什么是监控系统？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#为什么需要监控系统？"><span class="toc-text">为什么需要监控系统？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#监控系统都有哪些功能？"><span class="toc-text">监控系统都有哪些功能？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#开源监控系统现状"><span class="toc-text">开源监控系统现状</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#监控系统可以干什么？"><span class="toc-text">监控系统可以干什么？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Zabbix-简介"><span class="toc-text">Zabbix 简介</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#了解zabbix"><span class="toc-text">了解zabbix</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Zabbix-的优点"><span class="toc-text">Zabbix 的优点</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Zabbix-监控组件及流程"><span class="toc-text">Zabbix 监控组件及流程</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#zabbix的好处："><span class="toc-text">zabbix的好处：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Zabbix-能监控哪些硬件资源呢？"><span class="toc-text">Zabbix 能监控哪些硬件资源呢？</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Zabbix-支持哪些通讯方式呢？"><span class="toc-text">Zabbix 支持哪些通讯方式呢？</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Zabbix-监控流程"><span class="toc-text">Zabbix 监控流程</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#zabbix-核心组件"><span class="toc-text">zabbix 核心组件</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#zabbix-工作模式"><span class="toc-text">zabbix 工作模式</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Zabbix-服务器搭建部署"><span class="toc-text">Zabbix 服务器搭建部署</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#安装描述"><span class="toc-text">安装描述</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#安装-zabbix-server"><span class="toc-text">安装 zabbix server</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#配置zabbix-server端并启动"><span class="toc-text">配置zabbix server端并启动</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#安装zabbix-web端"><span class="toc-text">安装zabbix web端</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#初始化zabbix-配置"><span class="toc-text">初始化zabbix 配置</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Zaabix-agent-安装"><span class="toc-text">Zaabix agent 安装</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#在-Zabbix-中添加主机"><span class="toc-text">在 Zabbix 中添加主机</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#在Zabbix中添加监控项"><span class="toc-text">在Zabbix中添加监控项</span></a></li></ol></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Zabbix 监控系统
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2017-02-13 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#运维" title="运维">运维</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <h2 id="Zabbix-监控系统"><a href="#Zabbix-监控系统" class="headerlink" title="Zabbix 监控系统"></a>Zabbix 监控系统</h2><h4 id="什么是监控系统？"><a href="#什么是监控系统？" class="headerlink" title="什么是监控系统？"></a>什么是监控系统？</h4><p>例如：开车时的行车记录仪、班级里面的监控摄像头、医院使用的血压监测仪等等</p>
+<p>在IT领域中，监控系统就是<strong>监控系统资源以及性能的硬件或者软件</strong></p>
+<p><strong>监控软件</strong></p>
+<ol>
+<li>单一监控程序<ol>
+<li>windows系统的任务管理</li>
+<li>linux系统中的top、vmstat、iostat</li>
+</ol>
+</li>
+<li>分布式监控程序</li>
+</ol>
+<h4 id="为什么需要监控系统？"><a href="#为什么需要监控系统？" class="headerlink" title="为什么需要监控系统？"></a>为什么需要监控系统？</h4><p>为用户提供稳定、高效、安全的服务</p>
+<p>但是像zabbix和open-falcon只能监控某些方面。而为了业务高效运行还需要和APM也就是应用性能监控、全局链路调用追踪等一起实现。而安全性需要安全团队和相关系统紧密结合才行</p>
+<h4 id="监控系统都有哪些功能？"><a href="#监控系统都有哪些功能？" class="headerlink" title="监控系统都有哪些功能？"></a>监控系统都有哪些功能？</h4><ol>
+<li><strong>数据收集.</strong></li>
+<li><strong>数据展示</strong></li>
+<li><strong>告警策略</strong></li>
+<li><strong>告警发送</strong></li>
+<li><strong>事件管理</strong></li>
+<li><strong>报表管理.</strong></li>
+<li><strong>认证权限.</strong></li>
+</ol>
+<h4 id="开源监控系统现状"><a href="#开源监控系统现状" class="headerlink" title="开源监控系统现状"></a>开源监控系统现状</h4><ol>
+<li>Nagios.<ul>
+<li>1999年发布的初始版本。它可以监控网络、主机等设备。支持丰富的监控插件。用户可以根据自己的实际环境定义监控</li>
+</ul>
+</li>
+<li>Cacti.<ul>
+<li>2001年发布的。是一套基于<code>SNMP</code>和<code>RRDTool</code>的网络流量监控分析的系统</li>
+<li><strong>RRDTool</strong>: 用来处理时间序列数据的套件</li>
+<li><strong>SNMP</strong>: 简单网络管理协议</li>
+</ul>
+</li>
+<li>Ganglia</li>
+<li>Zabbix</li>
+<li>Prometheus</li>
+<li>Falcon</li>
+<li>Grafana<ul>
+<li>Grafana是可以美观的展示和分析监控数据的工具，收集数据并支持告警等功能</li>
+</ul>
+</li>
+<li>Zenoss</li>
+<li>Graphite</li>
+<li>Open-falcon …<ul>
+<li>小米公司开源的，高可用、可扩扎的开源监控解决方案</li>
+</ul>
+</li>
+</ol>
+<h4 id="监控系统可以干什么？"><a href="#监控系统可以干什么？" class="headerlink" title="监控系统可以干什么？"></a>监控系统可以干什么？</h4><ol>
+<li>KPI聚类</li>
+<li>瓶颈分析</li>
+<li>KPI异常检测、定位</li>
+<li>故障预测</li>
+<li>容量预估</li>
+</ol>
+<h4 id="Zabbix-简介"><a href="#Zabbix-简介" class="headerlink" title="Zabbix 简介"></a>Zabbix 简介</h4><blockquote>
+<p>市场上还有一款叫做<code>open-falcon</code>和zabbix类似，而且市场上也是在广泛使用，都是属于<strong>分布式监控程序</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>zabbix</strong> 是一个基于web界面的提供分布式系统监控的企业级的开源解决方案。</p>
+</blockquote>
+<blockquote>
+<p><strong>zabbix</strong> 能监视各种网络参数， 保证服务器系统的安全稳定的运行，并提供灵活的通知机制以让SA快速定位并解决存在的各种问题。</p>
+</blockquote>
+<h5 id="了解zabbix"><a href="#了解zabbix" class="headerlink" title="了解zabbix"></a>了解zabbix</h5><p>我们通过zabbix能够监控到哪些硬件资源呢？理论上说，只要是与我饿们的业务相关的硬件资源，又应该被监控。比如主机、交换机、路由器、UPS等等。但是，监控她们的额前提是能与他们进行通讯，那么问题来了，由于硬件不同，导致我们无法使用统一的方法去监控他们，这个时候就需要监控程序有一定的通用性，或者说，监控程序需要能够与多种硬件设备通讯，才能满足我们的监控需求。所以zabbix如果想要能够全面的监控这些对象，则需要能够通过各种方法与他们通讯。</p>
+<h5 id="Zabbix-的优点"><a href="#Zabbix-的优点" class="headerlink" title="Zabbix 的优点"></a>Zabbix 的优点</h5><ol>
+<li>支持自动发现服务器和网络设置</li>
+<li>支持底层自动发现</li>
+<li>分布式的监控体系和集中式的web管理</li>
+<li>支持主动监控和被动监控模式</li>
+<li>服务器支持多种操作系统：<ol>
+<li>linux</li>
+<li>solaris</li>
+<li>HP-UX</li>
+<li>AIX</li>
+<li>FreeBSD</li>
+<li>OpenBSD</li>
+<li>MAC …</li>
+</ol>
+</li>
+<li><code>Agent客户端</code>支持多种操作系统：<ol>
+<li>linux</li>
+<li>Solaris</li>
+<li>HP-UX</li>
+<li>AIX</li>
+<li>FreeBSD</li>
+<li>Windows …</li>
+</ol>
+</li>
+<li>基于SNMP、IPMI接口方式也可以 监控Agent</li>
+<li>安全的用户认证及权限配置</li>
+<li>基于WEB的管理方法，支持自由的自定义事件和邮件发送</li>
+<li>高水平的业务视图监控资源，支持日志审计、资产管理等功能</li>
+<li>支持高水平API二次开发、脚本监控、自Key定义、自动化运维整合调用</li>
+</ol>
+<h5 id="Zabbix-监控组件及流程"><a href="#Zabbix-监控组件及流程" class="headerlink" title="Zabbix 监控组件及流程"></a>Zabbix 监控组件及流程</h5><p>zabbix 主要有三大组件组成，分别是</p>
+<ol>
+<li><p><strong>Zabbix server端</strong></p>
+<ol>
+<li><code>Zabbix WEB GUI</code></li>
+<li><code>Zabbix Datebase</code></li>
+<li><code>Zabbix Server</code></li>
+</ol>
+<p><img src="C:\Users\Lenovo\AppData\Local\Temp\1576579661368.png" alt="1576579661368"></p>
+</li>
+<li><p><strong>Zabbix Proxy端</strong></p>
+</li>
+<li><p><strong>Zabbix Agent端</strong></p>
+</li>
+</ol>
+<p><img src="C:\Users\Lenovo\AppData\Local\Temp\1576579876393.png" alt="1576579876393"></p>
+<h5 id="zabbix的好处："><a href="#zabbix的好处：" class="headerlink" title="zabbix的好处："></a>zabbix的好处：</h5><p>占用资源少、可以获取CPU、内存、网卡、磁盘、日志等信息。</p>
+<p>对于无法安装客户端的设备，zabbix支持通过<code>SNMP</code>获取监控数据</p>
+<p>zabbix支持通过<code>IPMI</code>(智能平台管理接口)获取硬件的温度、风扇、硬盘、电源等</p>
+<p>#####zabbix监控系统的意义</p>
+<p>通过这些监控系统我们可以了解设备的繁忙程度、是否有异常的进程占用资源</p>
+<p>比较常见的是：通过传感器获取设备的监控信息</p>
+<h5 id="Zabbix-能监控哪些硬件资源呢？"><a href="#Zabbix-能监控哪些硬件资源呢？" class="headerlink" title="Zabbix 能监控哪些硬件资源呢？"></a>Zabbix 能监控哪些硬件资源呢？</h5><blockquote>
+<p>如果理论上说，只要与我们业务相关的硬件资源，都可以被监控。例如：主机、交换机、路由器等等。但是监控的前提是能与他们进行通讯</p>
+</blockquote>
+<h5 id="Zabbix-支持哪些通讯方式呢？"><a href="#Zabbix-支持哪些通讯方式呢？" class="headerlink" title="Zabbix 支持哪些通讯方式呢？"></a>Zabbix 支持哪些通讯方式呢？</h5><ol>
+<li><strong>Agent</strong>：通过专用的代理程序进行监控，与常见的master/agent模型类似。如果被监控对象支持对应的agent，推荐首选这种方式</li>
+<li><strong>ssh/tenet</strong>：通过远程控制协议进行通讯，比如ssh或telnet</li>
+<li><strong>SNMP</strong>:通过SNMP协议与被监控对象进行通讯，<code>SNMP</code>协议全称 Simple Network Mnaagement Protocol,被译为“简单网络管理协议”，通常来说，我们无法在路由器、交换机这种硬件上安装agent，但是这些硬件往往都支持SNMP协议、SNMP是一种比较久远的、通行的协议，大部分网络设备都支持这种协议，其实SNMP协议的工作方式也可以理解为master/agent的工作方式，只不过实在这些设备中内置了SNMP的agent而已，所以大部分网络设备都支持这种协议</li>
+<li><strong>IPMI</strong>：通过IPMI接口进行监控，我们可以通过标准的IPMI硬件接口，监控被监控对象的物理特征，比如电压、温度、风扇状态、电源状态等等</li>
+<li><strong>JMX</strong>：通过JMX进行监控，JMX全称 Java Management Extensions ，也就是Java管理扩展，监控JVM虚拟机时，使用这种方法也是非常不错的选择</li>
+</ol>
+<h5 id="Zabbix-监控流程"><a href="#Zabbix-监控流程" class="headerlink" title="Zabbix 监控流程"></a>Zabbix 监控流程</h5><h6 id="zabbix-核心组件"><a href="#zabbix-核心组件" class="headerlink" title="zabbix 核心组件"></a>zabbix 核心组件</h6><ul>
+<li><strong>zabbix agent</strong>：部署在被监控主机上，负责被监控主机的数据，并将数据发送给zabbix server</li>
+<li><strong>zabbix server</strong>：负责接收agent发送的报告信息，并且负责组织配置信息，统计信息，操作数据等</li>
+<li><strong>zabbix database</strong>：用于储存所有zabbix的配置信息、监控数据的数据库</li>
+<li><strong>zabbix web</strong>：zabbix的web界面，管理员通过web界面管理zabbix配置以及查看zabbix相关监控信息</li>
+<li><strong>zabbix proxy</strong>：可选组件，用于分布式监控环境中，zabbix proxy代表server端，完成局部区域内的信息收集，最终统一发往server端</li>
+</ul>
+<p>如下图1-1：</p>
+<p><img src="C:\Users\Lenovo\AppData\Local\Temp\1576653301515.png" alt="1576653301515"></p>
+<ul>
+<li>我们将zabbix agent 部署到被监控主机上，由agent采集数据，报告给负责控制中心主机，中心主机也就是master/agent模型中的master，负责监控的中心主机被称为zabbix serevr，zabbix server将从agent端接收到信息储存于zabbix的数据库中，我们把zabbix的数据库端称为zabbix database，如果管理员需要查看各种监控信息，则需要zabbix的GUI，zabbix的GUI是一种Web GUI，我们称之为zabbix web，zabbix web是使用PHP编写的，所以，如果想要使用zabbix web展示相关监控信息，需要依赖LAMP环境，不管 是zabbix server，或是zabbix web，他们都需要连接到zabbix database获取相关数据</li>
+</ul>
+<p>如下图1-2：</p>
+<p><img src="C:\Users\Lenovo\AppData\Local\Temp\1576654020563.png" alt="1576654020563"></p>
+<ul>
+<li>当监控规模变得庞大时，我们可能有成千上万台设备需要监控，这时我们是否需要部署多套zabbix系统进行监控呢？如果部署多套zabbix监控系统。那么监控压力就会被分摊，但是，把这些监控的对象将会被尽量平均的分配到不同的监控系统中，这个时候，我们就无法通过统一的监控入口，去监控这些对象了。虽然分摊了监控压力，但是也增加了监控工作的复杂度？其实，zabbix天生就有处理这种问题的能力，因为zabbix支持这种分布式监控，我们可以把成千上万台的监控对象分成不同的区域，每个区域中设置一台代理主机，区域内的每个监控对象的信息被agent采集，提交给代理 主机，在这个区域内，代理主机的作用就好比zabbix server，我们称为这些代理主机为zabbix proxy，zabbix proxy再将收集到的信息统一提交给真正的zabbix server处理。这样，zabbix proxy不仅分摊了zabbix server的压力，同时，我们还能够通过统一的监控入口，监控所有的对象</li>
+</ul>
+<h5 id="zabbix-工作模式"><a href="#zabbix-工作模式" class="headerlink" title="zabbix 工作模式"></a>zabbix 工作模式</h5><blockquote>
+<p> 我们都知道，agent端采集完数据主动发送给server端，这种模式我饿称之为<strong>主动模式</strong>，也就说对于agent端来说是主动的。</p>
+</blockquote>
+<blockquote>
+<p>其实，agent端也可以不主动发送数据，而是等待server过来拉取数据，这种模式我们叫<strong>被动模式</strong></p>
+</blockquote>
+<blockquote>
+<p>其实不管是主动模式还是被动模式，都是对于agent端来说的。而且，主动模式与被动模式可以同时存在，并不冲突。</p>
+<p>管理员可以在agent端使用一个名为<code>zabbix_sender</code>的工具，测试是否能够从server端发送数据。</p>
+<p>管理员也可以在server端使用一个名为<code>zabbix_get</code>的工具，测试是否能从agent端拉取数据</p>
+</blockquote>
+<h4 id="Zabbix-服务器搭建部署"><a href="#Zabbix-服务器搭建部署" class="headerlink" title="Zabbix 服务器搭建部署"></a>Zabbix 服务器搭建部署</h4><h5 id="安装描述"><a href="#安装描述" class="headerlink" title="安装描述"></a>安装描述</h5><p>简单地概念刚刚已经描述过，zabbix的几个常用的重要组件，在安装zabbix时，其实是在安装这些组件。</p>
+<p>由于我们的监控规模也不大，所以此处将不会安装zabbix proxy ，我们需要安装如下组件：</p>
+<ol>
+<li><strong>Zabbix server</strong></li>
+<li><strong>Zabbix database</strong></li>
+<li><strong>Zabbix web</strong></li>
+<li><strong>Zabbix agent</strong></li>
+</ol>
+<p>好了，接下来一个一个聊</p>
+<p>安装的<code>zabbix server</code>版本为<code>3.0</code></p>
+<p>因为zabbix3.X依赖的php版本 不能低于php5.4，而在centos6.8中，php默认版本为5.3</p>
+<p>如果你想要使用centos6.X的操作系统。同时想要更加方便的升级php，可以使用Remi源升级PHP，</p>
+<p>但是为了更加方便的使用yum源安装相关软件包，此处使用centos7安装<code>zabbix3.0.7</code></p>
+<h5 id="安装-zabbix-server"><a href="#安装-zabbix-server" class="headerlink" title="安装 zabbix server"></a>安装 zabbix server</h5><p>为了方便安装，配置zabbix的官方yum源</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://repo.zabbix.com/</span><br></pre></td></tr></table></figure>
+<p><img src="C:\Users\Lenovo\AppData\Local\Temp\1576671582254.png" alt="1576671582254">我们配置一下zabbix3.0的yum源</p>
+<p><img src=".\1577188749508.png" alt="1576672159548"></p>
+<p>首先进入<code>/ect/yum.repo.d/</code>文件夹</p>
+<p>查看一下 是否有<code>zabbix.repo</code>，如果没有创建一个并编写，如下图格式</p>
+<p><img src=".\1577189089487.png" alt="1576672281247"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[zabbix]</span><br><span class="line">name=zabbix</span><br><span class="line">baseurl=http://repo.zabbix.com/zabbix/3.0/rhel/7/x86_64/</span><br><span class="line">gpgcheck=0</span><br><span class="line">enabled=1</span><br></pre></td></tr></table></figure>
+<p>同时，我们配置了<strong>base</strong>源与<strong>epel</strong>源，因为安装过程中会用到这些yum源。</p>
+<p>没有配置好的话，会报出如下图的错：</p>
+<p><img src=".\1577235080635.png" alt="1577235080635"></p>
+<p>所以在下载之前，先配置好base源和epel源</p>
+<p>这里选择的是redhat7下x86_64的zabbix3.0版本的包。但是安装zabbix-server-mysql时报错，原因是缺少libiksemel.so.3()(64bit)和fping包。这是因为yum安装zabbix不仅需要配置zabbix包源，还需要配置好epel源和base源，base源我们有自带就不用说了。</p>
+<p>这时我们需要配置epel源</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install epel-release</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls /etc/yum.repo.d/</span><br></pre></td></tr></table></figure>
+<p>这里看到多了epel.repo这个文件，表明epel配置成功。</p>
+<p>然后我们继续安装zabbix-server-mysql</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum -y install zabbix-server-mysql</span><br><span class="line"></span><br><span class="line">错误：软件包：zabbix-server-mysql-3.0.25-1.el7.x86_64 (zabbix)</span><br><span class="line">需要：libiksemel.so.3()(64bit)</span><br></pre></td></tr></table></figure>
+<p>我们发现这里还有缺少依赖包libiksemel.so.3()(64bit)的问题。</p>
+<p>我们通过下载zabbix源来解决这个问题</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install http://repo.zabbix.com/zabbix/3.0/rhel/7/x86_64/zabbix-release-3.0-1.el7.noarch.rpm</span><br></pre></td></tr></table></figure>
+<p>最后安装zabbix-server-mysql成功 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum -y install zabbix-server-mysql zabbix-get --skip-broken</span><br><span class="line"></span><br><span class="line">已安装:</span><br><span class="line">zabbix-server-mysql.x86_64 0:3.0.25-1.el7</span><br></pre></td></tr></table></figure>
+<p>准备工作完毕，剩下的就是安装各个组件了，我们一个一个安装</p>
+<p>先安装<strong>zabbix server</strong></p>
+<p>由于我们使用mysql作为数据库，所以，在安装zabbix3.X的版本的server端时，需要安装zabbix-server-mysql包，在3.X的zabbix版本中，并没有单独的zabbix server端程序包，安装zabbix-server-mysql包即为了安装了server端包，同时，我们可以在服务器安装zabbix_get包，以便想agent端发起测试采集数据请求，所以，我们在server端安装如下;</p>
+<p><img src="/1577189265125.png" alt="1576672693413"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install zabbix-server-mysql zabbix-get</span><br></pre></td></tr></table></figure>
+<p>在安装的时候，我遇到了一个问题，</p>
+<p>密密麻麻的英文很头疼，而且好多都不认识咋办？其实也不用全都理解，全都认识，认识关键字就行。例如：You could try using –skip-broken to work around the problem ，大概意思就是 ‘你可以使用 “–skip-broken” 来解决这个问题‘，所以只需要在代码后面加上就可以了</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install zabbix-server-mysql zabbix-get --skip-broken</span><br></pre></td></tr></table></figure>
+<p>还有一种解决办法，就是更新一下你的yum，因为你的yum版本低了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y update</span><br></pre></td></tr></table></figure>
+<p>安装完成后，输入</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ql zabbix-server-mysql</span><br></pre></td></tr></table></figure>
+<p>如果出现下图这样的情况，那就是你安装失败了。需要重新安装</p>
+<p><img src=".\1577235250247.png" alt="1577235250247"></p>
+<p><img src=".\1577235296648.png" alt="1577235296648"></p>
+<p>重新安装还有可能碰到一种问题，</p>
+<p>连上你同桌的WiFi就好了，因为你的网络丝毫不给你一分薄面！</p>
+<p>之后重新下载一下就好了，出现Complete就是现在好了，如下图</p>
+<p>后面出现类似的问题，同样的方法解决就好了</p>
+<p><img src=".\1577235650800.png" alt="1577235650800"></p>
+<p>之后继续配置，输入</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ql zabbix-server-mysql</span><br></pre></td></tr></table></figure>
+<p><img src=".\1577235837540.png" alt="1576745154362"></p>
+<p>输入这行命令，看见create.sql.gz那就进入到这个文件夹</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/share/doc/zabbix-server-mysql-3.0.28</span><br></pre></td></tr></table></figure>
+<p>之后解压create.sql.gz这个压缩文件，即可获得初始化sql脚本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gunzip create.sql.gz</span><br></pre></td></tr></table></figure>
+<p>之后输入</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ll create.sql</span><br></pre></td></tr></table></figure>
+<p><img src=".\1577235977026.png" alt="1577235977026"></p>
+<p>是这样的效果，就是正确的！</p>
+<p>但是需要注意的是，此sql脚本中sql只会在对应的数据库中初始化zabbix所需要的数据库表，但是不会创建zabbix数据库，所以，创建zabbix数据库这一步骤，还是需要我们手动进行的。所以，此处我们先动手创建zabbix的数据库，过程如下：</p>
+<p>进入数据库</p>
+<p><img src=".\1577236249847.png" alt="1576746216482"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">create database zabbix charset 'utf8';</span><br><span class="line"></span><br><span class="line">grant all on zabbix.* to zabbix@'localhost' identified by '123456';</span><br><span class="line"></span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+<p>zabbix数据库初始化完成后，执行对应的sql初始化脚本，输入命令：</p>
+<p><img src=".\1577237348431.png" alt="1576746644489"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql -uroot -p -Dzabbix &lt; /usr/share/doc/zabbix-server-mysql-3.0.28/create.sql</span><br><span class="line"><span class="meta">#</span><span class="bash"> /usr/share/doc/zabbix-server-mysql-3.0.28/create.sql 对应的是你create.sql所在的地点</span></span><br></pre></td></tr></table></figure>
+<p>进入数据库，zabbix库，查看表，出现这些表，就是导入成功</p>
+<p><img src=".\1577237406737.png" alt="1577237406737"></p>
+<h5 id="配置zabbix-server端并启动"><a href="#配置zabbix-server端并启动" class="headerlink" title="配置zabbix server端并启动"></a>配置zabbix server端并启动</h5><p>server端已经安装完毕，并且数据库也已经初始化，现在我们开始配置server端，编辑zabbix server端的配置文件</p>
+<p><img src=".\1577238444017.png" alt="1576747755163"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/zabbix/zabbix_server.conf</span><br></pre></td></tr></table></figure>
+<p>此处列出我们可能会经常修改的参数，如下：</p>
+<blockquote>
+<p><code>LIstenPort=10051</code>  </p>
+<p>服务器默认端口</p>
+</blockquote>
+<blockquote>
+<p><code>SourceIP=</code></p>
+<p>通过SourceIP参数可以指定服务器的源IP，当server端㕛多个IP地址时，我们可以指定服务器端使用固定的IP于agent端进行通讯，为了安全起见，agent端会基于IP进行一定的访问控制，也就是说agent端只允许指定IP以server端的身份菜鸡被监控主机的数据，如果IP不对应，租不允许采集被监控主机的数据，所以，当server端 有多个IP时，我们可以通过SourceIP参数，指定server端 通过哪个IP采集被监控主机的数据</p>
+</blockquote>
+<blockquote>
+<p><code>LogType=file=file</code></p>
+<p>通过LogType参数，可以指定通过哪种方式记录日志，此参数可以设置为三种值，system、file、console，system表示将日志发往syslog，file表示使用指定的文件 作为日志 文件，console表示将日志发往控制台，默认为file</p>
+</blockquote>
+<blockquote>
+<p><code>LogFile=/var/log/zabbix/zabbix_server.log</code></p>
+<p>当LogType设置为file时，通过LogFile参数设置日志文件位置</p>
+</blockquote>
+<blockquote>
+<p><code>LogFileSize=0</code></p>
+<p>指明日志文件达到 多大是自动滚动，单位为MB，如果设置LogFileSize为50时，表示日志大小达到 50MB滚动一次，设置为0表示日志文件不寄回滚动，所有入职保存在一个文件中</p>
+</blockquote>
+<blockquote>
+<p><code>Debuglevel=3</code></p>
+<p>通过DebugLevel参数可以定义日志的详细程度，即为日志级别</p>
+</blockquote>
+<blockquote>
+<p><code>DBHost=localhost</code></p>
+<p>通过DBHost参数设置zabbix数据库 所在的服务器IP，由于此处zabbix于mysql安装在同一个服务器上，所以此处设置为localhost</p>
+</blockquote>
+<blockquote>
+<p><code>DBUser=zabbix</code></p>
+<p>通过DBUser指定zabbix数据库用户名</p>
+</blockquote>
+<blockquote>
+<p><code>DBPassword=</code></p>
+<p>通过DBPassword指定zabbix数据库用户的密码</p>
+</blockquote>
+<blockquote>
+<p><code>DBPort=3306</code></p>
+<p>通过DBPort指定zabbix所在数据库服务监听的端口号</p>
+</blockquote>
+<blockquote>
+<p><code>DBSocket=/var/lib/mysql/mysql.sock</code></p>
+<p>如果数据库服务于server端在同一台服务器上，可以通过DBSocket指定数据库本地套接字文件位置，但是需要注意，即使设置了mysql套接字文件的位置，还是需要配合DBHost参数，否则在登录zabbix控制台时，可能会出现警告，在zabbix server的log中，也可能会出现无法连接数据库的提示</p>
+</blockquote>
+<p>根绝上述的配置参数的解释，根据具体需求进行实际配置即可。</p>
+<p>配置完成后，启动zabbix服务端即可，输入</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">systemctl start zabbix-server.service</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输入</span></span><br><span class="line">ss -tnl</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看10051端口是否被监听</span></span><br></pre></td></tr></table></figure>
+<p>启动后,10051端口已经被监听，如下图</p>
+<p><img src=".\1577238791164.png" alt="1576807235896"></p>
+<h5 id="安装zabbix-web端"><a href="#安装zabbix-web端" class="headerlink" title="安装zabbix web端"></a>安装zabbix web端</h5><p>zabbix web 可以安装在单独的主机上，只要能连接到zabbix database所在的数据库即可。但是此处为了方便，我们将zabbix web与mysql以及 zabbix server 安装在同一台服务器上。</p>
+<p>因为 zabbix web 需要lamp环境，所以，此处我们将会依赖到的环境先安装好。</p>
+<p>代码如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install httpd php php-mysql php-mbstring php-gd php-bcmath php-ldap php-xml</span><br></pre></td></tr></table></figure>
+<p>完成上述步骤后，安装zabbix web所需要的两个包，对应版本为3.0.7.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install zabbix-web zabbix-web-mysql --skip-broken</span><br></pre></td></tr></table></figure>
+<p>查看刚才安装完成的zabbix-web程序包，可以看到，zabbix-web的web应用存放在/usr/share/zabbix中。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ql zabbix-web</span><br></pre></td></tr></table></figure>
+<p><img src=".\1577239418954.png" alt="1577239418954"></p>
+<p>zabbix还是比较贴心的，针对httpd，zabbix-web包中已经包含了对应zabbix文档路径的配置文件。</p>
+<p>输入：</p>
+<p><img src=".\1577239584104.png" alt="1577239584104"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/httpd/conf.d/zabbix.conf</span><br></pre></td></tr></table></figure>
+<p><img src=".\1577239635853.png" alt="1577239635853"></p>
+<p>以看到，针对zabbix web的文档路径，此文件中已经为我们准备了默认设置，如果不使用httpd的虚拟主机，只要把时区稍加改动即可直接使用</p>
+<p>而此处，我们使用httpd的虚拟主机访问zabbix web ，所以，将配置文件爱你中的内容改为如下配置，同时将时区修改为<code>亚洲上海</code></p>
+<p><img src=".\1577240031191.png" alt="1577233972645"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&lt;VirtualHost 39.106.84.122&gt;</span><br><span class="line">servername zabbix.zhanglei.net</span><br><span class="line">documentroot /usr/share/zabbix</span><br><span class="line"></span><br><span class="line">        Alias /zabbix /usr/share/zabbix</span><br><span class="line"></span><br><span class="line">        &lt;Directory "/usr/share/zabbix"&gt;</span><br><span class="line">                Options FollowSymLinks</span><br><span class="line">                AllowOverride None</span><br><span class="line">                Require all granted</span><br><span class="line"></span><br><span class="line">                &lt;IfModule mod_php5.c&gt;</span><br><span class="line">                        php_value max_execution_time 300</span><br><span class="line">                        php_value memory_limit 128M</span><br><span class="line">                        php_value post_max_size 16M</span><br><span class="line">                        php_value upload_max_filesize 2M</span><br><span class="line">                        php_value max_input_time 300</span><br><span class="line">                        php_value max_input_vars 10000</span><br><span class="line">                        php_value always_populate_raw_post_data -1</span><br><span class="line">                        php_value date.timezone Asia/Shanghai</span><br><span class="line">                &lt;/IfModule&gt;</span><br><span class="line">        &lt;/Directory&gt;</span><br><span class="line">        </span><br><span class="line">        &lt;Directory "/usr/share/zabbix/conf"&gt;</span><br><span class="line">                Require all denied</span><br><span class="line">        &lt;/Directory&gt;</span><br><span class="line"></span><br><span class="line">        &lt;Directory "/usr/share/zabbix/app"&gt; </span><br><span class="line">                Require all denied</span><br><span class="line">        &lt;/Directory&gt; </span><br><span class="line"></span><br><span class="line">        &lt;Directory "/usr/share/zabbix/include"&gt; </span><br><span class="line">                Require all denied</span><br><span class="line">        &lt;/Directory&gt;</span><br><span class="line">    </span><br><span class="line">        &lt;Directory "/usr/share/zabbix/local"&gt;</span><br><span class="line">                Require all denied</span><br><span class="line">        &lt;/Directory&gt;</span><br><span class="line"></span><br><span class="line">&lt;/VirtualHost&gt;</span><br></pre></td></tr></table></figure>
+<p>配置为完成后，启动httpd服务。</p>
+<p><img src=".\1577240159396.png" alt="1577240159396"></p>
+<p>好了，zabbix web安装配置完成</p>
+<p>访问 服务器IP/zabbix，就可以看到如下图的zabbix安装页面</p>
+<p>配置好之后，别忘记把把<code>/usr/share/zabbix</code>复制到<code>/var/www/html</code>里面</p>
+<p>之后，IP/zabbix/setup.php访问即可，就可出现如下图的样子。</p>
+<p><img src=".\1577246280547.png" alt="1577246143181"></p>
+<h5 id="初始化zabbix-配置"><a href="#初始化zabbix-配置" class="headerlink" title="初始化zabbix 配置"></a>初始化zabbix 配置</h5><p>完成上述安装步骤后就可以看到zabbix安装页面。点击下一步</p>
+<p>不出意外的话，你们也会这样。哈哈哈</p>
+<p><img src=".\1577246345326.png" alt="1577246345326"></p>
+<p>按照错误的这四个参数。修改/etc/php.ini文件中的配置就行</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim <span class="regexp">/etc/</span>php.ini</span><br></pre></td></tr></table></figure>
+<p><code>post_max_size=16M</code></p>
+<p> <code>max_execution_time=300</code></p>
+<p> <code>max_input_time=300</code></p>
+<p> <code>date.timezone =Asia/Shanghai</code></p>
+<p>找到这四个，直接把配置改了就好，和我的一样就行。</p>
+<p>如果嫌找的麻烦，直接搜索，输入‘/’</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/你想搜索的关键字，或者全拼</span><br></pre></td></tr></table></figure>
+<p>改好之后重新启动下服务</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">systemctl</span> <span class="selector-tag">restart</span> <span class="selector-tag">httpd</span><span class="selector-class">.service</span></span><br></pre></td></tr></table></figure>
+<p>之后再重新加载下页面，就会像如下图：</p>
+<p><img src=".\1577253128156.png" alt="1576830128835"></p>
+<p>可以看到，zabbix检查的环境已经全部满足，所以点击下一步！</p>
+<p><img src=".\1577253184977.png" alt="1576830195924"></p>
+<p>此处zabbix需要配置数据库连接，此处配置数据库的类型，IP，端口，数据库名，用户密码等信息，端口填写0表示使用默认端口(3306端口)</p>
+<p>请确定概要信息无误，点击下一步</p>
+<p><img src=".\1577255155455.png" alt="1577255082305"></p>
+<p><img src=".\1577255204397.png" alt="1577255204397"></p>
+<p><img src=".\1577255235198.png" alt="1577255235198"></p>
+<p>之后，就会进入登录页面，默认账号admin，密码zabbix</p>
+<p><img src=".\1577255289782.png" alt="1577255289782"></p>
+<p>登录完成后，可以看到zabbix的仪表盘</p>
+<p><img src=".\1577255350824.png" alt="1577071638902"></p>
+<p>全是英文，作为一个爱国的知识青年，肯定看不爽，所以 ，我们可以把它调成中文版</p>
+<p><img src=".\1577255416702.png" alt="1577071691484"></p>
+<p>语言选择中文，点击 更新即可，蛋黄思思你可能无法在语言中看到中文的选项，如果无法找到中文选项，则代表你的配置文件中的中文选项显示属性为false</p>
+<p><img src=".\1577255448186.png" alt="1577071800394"></p>
+<p>当然了，如果你没有这项选择，那么你可以修改下如下文件</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /usr/share/zabbix/include/locales<span class="selector-class">.ini</span><span class="selector-class">.php</span></span><br></pre></td></tr></table></figure>
+<p><img src=".\1577255626516.png" alt="1577071978581"></p>
+<p>找到中文对应的值，将显示属性设置为true即可，如上图所示</p>
+<p>但是，你可能还会遇到中文乱码情况，如果遇到中文乱码，可以从Windows中挑选一个顺眼的中文字体，将对应字体放置到inux中 zabbix web的字体目录中，因为我们使用的是rpm包安装的zabbix web，所以zabbix web默认字体目录为 /usr/share/zabbix/fonts/，Windows中的字体文件后缀名如果为TTF，当我们把对应字体文件拷贝到zabbix字体目录是，需要修改其后缀名为小写的ttf（如果本来就是小写的则不用任何修改了），字体文件上传完毕后，修改/usr/share/zabbix/include/defines.inc.php配置文件，将下图中显示字体部分修改为刚才上传的字体文件对应的名称即可。</p>
+<p>好了，上述操作完成后，zabbix控制台即显示中文了。</p>
+<p>但是你可能会在访问zabbix控制台时，可能会发现如下提示：</p>
+<p><img src=".\1577255896543.png" alt="1577255896543"></p>
+<p>如果出现图中的提示，可能是由如下几个原因引起的：</p>
+<p>1、zabbix-server未正常启动</p>
+<p>2、已经开启selinux，但是没有正常设置对应权限</p>
+<p>3、zabbix-server未能正常连接数据库</p>
+<p>4、zabbix.conf.php文件中$ZBX_SERVER参数对应的主机名不能正常解析</p>
+<p>5、其他原因，需要查看zabbix server 日志</p>
+<p>如果在访问zabbix控制台时并没有出现上述提示，忽略上述描述即可。</p>
+<p>为了更加安全，我们不应该使用管理员的默认密码，所以，我们最好先修改管理员密码</p>
+<p><img src=".\1577256061549.png" alt="1577073009933"></p>
+<p><img src=".\1577256113248.png" alt="1577073042611"></p>
+<p>好了。基本配置已经配置完成了，我们以后的监控工作就要围绕着这个web界面展开了！</p>
+<h5 id="Zaabix-agent-安装"><a href="#Zaabix-agent-安装" class="headerlink" title="Zaabix agent 安装"></a>Zaabix agent 安装</h5><p>现在万事具备，就差agent端了，agent端安装也非常方便，直接<strong>被监控主机</strong>上安装如下两个包即可。</p>
+<p><code>当然了，在安装之前，指定要把上面的准备工作全都做好，否则会出错的哦！</code></p>
+<p>此处被管理主机 centos7，已经配置好了对应的zabbix源，agent版本可以跟server端版本  不一致，没有关系，安装即可</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y zabbix-agent zabbix-sender</span><br></pre></td></tr></table></figure>
+<p>我们查看一下zabbix-agent都安装了什么文件，当然，最重要的就是zabbix_agentd.conf这个配置文件了</p>
+<p><img src=".\1577256337395.png" alt="1577073489994"></p>
+<p>还记得我们在刚开始介绍zabbix时说过“主动模式”与“被动模式”吗？这两种模式的相关配置，都需要在zabbix_agentd.conf中定义，打开这个文件，我们来配置一下常用的agent端配置。首先，可以看到配置文件中有很多注释，打开配置文件，首先看到的就是”通用参数配置段”，我们可以在此配置段配置zabbix_agent进程的进程编号文件路径，存储日志方式，日志文件位置，日志滚动阈值等常用设定，细心如你一定已经发现，zabbix_agent配置文件的”通用配置段”中的参数大多数与zabbix_server配置文件中的常用参数意义相同，所以，此处不再过多赘述，如果没有特殊需要，保持默认即可。 </p>
+<p><img src=".\1577272480659.png" alt="1577087246148"></p>
+<p>此处先说说我们马上会用到的两个配置，如下图红框中的注释所描述的，“被动模式配置段”与“主动模式配置段”</p>
+<p><img src=".\1577273106840.png" alt="1577273106840"></p>
+<p><img src=".\1577273063509.png" alt="1577087246148"></p>
+<p>我们已经在最开始的概念介绍中，描述过，“主动模式”和“被动模式”都是对于agent端来说的，而且它们可以同时存在，，并不冲突。</p>
+<p>我们先来看看“被动模式”的相关配置参数。</p>
+<p>被动模式相关参数如下：</p>
+<p>Sserver：用于指定允许哪台服务器拉去当前服务器的数据，当agent端工作于被动模式，则代表server端会主动拉取agent端数据，那么server端的IP必须与此参数的IP对应，此参数用于实现基于IP的访问控制，如果有多个IP，可以使用逗号隔开。</p>
+<p>ListenPort：用于指定当agent端工作于被动模式所监听的端口号，默认端口号10050，也就是说，server端默认访问10050端口，从而拉取数据。</p>
+<p>ListenIP：用于指定agent端工作于被动模式时所监听的IP地址，默认值为0.0.0.0，表示监听本机的所有IP地址。</p>
+<p>StartAgents：用于指定预生成的agent进程数量。</p>
+<p>主动模式</p>
+<p>主动模式的常用参数如下：</p>
+<p>ServerActive：此参数用于指定当agent端工作于主动模式时，将信息主动推送到哪台server上，当时有多个IP时，可以用逗号隔开。</p>
+<p>Hostname：此参数用于指定当前主机的主机名，server端通过此参数对应的主机名识别当前主机。</p>
+<p>RefreshActiveChescks：此参数用于指明agent端没多少秒主动将采集到的数据发往server端。</p>
+<p>此处，我们同时设置“被动模式”与“主动模式”的如下参数，其他保持默认即可，修改完成后保存退出。</p>
+<p>Server=47.96.230.50</p>
+<p>ServerActive=47.96.230.50</p>
+<p>Hostname=testzbx1.zsythink.net</p>
+<p>配置文件修改完成后，启动agent端进程</p>
+<p><img src=".\1577273181431.png" alt="1577088553130"></p>
+<p>好了，agent端也已经安装好了！</p>
+<h4 id="在-Zabbix-中添加主机"><a href="#在-Zabbix-中添加主机" class="headerlink" title="在 Zabbix 中添加主机"></a>在 Zabbix 中添加主机</h4><p>在添加主机之前，我们先把工作场景描述清楚。然后再根据描述的工作场景进行演示</p>
+<p>假设，我们想要使用zabbix监控一台linux服务器，那么，我们肯定要将这个服务器纳入zabbix的管理范围，而“添加主机”这个操作，就是将被监控的主机纳入zabbix管理范围的一个必须操作，如果我们有10台主机都需要呗zabbix监控呢？没错，这10台主机必须被添加到zabbix的监控列表中，在zabbix中，我们将被监控的对象称为“主机”，“主机”不一定是服务器，也可以是<code>路由器</code>，<code>交换机</code>等网络设备，而且，根据主机的属性、角色、特征的不同，我们还能够将主机分组。</p>
+<p>比如，我们有10台服务器，10台服务器中，有3台window服务器，有7台linux服务器，那么，我们还可以按照操作系统的不同，将他们分成两组，Windows服务器组于linux服务器组，或者我们不按照操作系统对主机进行分组，而是根据服务器的角色对主机分组。</p>
+<p>比如，一共10台服务器，3台是是提供ldap服务的，2台是提供web服务的，5台是提供数据库服务的，我们也可以把他们按照角色分成3组，ladp主机组、web主机组、db主机组，当然，我们也只是举个例子。</p>
+<p>实际应用中，具体怎样分组，是根据实际需求视情况而定的，那么，为什么要将主机分组呢？这是为了方便管理，因为同一类主机需要被监控的指标很有可能 都是相同的，所以将他们分为一组方便管理，当然了，这就是后话，我们后面再聊！</p>
+<p>上面一段话中，我们提到了两个zabbix的常用术语，“主机”与“主机组”，我们再来总结一遍：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1、host（主机）：需要zabbix监控的对象，被称为主机，主机必须属于某个主机组。</span><br><span class="line"></span><br><span class="line">2、hostgroup（主机组）：“主机组”也被称为“主机群组”，是由具有相同属性、特征、角色的多个主机组成的逻辑单元。</span><br></pre></td></tr></table></figure>
+<p>理解 上述两个术语，并且能够在zabbix中使用他们，就是我们所要达到的目的。</p>
+<p>那么我们来看看怎样在zabbix添加一台主机，在动手添加主机之前。先说明下我们的环境。</p>
+<p>我们已经将zabbix-server、zabbix-database、zabbix-web安装在了39.106.84.122上。</p>
+<p>同时，我们将zabbix-agent安装在了47.97.172.176上。</p>
+<p>所以此处，47.97.172.176就是被监控的对象 ，我们需要将176添加为zabbix主机。</p>
+<p>首先呢，打开我们的zabbix web 控制台，看看都有那些“主机组”。</p>
+<p>点击“配置“—-”主机群组“，可以看到，系统默认已经为我们准备了一些主机组，如果这些主机组不满足我们的需要，我们也可以创建新的主机组</p>
+<p>点击下图中的“创建主机群组”按钮，即可创建主机组，但是，我们还不用深入研究主机组，此处只是让大家了解一下，对主机有一个初步的认识。</p>
+<p><img src=".\1577320713453.png" alt="1577320713453"></p>
+<p>同样，点击<code>配置</code>—–<code>主机</code>，即可查看已经被加入zabbix主机列表的主机，可以看到，zabbix默认将zabbix server添加为了一台主机，以便 可以自己监控自己，但是此处，我们需要添加一台我们自己的主机，就是47.97.172.176，</p>
+<p>点击<code>创建主机</code>，点击创建主机之前，可以选择左侧的<code>群组</code>下来菜单，以确定将要创建的主机所在的主机组，当然，我们也可以先不选主机组，直接点击<code>创建主机</code>按钮。</p>
+<p><img src=".\1577322582225.png" alt="1577322582225"></p>
+<p>点击<code>创建主机</code>按钮之后，即可看见类似如下界面，为了更好的描述每个步骤，具体解释参靠下图后面的注释列表。</p>
+<p><img src=".\1577322873679.png" alt="1577322873679"></p>
+<p><code>1</code>、我们可以在主机名的文本框中填写被监控主机的主机名称。</p>
+<p><code>2</code>、<strong>可见名称</strong>一般使用剪短的、易读的、见名知义的名称表示主机即可。</p>
+<p><code>3</code>、我们可以选择将要创建的主机属于哪个主机组，当然，如果没有合适的主机组，我们也可以直接在创建主机时，直接创建新的主机组，我上面说过，每个主机必须存在于某个主机组中，所以，主机组是必须的</p>
+<p><code>4</code>、如果在三的<code>3</code>的位置上没有对应的、可用的、合适的主机组，我们可以直接在<strong>新的群组</strong>中创建当前主机需要的主机组。</p>
+<p><code>5</code>、选择通过哪种接口监控当前主机，可选的方式有IPMI接口、JMX接口、SNMP接口、agent接口，我们说过，”主机”在zabbix中，可以是服务器，路由器，交换机等等硬件设备，有的硬件设备只支持某种接口，所以，当我们添加主机时，会让我们选择通过哪种合适的接口监控它，具体各接口的适用场景我们已经在第一篇介绍zabbix概念的文章中描述过，此处不再赘述，当然，如果一台主机能被多种接口所监控，也可以同时配置多个接口监控这台主机，但是当前，我们需要监控的主机是一台Linux服务器，而且已经安装了对应的agent端，所以，此处，我们只使用agent接口对当前主机进行监控，而使用agent接口时，可以通过IP连接到对应agent，也可以使用主机名连接到对应agent，而此处，我们选择使用IP地址连接到对应的agent，IP地址就是我们将要添加的主机的IP，47.97.172.176  ，对应端口为默认的10050，如果你想要使用主机名连接到对应的agent，那么需要保证主机名能够被正常解析到47.97.172.176上，此处不再赘述，如果有多个IP可以连接到对应agent，可以点击”添加”，添加一条新的IP。 </p>
+<p><code>6</code>、对将要添加的主机进行描述，添加响应的描述信息即可。</p>
+<p><code>7</code>、表示是否使用zabbix proxy监控当前主机，虽然上图中。此处翻译为“由agent代理程序检测”，但是实际是用于指定zabbix proxy的，与zabbix agent并没有关系，但是因为我们没有配置zabbix_proxy，所以此处保持默认即可</p>
+<p>好了，按照上述界面中的配置进行设置以后，点击”添加”按钮，即可简单的添加一台主机，可以看到，47.97.172.176已经被添加到了主机列表中。 </p>
+<p><img src=".\1577323895393.png" alt="1577323895393"></p>
+<p>而且，如果此时我们再次查看主机组，已经发现，TestHosts主机组已经被添加了，而且其中的成员已经包含了testzbx1主机。 </p>
+<p><img src=".\1577324037183.png" alt="1577324037183"></p>
+<p>回到主机列表，可以看到我们刚才添加的testzbx1主机，但是testzbx1主机的”可用性”对应的4中接口都是灰色的。 </p>
+<p><img src=".\1577324150680.png" alt="1577324150680"></p>
+<p><img src=".\1577324218152.png" alt="1577324218152"></p>
+<p>第二个图我们可以看见，何金存的主机已经成功的卑微监控了，</p>
+<p>上图中，而ZBX就代表agent接口，虽然我们在添加主机时，配置了通过agent监控对应主机，但是，由于我们并没有配置监控主机的任何指标，所以，ZBX仍然是灰色的，也就是说，我们现在只是将192.168.1.107加入了zabbix的监控范围，但是并没有对它进行任何实际的监控，因为我们还没有配置任何”监控项”，至于怎样配置监控项，且听下回分解。 </p>
+<h4 id="在Zabbix中添加监控项"><a href="#在Zabbix中添加监控项" class="headerlink" title="在Zabbix中添加监控项"></a>在Zabbix中添加监控项</h4><p>上面呢已经描述了zabbix添加主机，但是，我们还并没有对主机进行任何指标的实际监控那么现在，我们就来说说，具体怎样监控我们想要监控的指标。</p>
+<p>首先，打开我们zabbix控制台，点击<code>配置</code>—<code>主机</code>，可以看到我们上次创建的主机，虽然我们为对应的被监控主机安装了agent，但是主机对应的ZBX仍然显示灰色，代表我们还没有任何监控项被检测到，那么现在，我们来为“何金存”主机添加一个监控项。</p>
+<p><img src="/img/1577330551358.png" alt="1577330551358"></p>
+<p>点击“王炎”主机上的<code>监控项</code>，如下图所示位置。</p>
+<p><img src="./img/1577330697290.png" alt="1577330697290"></p>
+<p>进入监控项配置界面后，可以根据一些条件，筛选出已经存在的一些控制项，但是我们并没有任何监控项，所以此处 ，我们直接点击<code>创建监控项</code>按钮。以便新建监控项。</p>
+<p><img src="./img/1577330817857.png" alt="1577330817857"></p>
+<p>假如，现在我们想要监控“何金存”这台主机的CPU的上下文切换此处，那么我们可以在此界面进行如下配置</p>
+<p><img src="./img/1577330929623.png" alt="1577330929623"></p>
+<p>首先，在名称文本框中设置监控项的名称，我们此处监控的指标cpu上下文切换次数，所以，命名次监控项为“cpu context swiyches”</p>
+<p>因为我们在“何金存”这台主机上安装了zabbix agent，所以，此处类型保持默认，选择zabbix客户端。</p>
+<p>在键值一栏中，我们可以选择对应的key，也就是说，我们通过哪个key，这些key都是zabbix自带的key，这些key一般都是系统级别的通用的监控项所能够用到的key，如果这些“键”不能满足我们的需求，我们则需要自定义key，这是后话，后面再聊，此处，我们选择system/cpu.switches</p>
+<p><img src="./img/1577331010819.png" alt="1577331010819"></p>
+<p><img src="./img/1577331030747.png" alt="1577331030747"></p>
+<p><img src="./img/1577331048400.png" alt="1577331048400"></p>
+<p><img src="./img/1577331062325.png" alt="1577331062325"></p>
+<p><img src="./img/1577331117868.png" alt="1577331117868"></p>
+<p>选择完可以看见，key的值已经自动填充到了“键值”的文本框中</p>
+<p><img src="C:\Users\Lenovo\AppData\Local\Temp\1577331507814.png" alt="1577331507814"></p>
+<p>说到这，我们可以通过命令行，来看下对应的“键”返回信息到底是什么样子的？</p>
+<p>之前的我介绍过zabbix概念是已经说过：管理员可以在server端使用另一个名为zabbix_get的工具，测试是否能够从agent端拉取数据。</p>
+<p><img src="./img/1577340453222.png" alt="1577340453222"></p>
+<p>我们就是通过agent接口监控数据的，agent监听在10050端口上，此处保持默认即可。</p>
+<p>而我们刚才也看到了，通过zabbix_get获取到的system.cpu.switches的数据，都是一些十进制的整数，所以，信息类型选择数字，数据类型选择十进制。</p>
+<p>数据更新间隔表示每个多长时间获取一次监控项对应的数据，为了演示方便，能尽快获取到数据，我们设定位每隔30秒获取一次监控信息，此处表示每隔30秒获取一次47.97.172.176主机的cpu上下文切换次数 ，但是需要注意，在生产环境中，如果不是特别重要的、敏感的、迅速变化的数据，不要获取的这么频繁，因为如果我们的监控项变得特别多时，获取信息的时间间隔过于频繁会带来巨大的监控压力，同时对数据库的写入也是一种考验。</p>
+<p>当然，我们也可以灵活的定义时间间隔，比如，周一到周五我们的业务量比较少，可以10分钟获取一次数据，而周六周日的业务量会剧增，为了实时监控，可以设置5分钟获取一次数据，这里只是举个例子，如果有类似的需求，可以通过“自定义事件间隔”配置段，添加不同时间段的不同检测频率。</p>
+<p><img src="./img/1577341079573.png" alt="1577341079573"></p>
+<p>因为我们每隔30秒就获取一次数据，那么这些数据都会变成历史，存入数据库中，通过上图中的开始数据文本框，可以设置历史数据的保存时长。</p>
+<p>上图中，我们设置历史数据保存8天，趋势数据是什么意思呢？趋势数据就是每个小时收集到历史数。</p>
+<p>从上图中，还可以看到有一个趋势数据保存天数，趋势数据是什么意思呢？趋势数据就是每个小时收集到的历史数据中的最大值、最小值，平均值以及每个小时收集的到的历史数据的数据量，所以，趋势数据每小时收集一次，数据量不会特别大，一般情况下，历史数据的保留时间都比趋势数据保留时间短很多，因为历史数据比较多，如果我们监控的主机非常多，而且监控的频率 特别频繁，那么数据库的压力则会变得非常大。</p>
+<p>继续往下看，可以看到储存值于查看两个下拉框。</p>
+<p><img src="./img/1577341472464.png" alt="1577341472464"></p>
+<p>我们点开储存值下拉框，可以看到三个选项，不变、差量（每秒频率）、差量（简单变化）</p>
+<p><img src="./img/1577341562547.png" alt="1577341562547"></p>
+<p>那么这些值都是什么意思呢？</p>
+<p><code>不变</code>：表示获取到的值是什么样子的，就在数据库中存储为什么样子。</p>
+<p><code>差量（简单变化）</code>：表示本次收集的信息值 减去 上一次收集到的信息值 得出的差值</p>
+<p><code>差量（每秒速率）</code>：表示本次收集到的值 减去 上次收集到的值以后，再除于两次收集信息的间隔时间。</p>
+<p>而此处，我们监控的指标为cpu上下文切换次数，这是一个不断增长的整数值，所以，我们选择<strong>差量（每秒速率）</strong>最合适</p>
+<p>这样发=我们就能 够监控到不同时间段内cpu上下文切换的频率了。</p>
+<p>那么查看值 是什么意思呢？查看值可以改变监控数据的展示方式，以便监控人员更容易理解，此处我们保持默认即可，在实际用到是我们在做解释。</p>
+<p><img src="./img/1577341940128.png" alt="1577341940128"></p>
+<p>新的应用集  与  应用集  是什么意思呢？</p>
+<p><img src="./img/1577341996936.png" alt="1577341996936"></p>
+<p>我们可以把“应用集”理解为同一类型的监控项的集合，“应用集”英文原词为application，application为一组item（监控项）的集合，比如，我们有3个监控项，他们分别监控“磁盘使用率”，“磁盘写入速率”，“磁盘读取速率”，虽然他们监控指标不同，但是他们都是监控“磁盘”的监控项 ，所以，我们可以把他们归类为“磁盘”应用集，同理，如果有2个监控项，一个是监控nginx连接数量的，一个是监控nginx请求数量的，虽然他们监控的指标不同，但是他们都是监控nginx相关指标的，所以，我们可以把他们归为nginx应用集。</p>
+<p>但是，由于我们没有创建过任何应用集，所以上图中，应用集选择框中没有任何可选择应用集，如果没有可选的合适的应用集，我们可以直接在“新的应用”文本框中填入要创建的应用集名称，那么对应应用集会自动被创建当前监控项 也会自动归类为这个应用集。</p>
+<p><img src="./img/1577342433074.png" alt="1577342433074"></p>
+<p>继续聊，”填入主机资产纪录栏位”我们后面再聊。 </p>
+<p>描述信息栏填写关于这个监控项的相关描述。 </p>
+<p>“已启用”默认被勾选，表示此监控项被创建后，立即生效，即创建此监控项后立即开始监控。 </p>
+<p>好了，监控项的配置我们已经解释的七七八八了，示例配置如下，点击添加按钮, 注：为了更快的获取演示效果，此处将数据更新间隔设置为5秒，但是生产环境中请仔细考虑具体设置为多少秒比较适合生产环境的需求。 </p>
+<p><img src="./img/1577349633413.png" alt="1577349633413"></p>
+<p><img src="./img/1577342566211.png" alt="1577342566211"></p>
+<p>点击添加按钮以后，可以看到，何金存主机的第一个监控项已经被添加，而且处于已用状态。</p>
+<p><img src="./img/1577342709516.png" alt="1577342709516"></p>
+<p>点击监控项旁边的“应用集”</p>
+<p><img src="./img/1577342794093.png" alt="1577342794093"></p>
+<p>可以看到，应用集中已经存在了cpu应用集，而且这个应用集中已经存在一个监控项，就是我们刚才创建的”cpu context switches”监控项。 </p>
+<p><img src="./img/1577343339745.png" alt="1577343339745"></p>
+<p>从对应的主机组中找到对应的主机，</p>
+<p><img src="./img/1577344402324.png" alt="1577344402324"></p>
+<p>点击过滤按钮之后，应该可以看到我们刚才创建的监控项，已经存在了部分数据，如果你刚刚创建完监控项，不要着急立马查看“监控项”数据，因为他可能需要一段时间收集数据。</p>
+<p>但是，如果超出正常收集数据的时间后，很长时间以内仍然无法收集到数据，那么有可能 是因为agent端与server端时间不同步引起的，请确定你的agent端与server端的时间是同步的。</p>
+<p>过程中出现了一个问题</p>
+<p><img src="./img/1577348901660.png" alt="1577348901660"></p>
+<p><img src="./img/1577348933997.png" alt="1577348933997"></p>
+<p>这个问题，检查两处，如果其他问题也是首先想这两处。</p>
+<p>1、防火墙是否关闭</p>
+<p>2、进入/etc/zabbix/zabbix_agentd.conf配置文件，找到<code>Server</code>，把“127.0.0.1”改成监控服务器IP</p>
+<p><img src="./img/1577349156980.png" alt="1577349156980"></p>
+<p>好，接着往下看啊</p>
+<p>可以看到，“cpu context switches”这个监控项已经存在数据，我们点击对应的“图形”连接</p>
+<p><img src="./img/1577349426989.png" alt="1577349426989"></p>
+<p>点击上图中的<code>图形</code>连接，可以看到如下界面，zabbix已经监控到了对应的cpu上下文切换频率，并且绘制出了对应的“图形”</p>
+<p><img src="./img/1577351286152.png" alt="1577351286152"></p>
+<p>如果没有图形就按照下图来操作即可。操作完之后还是没有图形，那就是没数据。</p>
+<p><img src="./img/1577349916527.png" alt="1577349916527"></p>
+<p><img src="./img/1577349869444.png" alt="1577349869444"></p>
+<p><img src="./img/1577349793762.png" alt="1577349793762"></p>
+<p>我们已经为主机添加了第一个监控项，并且已经成功监控到了对应的数据，好了，我们已经入门了。 </p>
+<p>本文参考网站  –  <a href="http://www.zsythink.net/archives/447" target="_blank" rel="noopener">http://www.zsythink.net/archives/447</a> </p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

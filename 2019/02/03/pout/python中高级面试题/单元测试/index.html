@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        单元测试 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#定义"><span class="toc-text">定义</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#具体操作"><span class="toc-text">具体操作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#python3的单元测试模块mock与性能测试模块cProfile"><span class="toc-text">python3的单元测试模块mock与性能测试模块cProfile</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        单元测试
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-02-03 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#python中高级面试题" title="python中高级面试题">python中高级面试题</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>传统测试无非就是自己运行一下程序查看结果，或者前后端服务进行联调，这里要说的是走正规流程的单元测试，那到底什么是单元测试呢？顾名思义，只测试当前单元的程序或者代码，也可以理解当前模块的代码块，单元测试假设所有的内部或外部的依赖应该是稳定的, 已经在别处进行测试过的.使用mock 就可以对外部依赖组件实现进行模拟并且替换掉, 从而使得单元测试将焦点只放在当前的单元功能。</p>
+<p>简单地说，mock就是帮我们解决测试依赖的一个模块，在Python3中，mock已经被集成到了unittest单元测试框架中，所以不需要单独安装，可以直接使用。</p>
+<h1 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h1><h1 id="python3的单元测试模块mock与性能测试模块cProfile"><a href="#python3的单元测试模块mock与性能测试模块cProfile" class="headerlink" title="python3的单元测试模块mock与性能测试模块cProfile"></a>python3的单元测试模块mock与性能测试模块cProfile</h1><p>​    我们知道写完了代码需要自己跑一跑进行测试，一个写好的程序如果连测试都没有就上到生产环境是不敢想象的，这么做的人不是太自信就是太无知。</p>
+<p>​    传统测试无非就是自己运行一下程序查看结果，或者前后端服务进行联调，这里要说的是走正规流程的单元测试，那到底什么是单元测试呢？顾名思义，只测试当前单元的程序或者代码，也可以理解当前模块的代码块，单元测试假设所有的内部或外部的依赖应该是稳定的, 已经在别处进行测试过的.使用mock 就可以对外部依赖组件实现进行模拟并且替换掉, 从而使得单元测试将焦点只放在当前的单元功能。</p>
+<p>​    简单地说，mock就是帮我们解决测试依赖的一个模块，在Python3中，mock已经被集成到了unittest单元测试框架中，所以不需要单独安装，可以直接使用。</p>
+<p>​    什么情况下使用mock<br>    在项目的单元测试过程中，会遇到：<br>    1、接口的依赖<br>    2、外部接口调用<br>    3、测试环境非常复杂</p>
+<p>​    代码示例：</p>
+<p>​    </p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_and_multiply</span><span class="params">(x, y)</span></span><span class="symbol">:</span></span><br><span class="line">    addition = x + y</span><br><span class="line">    multiple = multiply(x, y)</span><br><span class="line">    <span class="keyword">return</span> (addition, multiple)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">multiply</span><span class="params">(x, y)</span></span><span class="symbol">:</span></span><br><span class="line">    <span class="keyword">return</span> x * y</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyTestCase</span>(<span class="title">unittest</span>.<span class="title">TestCase</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">test_add_and_multiply</span><span class="params">(<span class="keyword">self</span>)</span></span><span class="symbol">:</span></span><br><span class="line">        x = <span class="number">3</span></span><br><span class="line">        y = <span class="number">5</span></span><br><span class="line">        addition, multiple = add_and_multiply(x, y)</span><br><span class="line">        <span class="keyword">self</span>.assertEqual(<span class="number">8</span>, addition)</span><br><span class="line">        <span class="keyword">self</span>.assertEqual(<span class="number">15</span>, multiple)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name_<span class="number">_</span> == <span class="string">"__main__"</span><span class="symbol">:</span></span><br><span class="line">    unittest.main()</span><br></pre></td></tr></table></figure>
+<p>这个时候就是mock发挥作用的时候了。通过mock模拟掉影响A模块的部分（B模块）。至于mock掉的部分（B模块）应该由其它用例来测试。</p>
+<p>​    总有人吐槽 Python 的性能低下，但是 Python 本质其实也不是用来做计算任务的，Python 是一门胶水语言，是用来写业务逻辑的，而不是用来写CPU密集的算法的。事实上复杂的解析一般都会用 C++ 这种硬核语言来写了，比如 numpy TensorFlow lxml。大多数程序员一天 90% 的工作除了和PM撕逼以外，也就是在写 CRUD，也就是调用这些包。所以瓶颈一般在 IO 上而不在 CPU 上，而解决 IO 的瓶颈手段就多了，Python 中至少有 多进程、多线程、AsyncIO、Gevent 等多种方法。不过方法多其实也是一个弊端，这几种方法可以说是基本互不兼容，对各种第三方库的支持也参差不齐。</p>
+<p>​    </p>
+<p>​    而测试python程序的cpu瓶颈，就需要cProfile模块了，cProfile是一种确定性分析器，只测量CPU时间，并不关心内存消耗和其他与内存相关联的信息。</p>
+<p>​    cprofile在python3.7.2里是内置模块，不需要单独安装。</p>
+<p>​    cProfile 有多种调用方法，可以直接从命令行调用：</p>
+<p>​    </p>
+<figure class="highlight profile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m cProfile -s <span class="keyword">tottime</span> 你的脚本.py</span><br></pre></td></tr></table></figure>
+<p>要获得对程序性能的全面理解，经常需要两个指标都看一下。</p>
+<p>​    至此，使用cprofile就可以很简单的看出你写的程序是否性能堪忧了，不过性能这个问题其实是典型的木桶理论的场景，系统的整体性能是由最差的一块决定的。所以也是一个不断迭代的过程。</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

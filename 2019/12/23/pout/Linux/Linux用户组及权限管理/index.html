@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Linux用户组及权限管理 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux用户组及权限管理"><span class="toc-text">Linux用户组及权限管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#用户和组"><span class="toc-text">用户和组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux用户及组"><span class="toc-text">Linux用户及组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux用户管理"><span class="toc-text">Linux用户管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#创建新用户"><span class="toc-text">创建新用户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#删除用户"><span class="toc-text">删除用户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#修改用户所属组"><span class="toc-text">修改用户所属组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#修改用户家目录及启动shell"><span class="toc-text">修改用户家目录及启动shell</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#修改用户名"><span class="toc-text">修改用户名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#锁定-解锁用户"><span class="toc-text">锁定/解锁用户</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux组管理"><span class="toc-text">Linux组管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#创建新组"><span class="toc-text">创建新组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#其他组属性"><span class="toc-text">其他组属性</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#权限"><span class="toc-text">权限</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#用户及组权限"><span class="toc-text">用户及组权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用户及组修改"><span class="toc-text">用户及组修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二进制权限"><span class="toc-text">二进制权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#权限掩码"><span class="toc-text">权限掩码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#特殊权限"><span class="toc-text">特殊权限</span></a></li></ol></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Linux用户组及权限管理
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-12-23 08:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="Linux用户组及权限管理"><a href="#Linux用户组及权限管理" class="headerlink" title="Linux用户组及权限管理"></a>Linux用户组及权限管理</h1><h2 id="用户和组"><a href="#用户和组" class="headerlink" title="用户和组"></a>用户和组</h2><blockquote>
+<p><code>Linux</code>是一个多用户的操作系统，引入用户，可以更加方便管理<code>Linux</code>服务器</p>
+<p>系统默认需要以一个用户的身份登入，而且在系统上启动进程也需要以一个用户身份器运行，用户可以限制某些进程对特定资源的权限控制</p>
+</blockquote>
+<h3 id="Linux用户及组"><a href="#Linux用户及组" class="headerlink" title="Linux用户及组"></a>Linux用户及组</h3><blockquote>
+<p><code>Linux</code>操作系统对多用户的管理，是非常繁琐的，所以用组的概念来管理用户就变得简单，每个用户可以在一个独立的组，每个组也可以有零个用户或者多个用户。</p>
+<p><code>Linux</code>系统用户是根据用户<code>ID</code>来识别的，默认<code>ID</code>长度为<code>32</code>位，从默认<code>ID</code>编号从<code>0</code>开始，但是为了和老式系统兼容，用户<code>ID</code>限制在<code>60000</code>以下，<code>Linux</code>用户分总共分为三种，分别如下</p>
+</blockquote>
+<ul>
+<li>超级用户：<code>root</code>，<code>ID</code>为0</li>
+<li>系统用户：<code>ID</code>从1到499</li>
+<li>普通用户：<code>ID</code>为500以上</li>
+</ul>
+<blockquote>
+<p><code>Linux</code>系统中的每个文件或者文件夹，都有一个所属用户及所属组</p>
+<p>使用<code>id</code>命令可以显示当前用户的信息，使用<code>passwd</code>命令可以修改当前用户密码。<code>Linux</code>操作系统用户的特点如下</p>
+</blockquote>
+<ul>
+<li>每个用户拥有一个<code>UserID</code>，操作系统实际读取的是<code>UID</code>，而非用户名；</li>
+<li>每个用户属于一个主组，属于一个或多个附属组，一个用户最多有<code>31</code>个附属组；</li>
+<li>每个组拥有一个<code>GroupID</code>；</li>
+<li>每个进程以一个用户身份运行，该用户可对进程拥有资源控制权限；</li>
+<li>每个可登陆用户拥有一个指定的<code>Shell</code>环境</li>
+</ul>
+<h3 id="Linux用户管理"><a href="#Linux用户管理" class="headerlink" title="Linux用户管理"></a>Linux用户管理</h3><blockquote>
+<p><code>Linux</code>用户在操作系统可以进行日常管理和维护，涉及到的相关配置文件如下</p>
+</blockquote>
+<ul>
+<li><code>/etc/passwd</code>：保存用户信息</li>
+<li><code>/etc/shadow</code>：保存用户密码（以加密形式保存）</li>
+<li><code>/etc/group</code>：保存组信息</li>
+<li><code>/etc/login.defs</code>：用户属性限制，密码过期时间，密码最大长度等限制</li>
+<li><code>/etc/default/useradd</code>：显示或更改默认的<code>useradd</code>配置文件</li>
+</ul>
+<h4 id="创建新用户"><a href="#创建新用户" class="headerlink" title="创建新用户"></a>创建新用户</h4><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">useradd</span> usertest <span class="comment"># 创建用户usertest</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>创建新用户，可以使用命令<code>useradd</code>，执行命令即可创建新用户</p>
+<p>同时会创建一个同名的组，默认该用户属于该用户组</p>
+</blockquote>
+<blockquote>
+<p>创建用户，会根据如下步骤进行操作</p>
+</blockquote>
+<ul>
+<li>在<code>/etc/passwd</code>文件中添加用户信息</li>
+<li>如使用<code>passwd</code>命令创建密码，密码会被加密保存在<code>/etc/shdaow</code>中</li>
+<li>为用户创建家目录：<code>/home/usertest</code>，创建目录操作应操作系统而异</li>
+<li>将<code>/etc/skel</code>中的<code>.bash</code>开头的文件复制至用户家目录</li>
+<li>创建与用户名相同的组，该用户默认属于这个同名组，组信息保存在<code>/etc/group</code>配置文件中</li>
+</ul>
+<blockquote>
+<p>其他命令可选参数如下所示</p>
+</blockquote>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-<span class="ruby">d <span class="comment"># 指定新用户的主目录</span></span></span><br><span class="line"><span class="ruby">-G <span class="comment"># 指定新用户的组列表</span></span></span><br><span class="line"><span class="ruby">-s <span class="comment"># 新用户所使用的shell环境</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">useradd usertest -s <span class="regexp">/bin/</span>bash -d <span class="regexp">/home/u</span>sertest</span><br><span class="line"><span class="comment"># 创建新用户usertest，指定shell环境为bash，主目录在/home/usertest</span></span><br></pre></td></tr></table></figure>
+<h4 id="删除用户"><a href="#删除用户" class="headerlink" title="删除用户"></a>删除用户</h4><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">userdel</span> <span class="comment"># 保留用户的家目录</span></span><br><span class="line">userdel –r usertest <span class="comment"># 删除用户及用户家目录，用户login系统无法删除</span></span><br><span class="line">userdel –rf usertest <span class="comment"># 强制删除用户及该用户家目录，不论是否login系统</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>当一个用户创建之后，我们可以通过<code>usermod</code>命令来修改用户及组的属性</p>
+</blockquote>
+<ul>
+<li><code>linux</code>下命令选项</li>
+</ul>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">选项：</span><br><span class="line">  -<span class="ruby">c, --comment 注释            GECOS 字段的新值</span></span><br><span class="line"><span class="ruby">  -d, --home HOME_DIR           用户的新主目录</span></span><br><span class="line"><span class="ruby">  -e, --expiredate EXPIRE_DATE  设定帐户过期的日期为 EXPIRE_DATE</span></span><br><span class="line"><span class="ruby">  -f, --inactive INACTIVE       过期 INACTIVE 天数后，设定密码为失效状态</span></span><br><span class="line"><span class="ruby">  -g, --gid GROUP               强制使用 GROUP 为新主组</span></span><br><span class="line"><span class="ruby">  -G, --groups GROUPS           新的附加组列表 GROUPS</span></span><br><span class="line"><span class="ruby">  -a, --append GROUP            将用户追加至上边 -G 中提到的附加组中，</span></span><br><span class="line"><span class="ruby">                                并不从其它组中删除此用户</span></span><br><span class="line"><span class="ruby">  -h, --help                    显示此帮助信息并推出</span></span><br><span class="line"><span class="ruby">  -l, --login LOGIN             新的登录名称</span></span><br><span class="line"><span class="ruby">  -L, --lock                    锁定用户帐号</span></span><br><span class="line"><span class="ruby">  -m, --move-home               将家目录内容移至新位置 (仅于 -d 一起使用)</span></span><br><span class="line"><span class="ruby">  -o, --non-unique              允许使用重复的(非唯一的) UID</span></span><br><span class="line"><span class="ruby">  -p, --password PASSWORD       将加密过的密码 (PASSWORD) 设为新密码</span></span><br><span class="line"><span class="ruby">  -R, --root CHROOT_DIR         chroot 到的目录</span></span><br><span class="line"><span class="ruby">  -s, --shell SHELL             该用户帐号的新登录 shell</span></span><br><span class="line"><span class="ruby">  -u, --uid UID                 用户帐号的新 UID</span></span><br><span class="line"><span class="ruby">  -U, --unlock                  解锁用户帐号</span></span><br><span class="line"><span class="ruby">  -Z, --selinux-user  SEUSER       用户账户的新 SELinux 用户映射</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">groups</span> username</span><br><span class="line"><span class="comment"># 查看用户所属组</span></span><br></pre></td></tr></table></figure>
+<h4 id="修改用户所属组"><a href="#修改用户所属组" class="headerlink" title="修改用户所属组"></a>修改用户所属组</h4><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">usermod</span> usertest -G old_normal</span><br><span class="line"><span class="comment"># 将用户usertest修改加入old_normal组中</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">usermod usertest -<span class="keyword">a</span> -G other_normal</span><br><span class="line"><span class="comment"># 将用户追加至other_normal组中，且不影响原有组状态</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat /etc<span class="built_in">/group </span>| grep usertest </span><br><span class="line"><span class="comment"># 可以查看到usertest用户当前所属组的情况</span></span><br></pre></td></tr></table></figure>
+<h4 id="修改用户家目录及启动shell"><a href="#修改用户家目录及启动shell" class="headerlink" title="修改用户家目录及启动shell"></a>修改用户家目录及启动shell</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">usermod usertest -d /home<span class="built_in">/user </span>-s /bin/sh</span><br></pre></td></tr></table></figure>
+<h4 id="修改用户名"><a href="#修改用户名" class="headerlink" title="修改用户名"></a>修改用户名</h4><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">usermod -l <span class="keyword">new</span> <span class="keyword">old</span></span><br><span class="line"># 将<span class="keyword">old</span>用户名变为<span class="keyword">new</span></span><br></pre></td></tr></table></figure>
+<h4 id="锁定-解锁用户"><a href="#锁定-解锁用户" class="headerlink" title="锁定/解锁用户"></a>锁定/解锁用户</h4><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">usermod -L usertest<span class="comment">;</span></span><br><span class="line"><span class="comment"># 锁定usertest用户</span></span><br><span class="line">usermod -U usertest<span class="comment">;</span></span><br><span class="line"><span class="comment"># 解锁usertest用户</span></span><br></pre></td></tr></table></figure>
+<h3 id="Linux组管理"><a href="#Linux组管理" class="headerlink" title="Linux组管理"></a>Linux组管理</h3><blockquote>
+<p>所有的<code>Linux</code>或者<code>Windows</code>系统都有组的概念，通过组可以更加方便的管理用户</p>
+<p>组的概念应用于各行行业，例如企业会使用部门、职能或地理区域的分类方式来管理成员，映射在<code>Linux</code>系统，同样可以创建用户，并用组的概念对其管理</p>
+<p>Linux组有如下特点</p>
+</blockquote>
+<ul>
+<li>每个组有一个组<code>ID</code></li>
+<li>组信息保存在<code>/etc/group</code>中</li>
+<li>每个用户至少拥有一个主组，同时还可以拥有<code>31</code>个附属组</li>
+</ul>
+<h4 id="创建新组"><a href="#创建新组" class="headerlink" title="创建新组"></a>创建新组</h4><figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">groupadd <span class="built-in">normal</span> # 创建<span class="built-in">normal</span>组</span><br></pre></td></tr></table></figure>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">groupadd -g <span class="number">1000</span> <span class="keyword">normal</span> <span class="comment"># 创建ID为1000的分组</span></span><br></pre></td></tr></table></figure>
+<h4 id="其他组属性"><a href="#其他组属性" class="headerlink" title="其他组属性"></a>其他组属性</h4><blockquote>
+<p>常见参数</p>
+</blockquote>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-<span class="ruby">r <span class="comment"># 系统账户</span></span></span><br><span class="line"><span class="ruby">-f <span class="comment"># 如果指定的组已经存在，则退出</span></span></span><br><span class="line"><span class="ruby">-g <span class="comment"># 指定当前组id</span></span></span><br><span class="line"><span class="ruby">-n --new --old <span class="comment"># 修改组名</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">groupmod -n old_normal <span class="built-in">normal</span></span><br><span class="line"># 修改<span class="built-in">normal</span>组名为old_normal</span><br></pre></td></tr></table></figure>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">groupmod -g <span class="number">1001</span> old_normal</span><br><span class="line"># 修改old_normal组id为<span class="number">1001</span></span><br></pre></td></tr></table></figure>
+<h2 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h2><blockquote>
+<p>设置好了用户和组，那么接下来就可以对其进行权限控制</p>
+<p>由于linux下处处皆文件，所谓权限也就是对文件的<strong>读</strong>、<strong>写</strong>、<strong>执行</strong>，至少这三种</p>
+<p>当操作系统下某个进程在运行时，进程的权限，也相当于这个进程的运行用户身份权限</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>权限</th>
+<th>文件</th>
+<th>目录</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r</td>
+<td>读取文件</td>
+<td>列出目录</td>
+</tr>
+<tr>
+<td>w</td>
+<td>修改文件</td>
+<td>修改目录内文件</td>
+</tr>
+<tr>
+<td>x</td>
+<td>执行文件</td>
+<td>进入目录</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>权限分组</li>
+</ul>
+<blockquote>
+<p>默认的linux的权限分为三种角色</p>
+<p><code>user</code>、<code>group</code>、<code>other</code></p>
+<p>每个文件将基于<strong>UGO</strong>三种权限进行设置</p>
+<p>一般一个文件创建之后，谁创建该文件，默认成为该文件的所有者</p>
+</blockquote>
+<h3 id="用户及组权限"><a href="#用户及组权限" class="headerlink" title="用户及组权限"></a>用户及组权限</h3><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ls</span> -ahl</span><br><span class="line"><span class="comment"># 查看文件所有者</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">chmod g+rwx <span class="built_in">file</span></span><br><span class="line"><span class="comment"># 给file文件增加rwx权限</span></span><br><span class="line">chmod g-x <span class="built_in">file</span></span><br><span class="line"><span class="comment"># 给file文件减少x权限</span></span><br></pre></td></tr></table></figure>
+<h3 id="用户及组修改"><a href="#用户及组修改" class="headerlink" title="用户及组修改"></a>用户及组修改</h3><blockquote>
+<p>修改某个文件或目录所属<strong>用户</strong>或<strong>组</strong></p>
+</blockquote>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chown -R root <span class="built_in">file</span></span><br><span class="line"><span class="comment"># 修改file文件所属用户为root</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">chown -R :root <span class="built_in">file</span></span><br><span class="line"><span class="comment"># 修改file文件所属用户为root</span></span><br><span class="line">chgrp -R root <span class="built_in">file</span></span><br><span class="line"><span class="comment"># 修改file文件所属组为root</span></span><br></pre></td></tr></table></figure>
+<h3 id="二进制权限"><a href="#二进制权限" class="headerlink" title="二进制权限"></a>二进制权限</h3><blockquote>
+<p>linux下具备权限设置为1，反之为0，那么一个权限按照二进制位数来计算，如下所示</p>
+</blockquote>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-<span class="ruby">-<span class="symbol">x:</span> <span class="number">001</span> <span class="number">1</span></span></span><br><span class="line"><span class="ruby">-<span class="symbol">wx:</span> <span class="number">011</span> <span class="number">3</span></span></span><br><span class="line"><span class="ruby"><span class="symbol">rwx:</span> <span class="number">111</span> <span class="number">7</span></span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>很清晰，对应的权限位置所代表的数字分别是：<strong>r=4</strong>，<strong>w=2</strong>，<strong>x=1</strong></p>
+</blockquote>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod <span class="number">775</span> <span class="built_in">file</span></span><br><span class="line"><span class="comment"># 修改file文件权限为 rwxrwxr-x</span></span><br></pre></td></tr></table></figure>
+<h3 id="权限掩码"><a href="#权限掩码" class="headerlink" title="权限掩码"></a>权限掩码</h3><blockquote>
+<p>神奇的事情需要我们考虑，每次创建文件，默认都会具备一定的权限，而这个权限是如何分配而来的呢？</p>
+<p>是通过一个叫做权限掩码的东西来维护的，这个码可以通过<strong>umask</strong>命令看到</p>
+<p>默认系统的掩码是<strong>022</strong></p>
+</blockquote>
+<ul>
+<li>文件权限由默认权限减去掩码</li>
+</ul>
+<blockquote>
+<p>文件默认权限：666<br>那么创建一个文件真实的权限是：666-022=644</p>
+</blockquote>
+<blockquote>
+<p>目录的默认权限：777</p>
+<p>一个目录的真实权限是：777-022=755</p>
+</blockquote>
+<ul>
+<li>设置默认掩码</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">umask</span> -S 011</span><br></pre></td></tr></table></figure>
+<h3 id="特殊权限"><a href="#特殊权限" class="headerlink" title="特殊权限"></a>特殊权限</h3><table>
+<thead>
+<tr>
+<th>权限</th>
+<th>对文件的影响</th>
+<th>对目录的影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>suid</strong></td>
+<td>以文件的所属用户身份执行，而非执行文件的用户</td>
+<td>无</td>
+</tr>
+<tr>
+<td><strong>sgid</strong></td>
+<td>以文件所属组身份去执行</td>
+<td>在该目录中创建任意新文件的所属组与该目录的所属组相同</td>
+</tr>
+<tr>
+<td><strong>sticky</strong></td>
+<td>无</td>
+<td>对目录拥有写入权限的用户仅可以删除其拥有的文件，无法删除其他用户所拥有的文件</td>
+</tr>
+</tbody>
+</table>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        redis持久化 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么叫持久化？"><span class="toc-text">什么叫持久化？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis-为什么要持久化？"><span class="toc-text">Redis 为什么要持久化？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#redis持久化的意义，在于故障恢复"><span class="toc-text">redis持久化的意义，在于故障恢复</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-RDB"><span class="toc-text">1.RDB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-aof"><span class="toc-text">2.aof</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#同步策略"><span class="toc-text">同步策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AOF执行流程"><span class="toc-text">AOF执行流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-aof重写机制"><span class="toc-text">3.aof重写机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-redis4-0后混合持久化机制"><span class="toc-text">4.redis4.0后混合持久化机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小总结："><span class="toc-text">小总结：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#RDB和AOF的优缺点"><span class="toc-text">RDB和AOF的优缺点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#如何选择？"><span class="toc-text">如何选择？</span></a></li></ol></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        redis持久化
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-05-23 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#Redis" title="Redis">Redis</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#数据库" title="数据库">数据库</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h2 id="什么叫持久化？"><a href="#什么叫持久化？" class="headerlink" title="什么叫持久化？"></a>什么叫持久化？</h2><p>用一句话可以将持久化概括为：将数据（如内存中的对象）保存到可永久保存的存储设备中。持久化的主要应用是将内存中的对象存储在数据库中，或者存储在磁盘文件中、 XML 数据文件中等等。</p>
+<blockquote>
+<p>从应用层与系统层理解持久化</p>
+</blockquote>
+<p>同时，也可以从应用层和系统层这两个层面来理解持久化：</p>
+<p><strong>应用层</strong>：如果关闭( <code>Close</code> )你的应用然后重新启动则先前的数据依然存在。</p>
+<p><strong>系统层</strong>：如果关闭( <code>Shutdown</code> )你的系统（电脑）然后重新启动则先前的数据依然存在。</p>
+<p>说白了，就是在指定的时间间隔内,将内存当中的数据快照写入磁盘,它恢复时是拷快照文件直接读到内存</p>
+<p>什么意思呢?  我们都知道, 内存当中的数据, 如果我们一断电,那么数据必然会丢失,但是玩过redis的同学应该都知道,我们一关机之后再启动的时候数据是还在的,所以它必然是在redis启动的时候重新去加载了持久化的文件</p>
+<p><strong>redis提供两种方式进行持久化</strong></p>
+<p>一种是RDB持久化默认,</p>
+<p>另一种 AOF (append only file) 持久化.</p>
+<h2 id="Redis-为什么要持久化？"><a href="#Redis-为什么要持久化？" class="headerlink" title="Redis 为什么要持久化？"></a>Redis 为什么要持久化？</h2><p>Redis 中的数据类型都支持 push/pop、add/remove 及取交集并集和差集及更丰富的操作，而且这些操作都是原子性的。在此基础上，Redis 支持各种不同方式的排序。与 Memcached 一样，为了保证效率，数据都是缓存在内存中。</p>
+<p>对，数据都是缓存在内存中的，当你重启系统或者关闭系统后，缓存在内存中的数据都会消失殆尽，再也找不回来了。所以，为了让数据能够长期保存，就要将 Redis 放在缓存中的数据做持久化存储。</p>
+<h2 id="redis持久化的意义，在于故障恢复"><a href="#redis持久化的意义，在于故障恢复" class="headerlink" title="redis持久化的意义，在于故障恢复"></a>redis持久化的意义，在于故障恢复</h2><p>比如你部署了一个redis，作为cache缓存，当然也可以保存一些较为重要的数据</p>
+<p>如果没有持久化的话，redis遇到灾难性故障的时候，就会丢失所有的数据</p>
+<p>如果通过持久化将数据搞一份儿在磁盘上去，然后定期比如说同步和备份到一些云存储服务上去，那么就可以保证数据不丢失全部，还是可以恢复一部分数据回来的</p>
+<h2 id="1-RDB"><a href="#1-RDB" class="headerlink" title="1.RDB"></a>1.RDB</h2><p><strong>是什么？</strong></p>
+<p>原理是redis会单独创建(fork函数)（复制）一个与当前进程一模一样的子进程来进行持久化,这个子线程的所有数据(变量,环境变量,程序,程序计数器等)都和原进程一模一样,会先将数据写入到一个临时文件中,待持久化结束了,再用这个临时文件替换上次持久化好的文件,整个过程中,主进程不进行任何的IO操作,（用到了fork子进程来进行持久化）这就确保了极高的性能</p>
+<p><strong>1.这个持久化文件在哪里</strong></p>
+<p>vi /usr/local/redis/etc/redis.conf</p>
+<p>找dbfilename dump.rdb</p>
+<p>默认就是dump.rdb</p>
+<p>dir ./  (包括很多例如redis实例，只要是redis产生的实例都会丢到)</p>
+<p>./   =====  哪里启动，哪里生成。</p>
+<p>注意：</p>
+<p>要么写死目录</p>
+<p>要么启动的位置就在同一个地方，地方不一样可能造成数据丢失。</p>
+<p><strong>2.他是什么时候fork子进程，或者什么时候触发rdb持久化机制</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>/usr/local/redis/bin/redis-cli</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2.</span>SHUTDOWN</span><br></pre></td></tr></table></figure>
+<p><img src="C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20191217092426326.png" alt="image-20191217092426326" style="zoom:50%;"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/redis/bin/redis-server /usr/local/redis/etc/redis.conf <span class="comment">## 开启redis</span></span><br></pre></td></tr></table></figure>
+<p>shutdown时,如果没有开启aof,会触发</p>
+<p>配置文件中默认的快照配置</p>
+<p><img src="C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20191217092743078.png" alt="image-20191217092743078" style="zoom:50%;"></p>
+<p>执行命令save成者bgsave ,</p>
+<p>save是只管保存,其他不管,全部阻塞  </p>
+<p>redis会在后台异步进行快照操作,</p>
+<p>同时可以响应客户端的请求(默认调用bgsave来进行持久化)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -f ./dump.rdb</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/redis/bin/redis-server /usr/local/redis/etc/redis.conf </span><br><span class="line"><span class="comment">## 开启redis</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/redis/bin/redis-cli  </span><br><span class="line"><span class="comment">## 连接客户端</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set k1 v1</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keys *</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">save     <span class="comment">## dump.rdb  是只管保存,其他不管,全部阻塞</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bgsave   <span class="comment">## dump.rdb  redis会在后台异步进行快照操作</span></span><br></pre></td></tr></table></figure>
+<p>执行flushall命令但是里面是空的,无意义</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FLUSHALL   <span class="comment">## 清空</span></span><br></pre></td></tr></table></figure>
+<p><strong>在redis.conf中rdb持久化策略</strong></p>
+<p>集群save 900 1                ##  900秒之内执行了一次增删改操作就会触发 ， 查不算</p>
+<p>save 300 10             </p>
+<p>save 60    10000  </p>
+<p>默认配置</p>
+<p>redis 性能调优</p>
+<p>集群  master节点肯定会把rdb</p>
+<p>实际上关不掉的在主从复制上</p>
+<p>要么就是就写一个save</p>
+<p>要么就注掉</p>
+<h2 id="2-aof"><a href="#2-aof" class="headerlink" title="2.aof"></a>2.aof</h2><p>执行set k1 v1 </p>
+<p>保存命令</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set k1 v1</span><br><span class="line">set k2 v1   </span><br><span class="line"><span class="comment">## 保存到文件中  保存的是命令</span></span><br></pre></td></tr></table></figure>
+<p><strong>是什么？</strong></p>
+<p>原理是将Reids的操作日志以追加的方式写入文件,读操作是不记录的</p>
+<p><strong>1.这个持久化文件在哪里</strong></p>
+<p>产生的位置还是 ./dir </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /usr/local/redis/etc/redis.conf</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">appendfilename <span class="string">"appendonly.aof"</span>   <span class="comment">## 文件名</span></span><br></pre></td></tr></table></figure>
+<p> redis 默认关闭，开启需要手动把no改为yes</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">appendonly yes</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/redis/bin/redis-cli</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set k1 v1</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SHUTDOWN</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/redis/bin/redis-server /usr/local/redis/etc/redis.conf </span><br><span class="line"><span class="comment">## 开启redis</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">ll</span></span><br></pre></td></tr></table></figure>
+<p>‘*’  开头代表下面有两组命令</p>
+<p>$  字符串的长度</p>
+<p>日志追加的方式保存到文件里。</p>
+<p><strong>2.触发机制（根据配置文件配置项）</strong></p>
+<p>AOF_FSYNC_NO:表示等操作系统进行数据缓存同步到磁盘(快,持久化没保证) —–不能配置不可控 </p>
+<p>AOF_FSYNC_ALWAYS: 同步持久化,每次发生数据变更时,立即记录到磁盘(慢,安全) —-消耗性能</p>
+<p>AOF_FSYNC_EVERYSEC: 表示每秒同步一次(默认值很快,但可能会丢失一秒以内的数据)–所以默认</p>
+<h2 id="同步策略"><a href="#同步策略" class="headerlink" title="同步策略"></a>同步策略</h2><p>在了解同步策略之前，需要先来了解两个三方法flushAppendOnlyFile、write和save：</p>
+<ul>
+<li>redis的服务器进程是一个事件循环，文件事件负责处理客户端的命令请求，而时间事件负责执行serverCron函数这样的定时运行的函数。在处理文件事件执行写命令，使得命令被追加到aof_buf中，然后在处理时间事件执行serverCron函数会调用flushAppendOnlyFile函数进行文件的写入和同步</li>
+<li>write：根据条件，将aof_buf中的缓存写入到AOF文件</li>
+<li>save：根据条件，调用fsync或fdatasync函数将AOF文件保存到磁盘</li>
+</ul>
+<p>下面来介绍Redis支持的三种同步策略：</p>
+<ul>
+<li>AOF_FSYNC_NO：不保存（write和read命令都由主进程执行）</li>
+<li>AOF_FSYNC_EVERYSEC：每一秒钟保存一次（write由主进程完成，save由子进程完成）</li>
+<li>AOF_FSYNC_ALWAYS：每执行一个命令保存一次（write和read命令都由主进程执行）</li>
+</ul>
+<p><strong>AOF_FSYNC_NO</strong><br>在这种策略下，每次flushAppendOnlyFile函数被调用的时候都会执行一次write方法，但是不会执行save方法。</p>
+<p>只有下面三种情况下才会执行save方法：</p>
+<ul>
+<li>Redis被关闭</li>
+<li>AOF功能被关闭</li>
+<li>系统的写缓存被刷新（可能是缓存已经被写满，或者定期保存操作被执行）</li>
+</ul>
+<p>这三种情况下的save操作都会引起Redis主进程阻塞，并且由于长时间没有执行save命令，所以save命令执行的时候，阻塞时间会很长</p>
+<p><strong>AOF_FSYNC_EVERYSEC</strong><br>在这种策略下，save操作原则上每隔一秒钟就会执行一次， 因为save操作是由后台子线程调用的， 所以它不会引起服务器主进程阻塞。</p>
+<p>其实根据Redis的状态，每当 flushAppendOnlyFile函数被调用时，write命令和save命令的执行又分为四种不同情况：</p>
+<p><img src="https://lebron-youdao-img.oss-cn-hangzhou.aliyuncs.com/AOF%20everysec.png" alt="AOF everysec"></p>
+<p>根据以上图知道，在AOF_FSYNC_EVERYSEC策略下， 如果在情况1时发生故障停机， 那么用户最多损失小于2秒内所产生的数据；而如果在情况2时发生故障停机，堆积了很多save命令，那么用户损失的数据是可以超过 2 秒的。</p>
+<p>AOF_FSYNC_ALWAYS<br>在这种模式下，每次执行完一个命令之后，write和save命令都会被执行。</p>
+<p>另外，因为save命令是由Redis主进程执行的，所以在save命令执行期间，主进程会被阻塞。</p>
+<p>三种策略的优缺点<br>AOF_FSYNC_NO策略虽然表面上看起来提升了性能，但是会存在每次save命令执行的时候相对长时间阻塞主进程的问题。并且数据的安全性的不到保证，如果Redis服务器突然宕机，那么没有从AOF缓存中保存到硬盘中的数据都会丢失。</p>
+<p>AOF_FSYNC_ALWAYS策略的安全性的到了最大的保障，理论上最多丢失最后一次写操作，但是由于每个写操作都会阻塞主进程，所以Redis主进程的响应速度受到了很大的影响。</p>
+<p>AOF_FSYNC_EVERYSEC策略是比较建议的配置，也是Redis的默认配置，相对来说兼顾安全性和性能。</p>
+<h2 id="AOF执行流程"><a href="#AOF执行流程" class="headerlink" title="AOF执行流程"></a>AOF执行流程</h2><ul>
+<li>所有的写命令都会追加到aof_buf（缓冲区）中。</li>
+<li>可以使用不同的策略将AOF缓冲区中的命令写到AOF文件中。</li>
+<li>随着AOF文件的越来越大，会对AOF文件进行重写。</li>
+<li>当服务器重启的时候，会加载AOF文件并执行AOF文件中的命令用于恢复数据。</li>
+</ul>
+<p>简单分析一下AOF执行流程中的一些问题：</p>
+<ul>
+<li><p>因为Redis为了效率，使用单线程来响应命令，如果每次写命令都追加写硬盘的操作，那么Redis的响应速度还要取决于硬盘的IO效率，显然不现实，所以Redis将写命令先写到AOF缓冲区。</p>
+</li>
+<li><p>写道缓冲区还有一个好处是可以采用不同的策略来实现缓冲区到硬盘的同步，可以让用户自行在安全性和性能方面做出权衡。</p>
+</li>
+</ul>
+<h2 id="3-aof重写机制"><a href="#3-aof重写机制" class="headerlink" title="3.aof重写机制"></a>3.aof重写机制</h2><p>我们以日志的方式,记录我们的命令记录到文件当中</p>
+<p>如果我操作的特别频繁，文件肯定会特别大。</p>
+<p>我写100万数据，持久化文件也会特别大</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/usr/</span>local<span class="regexp">/redis/</span>bin<span class="regexp">/redis-cli</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FLUSHALL  <span class="comment">## 清空数据</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keys *   <span class="comment">## 查看是否有数据</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INCR lock   <span class="comment">## 加操作</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exit    <span class="comment">## 退出</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi appendonly.aof  <span class="comment">## 查看文件</span></span><br></pre></td></tr></table></figure>
+<p>记录着</p>
+<p>我可以直接执行一条命令set lock 11</p>
+<p>重写就是将重复的剔除掉瘦身</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/redis/bin/redis-cli</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BGREWRITEAOF  <span class="comment">##手动调用重写命令</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exit  <span class="comment">## 退出</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi dump.rdb</span><br></pre></td></tr></table></figure>
+<p>是因为我这个版本是5.0的</p>
+<p>当AOF文件增长到一定大小的时候Redis能够调用bgrewriteaof对日志文件进行重写。当AOF文件大小的增长率大于该配置项时自动开启重写(这里指超过原大小的100%) .</p>
+<p>auto-aof-rewrite-percentage 100</p>
+<p>当AOF文件增长到一定大小的时候Redis能够调用bgrewriteaof对日志文件进行重写,当AOF文件大小大于该配置项时自动开启重写</p>
+<p>auto-aof-rewrite-min-size 64mb</p>
+<p>incr lock </p>
+<p>重写就是将重复的剔除掉瘦身</p>
+<h2 id="4-redis4-0后混合持久化机制"><a href="#4-redis4-0后混合持久化机制" class="headerlink" title="4.redis4.0后混合持久化机制"></a>4.redis4.0后混合持久化机制</h2><p><strong>开启混合持久化</strong></p>
+<p>4.0 版本是 像set lock 11</p>
+<p>4.0版本的混合持久化默认关闭的,通过aof-use-rdb-preamble配置参数控制, yes则表示开启, no表示禁用, 5.0之后默认开启。</p>
+<p>混合持久化是通过bgrewriteaof完成的,不同的是当开启混合持久化时, fork出的子进程先将共享的内存副本全量 以RDB方式写入aof文件,然后在将重写缓冲区的增量命令以AOF方式写入到文件,写入完成后通知主进程更新统计信息,并将新的含有RDB格式和AOF格式的AOF文件替换旧的AOF文件。</p>
+<p>简单的说:新的AOF文件前半段是 RDB格式的全量数据后半段是AOF格式的增量数据,</p>
+<p>优点:混合持久化结合了RDB持久化和AOF持久化的优点由于绝大部分都是RDB格式,加载速度快,同时结合 AOF,增量的数据以AOF方式保存了,数据更少的丢失.</p>
+<p>缺点:兼容性差,一旦开启了混合持久化,在4.0之前版本都不识别该aof文件,同时由于前部分是RDB格式,阅读性较差</p>
+<p>二进制方式存储  更小</p>
+<p>什么时候下会自动重写</p>
+<p>看</p>
+<p>auto-aof-rewrite-percentage</p>
+<p>auto-aof-rewrite-min-size</p>
+<h2 id="小总结："><a href="#小总结：" class="headerlink" title="小总结："></a>小总结：</h2><p><strong>1.redis提供了rdb持久化方案，为什么还要aof？</strong></p>
+<p>rdb 是跟据save触发持久化，所以会照成数据的丢失</p>
+<p>aof持久化是1秒执行一次</p>
+<p>在数据aof</p>
+<p>在性能rdb高于aof</p>
+<blockquote>
+<p>优化数据丢失问题，rdb会丢失最后一次快照后的数据，aof丢失不会超过2秒的数据</p>
+</blockquote>
+<p><strong>2.如果aof和rdb同时存在，听谁的？</strong></p>
+<p>aof数据准确率更高</p>
+<p><strong>3.rdb和aof优势劣势</strong></p>
+<p>rdb适合大规模的数据恢复,对数据完整性和一致性不高，在一定间隔时间做一次备份,如果redis意外宕机的话,就会丢失最后一次快照后的所有操作</p>
+<p>aof根据配置项而定</p>
+<p>1.官方建议两种持久化机制同时开启,如果两个同时开启优先使用aof久化机制</p>
+<p>在生产环境中用集群，哨兵什么的</p>
+<p>主机开aof</p>
+<p><strong>性能建议（这里只针对单机版redis持久化做性能建议）：</strong></p>
+<p>因为RDB文件只用作后备用途,只要15分钟备份一次就够了,只保留save 900 1这条规则. 因为开启aof持久化安全。</p>
+<p>如果Enalbe AOF, 好处是在最恶劣情况下也只会丢失不超过两秒数据,启动脚本较简单只load自己的AOF文件就可以了.</p>
+<p>代价一是带来了持续的IO,二是AOF rewrite的最后将rewrite过程中产生的新数据写到新文件造成的阻塞几乎是不可避免的。</p>
+<p>只要硬盘许可,应该尽量减少AOF rewrite的频率, AOF重写的基础大小默认值64M太小了,可以设到5G以上.默认超过原大小100%大小时重写可以改到适当的数值。</p>
+<p>看硬盘</p>
+<p><img src="C:\Users\Lenovo\Desktop\20191127113644133169.png" alt="20191127113644133169" style="zoom: 50%;"></p>
+<p>1）AOF持久化开启且存在AOF文件时，优先加载AOF文件。</p>
+<p>2）AOF关闭或者AOF文件不存在时，加载RDB文件。</p>
+<p>3）加载AOF/RDB文件成功后，Redis启动成功。</p>
+<p>4）AOF/RDB文件存在错误时，Redis启动失败并打印错误信息。</p>
+<p><img src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=762237719,3005011713&amp;fm=15&amp;gp=0.jpg" alt="img"></p>
+<p>1.从主进程中fork出子进程，并拿到fork时的AOF文件数据写到一个临时AOF文件中</p>
+<p>2.在重写过程中，redis收到的命令会同时写到AOF缓冲区和重写缓冲区中，这样保证重写不丢失，重写过程中的命令</p>
+<p>3.重写完成后通知主进程，主进程会将AOF缓冲区中的数据追加到子进程生成的文件中</p>
+<p>4.redis会原子的将旧文件替换为新文件，并开始将数据写入到新的aof文件上</p>
+<ul>
+<li>执行bgrewriteaof命令的时候，如果当前有进程正在执行AOF重写，那么直接返回；如果有进程正在执行bgsave，那么等待bgsave执行完毕再执行AOF重</li>
+<li>Redis主进程会fork一个子进程执行AOF重写。</li>
+<li>AOF重写过程中，不影响Redis原有的AOF过程，包括写消息到AOF缓存以及同步AOF缓存中的数据到硬盘。</li>
+<li>AOF重写过程中，主进程收到的写操作还会将命令写到AOF重写缓冲区，注意和AOF缓冲区分开。</li>
+<li>由于AOF重写过程中原AOF文件还在陆续写入数据，所以AOF重写子进程只会拿到fork子进程时的AOF文件进行重写。</li>
+<li>子进程拿到原AOF文件中的数据写道一个临时的AOF文件中。</li>
+<li>子进程完成AOF重写后会发消息给主进程，主进程会把AOF重写缓冲区中的数据写道AOF缓冲区，并且用新的AOF文件替换旧的AOF文件。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>Redis 默认开启RDB持久化方式，在指定的时间间隔内，执行指定次数的写操作，则将内存中的数据写入到磁盘中。</li>
+<li>RDB 持久化适合大规模的数据恢复但它的数据一致性和完整性较差。</li>
+<li>Redis 需要手动开启AOF持久化方式，默认是每秒将写操作日志追加到AOF文件中。</li>
+<li>AOF 的数据完整性比RDB高，但记录内容多了，会影响数据恢复的效率。</li>
+<li>Redis 针对 AOF文件大的问题，提供重写的瘦身机制。</li>
+<li>若只打算用Redis 做缓存，可以关闭持久化。</li>
+<li>若打算使用Redis 的持久化。建议RDB和AOF都开启。其实RDB更适合做数据的备份，留一后手。AOF出问题了，还有RDB。</li>
+</ol>
+<h4 id="RDB和AOF的优缺点"><a href="#RDB和AOF的优缺点" class="headerlink" title="RDB和AOF的优缺点"></a>RDB和AOF的优缺点</h4><hr>
+<p>RDB的优缺点：</p>
+<ul>
+<li>一旦采用该方式，那么你的整个Redis数据库将只包含一个文件，这对于文件备份而言是非常完美的。比如，你可能打算每个小时归档一次最近24小时的数 据，同时还要每天归档一次最近30天的数据。通过这样的备份策略，一旦系统出现灾难性故障，我们可以非常容易的进行恢复。</li>
+<li>相对于 AOF 持久化机制来说，直接基于 RDB 数据文件来重启和恢复 redis 进程，更加快速。</li>
+<li>RDB 对 redis 对外提供的读写服务，影响非常小，可以让 redis 保持高性能，因为 redis 主进程只需要 fork 一个子进程，让子进程执行磁盘 IO 操作来进行 RDB 持久化即可。</li>
+<li>对于灾难恢复而言，RDB是非常不错的选择。因为我们可以非常轻松的将一个单独的文件压缩后再转移到其它存储介质上。</li>
+<li>如果想要在 redis 故障时，尽可能少的丢失数据，那么 RDB 没有 AOF 好。一般来说，RDB 数据快照文件，都是每隔 5 分钟，或者更长时间生成一次，这个时候就得接受一旦 redis 进程宕机，那么会丢失最近 5 分钟的数据。</li>
+<li>RDB 每次在 fork 子进程来执行 RDB 快照数据文件生成的时候，如果数据文件特别大，可能会导致对客户端提供的服务暂停数毫秒，或者甚至数秒。</li>
+</ul>
+<p>AOF的优缺点：</p>
+<ul>
+<li>AOF 可以更好的保护数据不丢失，一般 AOF 会每隔 1 秒，通过一个后台线程执行一次fsync操作，最多丢失 1 秒钟的数据。</li>
+<li>AOF 日志文件以append-only模式写入，所以没有任何磁盘寻址的开销，写入性能非常高，而且文件不容易破损。 如果我们本次操作只是写入了一半数据就出现了系统崩溃问题，不用担心，在Redis下一次启动之前，我们可以通过redis-check-aof工具来帮助我们解决数据 一致性的问题。</li>
+<li>AOF 日志文件即使过大的时候，出现后台重写操作，也不会影响客户端的读写。因为在rewrite log 的时候，会对其中的指令进行压缩，创建出一份需要恢复数据的最小日志出来。在创建新日志文件的时候，老的日志文件还是照常写入。当新的 merge 后的日志文件 ready 的时候，再交换新老日志文件即可。 因此在进行rewrite切换时可以更好的保证数据安全性。</li>
+<li>AOF以一个格式清晰、易于理解的日志文件用于记录所有的修改操作， 非常适合做灾难性的误删除的紧急恢复。 比如有人不小心用flushall命令清空了所有数据，只要这个时候后台rewrite还没有发生，那么就可以立即拷贝 AOF 文件，将最后一条flushall命令给删了，然后再将该aof文件放回去，就可以通过恢复机制，自动恢复所有数据。</li>
+<li>对于相同数量的数据集而言，AOF文件通常要大于RDB文件。RDB 在恢复大数据集时的速度比 AOF 的恢复速度要快。</li>
+<li>AOF 开启后，支持的写 QPS 会比 RDB 支持的写 QPS 低， 因为 AOF 一般会配置成每秒 fsync 一次日志文件。</li>
+<li>类似 AOF 这种较为复杂的基于命令日志 / merge / 回放的方式，比基于 RDB 每次持久化一份完整的数据快照文件的方式，更加脆弱一些，容易有 bug。</li>
+</ul>
+<h4 id="如何选择？"><a href="#如何选择？" class="headerlink" title="如何选择？"></a>如何选择？</h4><hr>
+<p>RDB和AOF如何选择？</p>
+<ul>
+<li>不要仅仅使用 RDB，因为那样会导致你丢失很多数据；</li>
+<li>也不要仅仅使用 AOF，因为那样有两个问题：第一，你通过 AOF 做冷备，没有 RDB 做冷备来的恢复速度更快；第二，RDB 每次简单粗暴生成数据快照，更加健壮，可以避免 AOF 这种复杂的备份和恢复机制的 bug；</li>
+<li>redis 支持同时开启开启两种持久化方式，我们可以综合使用 AOF 和 RDB 两种持久化机制，用 AOF 来保证数据不丢失，作为数据恢复的第一选择; 用 RDB 来做不同程度的冷备，在 AOF 文件都丢失或损坏不可用的时候，还可以使用 RDB 来进行快速的数据恢复。</li>
+</ul>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

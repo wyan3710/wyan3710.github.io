@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        用celery异步发邮件 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#首先在项目settings下配置"><span class="toc-text">首先在项目settings下配置</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#然后在views下引入"><span class="toc-text">然后在views下引入</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#同步邮件发送并验证"><span class="toc-text">同步邮件发送并验证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异步邮件验证"><span class="toc-text">异步邮件验证</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#rabbitmq"><span class="toc-text">rabbitmq</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#celery"><span class="toc-text">celery</span></a>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        用celery异步发邮件
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-12-23 08:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#celery异步发邮件" title="celery异步发邮件">celery异步发邮件</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#后端技术" title="后端技术">后端技术</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h5 id="首先在项目settings下配置"><a href="#首先在项目settings下配置" class="headerlink" title="首先在项目settings下配置"></a>首先在项目settings下配置</h5><p>邮箱找到设置里面POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV服务并开启</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 发邮件配置</span></span><br><span class="line"><span class="attr">EMAIL_USE_SSL</span> = <span class="literal">True</span></span><br><span class="line"><span class="attr">EMAIL_HOST</span> = <span class="string">'smtp.qq.com'</span>  # 如果是 <span class="number">163</span> 改成 smtp.<span class="number">163</span>.com</span><br><span class="line"><span class="attr">EMAIL_PORT</span> = <span class="number">465</span></span><br><span class="line"><span class="attr">EMAIL_HOST_USER</span> = <span class="string">'814972189@qq.com'</span> # 帐号</span><br><span class="line"><span class="attr">EMAIL_HOST_PASSWORD</span> = <span class="string">'ymdpxpfwkzbvbbag'</span>  # 授权码</span><br><span class="line"><span class="attr">DEFAULT_FROM_EMAIL</span> = EMAIL_HOST_USER</span><br></pre></td></tr></table></figure>
+<h4 id="然后在views下引入"><a href="#然后在views下引入" class="headerlink" title="然后在views下引入"></a>然后在views下引入</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from django<span class="selector-class">.core</span><span class="selector-class">.mail</span> import send_mail</span><br><span class="line">from eduapi<span class="selector-class">.settings</span> import DEFAULT_FROM_EMAIL</span><br></pre></td></tr></table></figure>
+<h3 id="同步邮件发送并验证"><a href="#同步邮件发送并验证" class="headerlink" title="同步邮件发送并验证"></a>同步邮件发送并验证</h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 连接服务器的memcache</span></span><br><span class="line">m = memcache.Client(['47.97.211.28'])</span><br><span class="line">subject = '欢迎您'  <span class="comment"># 标题</span></span><br><span class="line">message = '欢迎来到XXX！'       </span><br><span class="line">send_mail(subject,message,DEFAULT_FROM_EMAIL,[r_email])</span><br><span class="line"><span class="comment"># 将校验码存入服务器memcache中,并设置180s过期时间</span></span><br><span class="line">m.set(r_email,token,180)</span><br></pre></td></tr></table></figure>
+<h3 id="异步邮件验证"><a href="#异步邮件验证" class="headerlink" title="异步邮件验证"></a>异步邮件验证</h3><blockquote>
+<p>异步邮件验证需要使用celery以及django的celery框架</p>
+</blockquote>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip <span class="keyword">install</span> celery</span><br><span class="line">pip <span class="keyword">install</span> django-celery</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>celery需要中间任务队列支持，这里使用rabbitmq</p>
+</blockquote>
+<h4 id="rabbitmq"><a href="#rabbitmq" class="headerlink" title="rabbitmq"></a>rabbitmq</h4><blockquote>
+<p>MQ全称为Message Queue, 是一种分布式应用程序的的通信方法</p>
+<p>它是消费-生产者模型的一个典型的代表，producer往消息队列中不断写入消息，而另一端consumer则可以读取或者订阅队列中的消息</p>
+<p>RabbitMQ是MQ产品的典型代表，是一款基于AMQP协议可复用的企业消息系统</p>
+<p>业务上，可以实现服务提供者和消费者之间的数据解耦，提供高可用性的消息传输机制，在实际生产中应用相当广泛</p>
+</blockquote>
+<ul>
+<li>AMQP</li>
+</ul>
+<blockquote>
+<p>AMQP，即<code>Advanced Message Queuing Protocol</code>，一个提供统一消息服务的应用层标准高级<strong>消息队列</strong>协议,是应用层协议的一个开放标准,为面向消息的中间件设计。基于此协议的客户端与消息中间件可传递消息，并不受客户端/<strong>中间件</strong>不同产品，不同的开发语言等条件的限制。<strong>Erlang</strong>中的实现有 <a href="https://baike.baidu.com/item/RabbitMQ" target="_blank" rel="noopener">RabbitMQ</a>等</p>
+</blockquote>
+<ul>
+<li>rabbitmq架构</li>
+</ul>
+<blockquote>
+<p><code>Rabbitmq</code>系统最核心的组件是<code>Exchange</code>和<code>Queue</code></p>
+<p><code>Exchange</code>和<code>Queue</code>是在<code>rabbitmq server</code>（又叫做<code>broker</code>）端，<code>producer</code>和<code>consumer</code>在应用端</p>
+</blockquote>
+<p><img src="http://null/" alt="img"></p>
+<blockquote>
+<p>消息发送端先将消息发送给交换机，交换机再将消息发送到绑定的消息队列</p>
+<p>而后每个接收端(consumer)都能从各自的消息队列里接收到信息。</p>
+</blockquote>
+<blockquote>
+<p>centos安装办法</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum <span class="keyword">install</span> rabbitmq-<span class="keyword">server</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>开启服务</li>
+</ul>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart rabbitmq-<span class="keyword">server</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>默认rabbitmq的端口为5672，需要在阿里云主机后台开启端口</li>
+<li>打开可视化管理工具，默认的rabbitmq的可视化工具已经继承在了rabbitmq中，打开即可，可视化工具的端口为15672</li>
+</ul>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmq-plugins <span class="builtin-name">enable</span> rabbitmq_management</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>接着重启</p>
+</blockquote>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart rabbitmq-<span class="keyword">server</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>浏览器中此时访问，已经可以看到效果</li>
+</ul>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span><span class="comment">//47.97.211.28:15672/</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>默认的账号密码为：guest/guest，需要修改默认密码</li>
+</ul>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl  change_password  username  <span class="keyword">new</span><span class="type">password</span></span><br></pre></td></tr></table></figure>
+<h4 id="celery"><a href="#celery" class="headerlink" title="celery"></a>celery</h4><blockquote>
+<p>Celery是基于Python开发的一个分布式任务队列框架，支持使用任务队列的方式在分布的机器/进程/线程上执行任务调度</p>
+</blockquote>
+<blockquote>
+<p>Celery的架构，采用典型的生产者-消费者模式</p>
+<p>主要由三部分组成：broker（消息队列）、workers（消费者：处理任务）、backend（存储结果）</p>
+<p>Celery的架构，它采用典型的生产者-消费者模式，主要由三部分组成：broker（消息队列）、workers（消费者：处理任务）、backend（存储结果）</p>
+<p>我们只需要将请求所要处理的任务丢入任务队列broker中，由空闲的worker去处理任务即可，处理的结果会暂存在后台数据库backend中。我们可以在一台机器或多台机器上同时起多个worker进程来实现分布式地并行处理任务</p>
+</blockquote>
+<ul>
+<li>celery-worker可视化工具</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip <span class="keyword">install</span> flower</span><br></pre></td></tr></table></figure>
+<ul>
+<li>启动flower可以在本地的5555端口查看到当前celery的信息</li>
+</ul>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage<span class="selector-class">.py</span> celery flower</span><br></pre></td></tr></table></figure>
+<ul>
+<li>django加入设置中加入djcelery</li>
+</ul>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#settings</span>.py</span><br><span class="line">INSTALLED_APPS = [</span><br><span class="line">    ...</span><br><span class="line">    <span class="string">'djcelery'</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>配置基本连接信息</li>
+</ul>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#settings</span>.py</span><br><span class="line">import djcelery</span><br><span class="line">djcelery.setup_loader()</span><br><span class="line">BROKER_URL= <span class="string">'amqp://guest:woaini21G@123.57.61.168:5672'</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>celery与3.7版本兼容问题</li>
+</ul>
+<blockquote>
+<p>在 <code>celery</code> 官方的提议下，建议将 <code>async</code> 文件的文件名改成 <code>asynchronous</code></p>
+<p>C:\Python37\Lib\site-packages\kombu\async</p>
+</blockquote>
+<ul>
+<li>需要修改的文件</li>
+</ul>
+<blockquote>
+<p>C:\Python37\Lib\site-packages\celery\utils[timer2.py](<a href="http://timer2.py/" target="_blank" rel="noopener">http://timer2.py/</a>)</p>
+<p>C:\Python37\lib\site-packages\celery\concurrency[asynpool.py](<a href="http://asynpool.py/" target="_blank" rel="noopener">http://asynpool.py/</a>)</p>
+<p>C:\Python37\lib\site-packages\celery\worker[components.py](<a href="http://components.py/" target="_blank" rel="noopener">http://components.py/</a>)</p>
+<p>C:\Python37\lib\site-packages\celery\worker[autoscale.py](<a href="http://autoscale.py/" target="_blank" rel="noopener">http://autoscale.py/</a>)</p>
+<p>C:\Python37\lib\site-packages\celery\worker[consumer.py](<a href="http://consumer.py/" target="_blank" rel="noopener">http://consumer.py/</a>)</p>
+</blockquote>
+<ul>
+<li>编写任务代码，在每个app下的tasks.py文件中</li>
+</ul>
+<blockquote>
+<p>其中，当djcelery.setup_loader()运行时</p>
+<p>Celery便会去查看INSTALLD_APPS下包含的所有app目录中的tasks.py文件</p>
+<p>找到标记为task的方法，将它们注册为<code>celery task</code></p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#tasks.py</span></span><br><span class="line"><span class="keyword">from</span> django.core.mail <span class="keyword">import</span> send_mail</span><br><span class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> task</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"><span class="keyword">from</span> api_shop.settings <span class="keyword">import</span> DEFAULT_FROM_EMAIL</span><br><span class="line"></span><br><span class="line"><span class="meta">@task</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">send_verify_email</span><span class="params">(email)</span>:</span></span><br><span class="line">    subject = <span class="string">'欢迎你'</span></span><br><span class="line">    message = <span class="string">'''</span></span><br><span class="line"><span class="string">            这是异步邮件的发送</span></span><br><span class="line"><span class="string">        '''</span></span><br><span class="line">    sleep(<span class="number">10</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        send_mail(subject, message, DEFAULT_FROM_EMAIL, [email])</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>在视图接口的地方使用</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> . <span class="keyword">import</span> tasks</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SendVerifyEmail</span><span class="params">(APIView)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self,request)</span>:</span></span><br><span class="line">        tasks.send_verify_email.delay(<span class="string">'295878828@qq.com'</span>)</span><br><span class="line">        <span class="keyword">return</span> Response(</span><br><span class="line">            &#123;<span class="string">'code'</span>:<span class="number">200</span>&#125;</span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
+<ul>
+<li>开启celery</li>
+</ul>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage<span class="selector-class">.py</span> celery worker</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果出错大概率需要这样，在manage.py文件前头加入这个</li>
+</ul>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#manage</span>.py</span><br><span class="line">import django</span><br><span class="line">import os</span><br><span class="line">os<span class="selector-class">.environ</span>[<span class="string">'DJANGO_SETTINGS_MODULE'</span>] = <span class="string">'eduapi.settings'</span></span><br><span class="line">django.setup()</span><br></pre></td></tr></table></figure>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

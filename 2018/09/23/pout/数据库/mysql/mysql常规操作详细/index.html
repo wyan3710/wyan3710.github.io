@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        mysql常规操作详细 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        mysql常规操作详细
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2018-09-23 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#MySql" title="MySql">MySql</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#数据库" title="数据库">数据库</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<p>MYSQL常用命令  </p>
+<ol>
+<li>1.导出整个数据库  </li>
+<li>mysqldump -u 用户名 -p –default-character-set=latin1 数据库名 &gt; 导出的文件名(数据库默认编码是latin1)  </li>
+<li>mysqldump -u wcnc -p smgp_apps_wcnc &gt; wcnc.sql  </li>
+<li>2.导出一个表  </li>
+<li>mysqldump -u 用户名 -p 数据库名 表名&gt; 导出的文件名  </li>
+<li>mysqldump -u wcnc -p smgp_apps_wcnc users&gt; wcnc_users.sql  </li>
+<li>3.导出一个数据库结构  </li>
+<li>mysqldump -u wcnc -p -d –add-drop-table smgp_apps_wcnc &gt;d:wcnc_db.sql  </li>
+<li>-d 没有数据 –add-drop-table 在每个create语句之前增加一个drop table  </li>
+<li>4.导入数据库  </li>
+<li>A:常用source 命令  </li>
+<li>进入mysql数据库控制台，  </li>
+<li>如mysql -u root -p  </li>
+<li>mysql&gt;use 数据库  </li>
+<li>然后使用source命令，后面参数为脚本文件(如这里用到的.sql)  </li>
+<li>mysql&gt;source wcnc_db.sql  </li>
+<li>B:使用mysqldump命令  </li>
+<li>mysqldump -u username -p dbname &lt; filename.sql  </li>
+<li>C:使用mysql命令  </li>
+<li>mysql -u username -p -D dbname &lt; filename.sql  </li>
+<li>一、启动与退出  </li>
+<li>1、进入MySQL：启动MySQL Command Line Client（MySQL的DOS界面），直接输入安装时的密码即可。此时的提示符是：mysql&gt;  </li>
+<li>2、退出MySQL：quit或exit  </li>
+<li>二、库操作  </li>
+<li>1、、创建数据库  </li>
+<li>命令：create database &lt;数据库名&gt;  </li>
+<li>例如：建立一个名为xhkdb的数据库  </li>
+<li>mysql&gt; create database xhkdb;  </li>
+<li>2、显示所有的数据库  </li>
+<li>命令：show databases （注意：最后有个s）  </li>
+<li>mysql&gt; show databases;  </li>
+<li>3、删除数据库  </li>
+<li>命令：drop database &lt;数据库名&gt;  </li>
+<li>例如：删除名为 xhkdb的数据库  </li>
+<li>mysql&gt; drop database xhkdb;  </li>
+<li>4、连接数据库  </li>
+<li>命令：use &lt;数据库名&gt;  </li>
+<li>例如：如果xhkdb数据库存在，尝试存取它：  </li>
+<li>mysql&gt; use xhkdb;  </li>
+<li>屏幕提示：Database changed  </li>
+<li>5、查看当前使用的数据库  </li>
+<li>mysql&gt; select database();  </li>
+<li>6、当前数据库包含的表信息：  </li>
+<li>mysql&gt; show tables; （注意：最后有个s）  </li>
+<li>三、表操作，操作之前应连接某个数据库  </li>
+<li>1、建表  </li>
+<li>命令：create table &lt;表名&gt; ( &lt;字段名&gt; &lt;类型&gt; [,..&lt;字段名n&gt; &lt;类型n&gt;]);  </li>
+<li>mysql&gt; create table MyClass(  </li>
+<li>> id int(4) not null primary key auto_increment,  </li>
+<li>> name char(20) not null,  </li>
+<li>> sex int(4) not null default ’′,  </li>
+<li>> degree double(16,2));  </li>
+<li>2、获取表结构  </li>
+<li>命令：desc 表名，或者show columns from 表名  </li>
+<li>mysql&gt;DESCRIBE MyClass  </li>
+<li>mysql&gt; desc MyClass;  </li>
+<li>mysql&gt; show columns from MyClass;  </li>
+<li>3、删除表  </li>
+<li>命令：drop table &lt;表名&gt;  </li>
+<li>例如：删除表名为 MyClass 的表  </li>
+<li>mysql&gt; drop table MyClass;  </li>
+<li>4、插入数据  </li>
+<li>命令：insert into &lt;表名&gt; [( &lt;字段名&gt;[,..&lt;字段名n &gt; ])] values ( 值 )[, ( 值n )]  </li>
+<li>例如，往表 MyClass中插入二条记录, 这二条记录表示：编号为的名为Tom的成绩为.45, 编号为 的名为Joan 的成绩为.99，编号为 的名为Wang 的成绩为.5.  </li>
+<li>mysql&gt; insert into MyClass values(1,’Tom’,96.45),(2,’Joan’,82.99), (2,’Wang’, 96.59);  </li>
+<li>5、查询表中的数据  </li>
+<li>1)、查询所有行  </li>
+<li>命令：select &lt;字段，字段，…&gt; from &lt; 表名 &gt; where &lt; 表达式 &gt;  </li>
+<li>例如：查看表 MyClass 中所有数据  </li>
+<li>mysql&gt; select  from MyClass;  </li>
+<li>2）、查询前几行数据  </li>
+<li>例如：查看表 MyClass 中前行数据  </li>
+<li>mysql&gt; select  from MyClass order by id limit 0,2;  </li>
+<li>或者：  </li>
+<li>mysql&gt; select  from MyClass limit 0,2;  </li>
+<li>6、删除表中数据  </li>
+<li>命令：delete from 表名 where 表达式  </li>
+<li>例如：删除表 MyClass中编号为 的记录  </li>
+<li>mysql&gt; delete from MyClass where id=1;  </li>
+<li>7、修改表中数据：update 表名 set 字段=新值,…where 条件  </li>
+<li>mysql&gt; update MyClass set name=’Mary’where id=1;  </li>
+<li>7、在表中增加字段：  </li>
+<li>命令：alter table 表名 add字段 类型 其他;  </li>
+<li>例如：在表MyClass中添加了一个字段passtest，类型为int(4)，默认值为  </li>
+<li>mysql&gt; alter table MyClass add passtest int(4) default ’′  </li>
+<li>8、更改表名：  </li>
+<li>命令：rename table 原表名 to 新表名;  </li>
+<li>例如：在表MyClass名字更改为YouClass  </li>
+<li>mysql&gt; rename table MyClass to YouClass;  </li>
+<li>更新字段内容  </li>
+<li>update 表名 set 字段名 = 新内容  </li>
+<li>update 表名 set 字段名 = replace(字段名,’旧内容’,’新内容’)  </li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li>文章前面加入个空格  </li>
+<li>update article set content=concat(‘　　’,content);  </li>
+<li>字段类型  </li>
+<li>1．INT[(M)] 型：正常大小整数类型  </li>
+<li>2．DOUBLE[(M,D)] [ZEROFILL] 型：正常大小(双精密)浮点数字类型  </li>
+<li>3．DATE 日期类型：支持的范围是-01-01到-12-31。MySQL以YYYY-MM-DD格式来显示DATE值，但是允许你使用字符串或数字把值赋给DATE列  </li>
+<li>4．CHAR(M) 型：定长字符串类型，当存储时，总是是用空格填满右边到指定的长度  </li>
+<li>5．BLOB TEXT类型，最大长度为(2^16-1)个字符。  </li>
+<li>6．VARCHAR型：变长字符串类型  </li>
+<li>5.导入数据库表  </li>
+<li>　　（）创建.sql文件  </li>
+<li>　　（）先产生一个库如auction.c:mysqlbin&gt;mysqladmin -u root -p creat auction，会提示输入密码，然后成功创建。  </li>
+<li>　　（）导入auction.sql文件  </li>
+<li>　　c:mysqlbin&gt;mysql -u root -p auction &lt; auction.sql。  </li>
+<li>　　通过以上操作，就可以创建了一个数据库auction以及其中的一个表auction。  </li>
+<li>　　6．修改数据库  </li>
+<li>　　（）在mysql的表中增加字段：  </li>
+<li>　　alter table dbname add column userid int(11) not null primary key auto_increment;  </li>
+<li>　　这样，就在表dbname中添加了一个字段userid，类型为int(11)。  </li>
+<li>　　7．mysql数据库的授权  </li>
+<li>　　mysql&gt;grant select,insert,delete,create,drop  </li>
+<li>　　on . <em>(或test.</em>/user.<em>/..)</em>  </li>
+<li>　　to 用户名@localhost  </li>
+<li>　　identified by ‘密码’；  </li>
+<li>　　如：新建一个用户帐号以便可以访问数据库，需要进行如下操作：  </li>
+<li>　　mysql&gt; grant usage  </li>
+<li>　　-&gt; ON test.  </li>
+<li>　　-&gt; TO testuser@localhost;  </li>
+<li>　　Query OK, 0 rows affected (0.15 sec)  </li>
+<li>　　此后就创建了一个新用户叫：testuser，这个用户只能从localhost连接到数据库并可以连接到test 数据库。下一步，我们必须指定testuser这个用户可以执行哪些操作：  </li>
+<li>　　mysql&gt; GRANT select, insert, delete,update  </li>
+<li>　　-&gt; ON test.  </li>
+<li>　　-&gt; TO testuser@localhost;  </li>
+<li>　　Query OK, 0 rows affected (0.00 sec)  </li>
+<li>　　此操作使testuser能够在每一个test数据库中的表执行SELECT，INSERT和DELETE以及UPDATE查询操作。现在我们结束操作并退出MySQL客户程序：  </li>
+<li>　　mysql&gt; exit  </li>
+<li>　　Bye9!  </li>
+<li>1:使用SHOW语句找出在服务器上当前存在什么数据库：  </li>
+<li>mysql&gt; SHOW DATABASES;  </li>
+<li>2:2、创建一个数据库MYSQLDATA  </li>
+<li>mysql&gt; Create DATABASE MYSQLDATA;  </li>
+<li>3:选择你所创建的数据库  </li>
+<li>mysql&gt; USE MYSQLDATA; (按回车键出现Database changed 时说明操作成功！)  </li>
+<li>4:查看现在的数据库中存在什么表  </li>
+<li>mysql&gt; SHOW TABLES;  </li>
+<li>5:创建一个数据库表  </li>
+<li>mysql&gt; Create TABLE MYTABLE (name VARCHAR(20), sex CHAR(1));  </li>
+<li>6:显示表的结构：  </li>
+<li>mysql&gt; DESCRIBE MYTABLE;  </li>
+<li>7:往表中加入记录  </li>
+<li>mysql&gt; insert into MYTABLE values (“hyq”,”M”);  </li>
+<li>8:用文本方式将数据装入数据库表中（例如D:/mysql.txt）  </li>
+<li>mysql&gt; LOAD DATA LOCAL INFILE “D:/mysql.txt”INTO TABLE MYTABLE;  </li>
+<li>9:导入.sql文件命令（例如D:/mysql.sql）  </li>
+<li>mysql&gt;use database;  </li>
+<li>mysql&gt;source d:/mysql.sql;  </li>
+<li>10:删除表  </li>
+<li>mysql&gt;drop TABLE MYTABLE;  </li>
+<li>11:清空表  </li>
+<li>mysql&gt;delete from MYTABLE;  </li>
+<li>12:更新表中数据  </li>
+<li>mysql&gt;update MYTABLE set sex=”f”where name=’hyq’;  </li>
+<li>以下是无意中在网络看到的使用MySql的管理心得,  </li>
+<li></li>
+<li></li>
+<li>在windows中MySql以服务形式存在，在使用前应确保此服务已经启动，未启动可用net start mysql命令启动。而Linux中启动时可用“/etc/rc.d/init.d/mysqld start”命令，注意启动者应具有管理员权限。  </li>
+<li>刚安装好的MySql包含一个含空密码的root帐户和一个匿名帐户，这是很大的安全隐患，对于一些重要的应用我们应将安全性尽可能提高，在这里应把匿名帐户删除、root帐户设置密码，可用如下命令进行：  </li>
+<li>use mysql;  </li>
+<li>delete from User where User=””;  </li>
+<li>update User set Password=PASSWORD(‘newpassword’) where User=’root’;  </li>
+<li>如果要对用户所用的登录终端进行限制，可以更新User表中相应用户的Host字段，在进行了以上更改后应重新启动数据库服务，此时登录时可用如下类似命令：  </li>
+<li>mysql -uroot -p;  </li>
+<li>mysql -uroot -pnewpassword;  </li>
+<li>mysql mydb -uroot -p;  </li>
+<li>mysql mydb -uroot -pnewpassword;  </li>
+<li>上面命令参数是常用参数的一部分，详细情况可参考文档。此处的mydb是要登录的数据库的名称。  </li>
+<li>在进行开发和实际应用中，用户不应该只用root用户进行连接数据库，虽然使用root用户进行测试时很方便，但会给系统带来重大安全隐患，也不利于管理技术的提高。我们给一个应用中使用的用户赋予最恰当的数据库权限。如一个只进行数据插入的用户不应赋予其删除数据的权限。MySql的用户管理是通过User表来实现的，添加新用户常用的方法有两个，一是在User表插入相应的数据行，同时设置相应的权限；二是通过GRANT命令创建具有某种权限的用户。其中GRANT的常用用法如下：  </li>
+<li>grant all on mydb. to NewUserName@HostName identified by “password”;  </li>
+<li>grant usage on <em>.</em> to NewUserName@HostName identified by “password”;  </li>
+<li>grant select,insert,update on mydb. to NewUserName@HostName identified by “password”;  </li>
+<li>grant update,delete on mydb.TestTable to NewUserName@HostName identified by “password”;  </li>
+<li>若要给此用户赋予他在相应对象上的权限的管理能力，可在GRANT后面添加WITH GRANT OPTION选项。而对于用插入User表添加的用户，Password字段应用PASSWORD 函数进行更新加密，以防不轨之人窃看密码。对于那些已经不用的用户应给予清除，权限过界的用户应及时回收权限，回收权限可以通过更新User表相应字段，也可以使用REVOKE操作。    </li>
+<li>全局管理权限：  </li>
+<li>FILE: 在MySQL服务器上读写文件。  </li>
+<li>PROCESS: 显示或杀死属于其它用户的服务线程。  </li>
+<li>RELOAD: 重载访问控制表，刷新日志等。  </li>
+<li>SHUTDOWN: 关闭MySQL服务。  </li>
+<li>数据库/数据表/数据列权限：  </li>
+<li>Alter: 修改已存在的数据表(例如增加/删除列)和索引。  </li>
+<li>Create: 建立新的数据库或数据表。  </li>
+<li>Delete: 删除表的记录。  </li>
+<li>Drop: 删除数据表或数据库。  </li>
+<li>INDEX: 建立或删除索引。  </li>
+<li>Insert: 增加表的记录。  </li>
+<li>Select: 显示/搜索表的记录。  </li>
+<li>Update: 修改表中已存在的记录。  </li>
+<li>特别的权限：  </li>
+<li>ALL: 允许做任何事(和root一样)。  </li>
+<li>USAGE: 只允许登录–其它什么也不允许做。  </li>
+<li>———————  </li>
+<li>MYSQL常用命令  </li>
+<li>有很多朋友虽然安装好了mysql但却不知如何使用它。在这篇文章中我们就从连接MYSQL、修改密码、增加用户等方面来学习一些MYSQL的常用命令。  </li>
+<li>　　有很多朋友虽然安装好了mysql但却不知如何使用它。在这篇文章中我们就从连接MYSQL、修改密码、增加用户等方面来学习一些MYSQL的常用命令。　  </li>
+<li>　　一、连接MYSQL　  </li>
+<li>　　格式：mysql -h主机地址-u用户名－p用户密码　　  </li>
+<li>　　、例：连接到本机上的MYSQL  </li>
+<li>　　首先在打开DOS窗口，然后进入目录mysqlbin，再键入命令mysql -uroot -p，回车后提示你输密码，如果刚安装好MYSQL，超级用户root是没有密码的，故直接回车即可进入到MYSQL中了，MYSQL的提示符是：mysql&gt; 　　  </li>
+<li>　　、例：连接到远程主机上的MYSQL  </li>
+<li>　　假设远程主机的IP为：.110.110.110，用户名为root,密码为abcd123。则键入以下命令：　　　  </li>
+<li>　　mysql -h110.110.110.110 -uroot -pabcd123 　　  </li>
+<li>　　（注:u与root可以不用加空格，其它也一样）　　  </li>
+<li>　　、退出MYSQL命令：exit （回车）  </li>
+<li>　　二、修改密码　　  </li>
+<li>　　格式：mysqladmin -u用户名-p旧密码password 新密码　  </li>
+<li>　　、例：给root加个密码ab12。首先在DOS下进入目录mysqlbin，然后键入以下命令　　  </li>
+<li>　　mysqladmin -uroot -password ab12 　　  </li>
+<li>　　注：因为开始时root没有密码，所以-p旧密码一项就可以省略了。　　  </li>
+<li>　　、例：再将root的密码改为djg345  </li>
+<li>　　mysqladmin -uroot -pab12 password djg345  </li>
+<li>MYSQL常用命令（下）  </li>
+<li>　　一、操作技巧  </li>
+<li>　　、如果你打命令时，回车后发现忘记加分号，你无须重打一遍命令，只要打个分号回车就可以了。也就是说你可以把一个完整的命令分成几行来打，完后用分号作结束标志就OK。  </li>
+<li>　　、你可以使用光标上下键调出以前的命令。但以前我用过的一个MYSQL旧版本不支持。我现在用的是mysql-3.23.27-beta-win。  </li>
+<li>　　二、显示命令  </li>
+<li>　　、显示数据库列表。  </li>
+<li>　　show databases;  </li>
+<li>　　刚开始时才两个数据库：mysql和test。mysql库很重要它里面有MYSQL的系统信息，我们改密码和新增用户，实际上就是用这个库进行操作。  </li>
+<li>　　、显示库中的数据表：  </li>
+<li>　　use mysql；／／打开库，学过FOXBASE的一定不会陌生吧  </li>
+<li>　　show tables;  </li>
+<li>　　、显示数据表的结构：  </li>
+<li>　　describe 表名;  </li>
+<li>　　、建库：  </li>
+<li>　　create database 库名;  </li>
+<li>　　、建表：  </li>
+<li>　　use 库名；  </li>
+<li>　　create table 表名(字段设定列表)；  </li>
+<li>　　、删库和删表:  </li>
+<li>　　drop database 库名;  </li>
+<li>　　drop table 表名；  </li>
+<li>　　、将表中记录清空：  </li>
+<li>　　delete from 表名;  </li>
+<li>　　、显示表中的记录：  </li>
+<li>　　select  from 表名;  </li>
+<li>三、一个建库和建表以及插入数据的实例  </li>
+<li>　　drop database if exists school; //如果存在SCHOOL则删除  </li>
+<li>　　create database school; //建立库SCHOOL  </li>
+<li>　　use school; //打开库SCHOOL  </li>
+<li>　　create table teacher //建立表TEACHER  </li>
+<li>　　(  </li>
+<li>　　id int(3) auto_increment not null primary key,  </li>
+<li>　　name char(10) not null,  </li>
+<li>　　address varchar(50) default ‘深圳’,  </li>
+<li>　　year date  </li>
+<li>　　); //建表结束  </li>
+<li>　　//以下为插入字段  </li>
+<li>　　insert into teacher values(”,’glchengang’,’深圳一中’,’-10-10′);  </li>
+<li>　　insert into teacher values(”,’jack’,’深圳一中’,’-12-23′);  </li>
+<li>　　注：在建表中（）将ID设为长度为的数字字段:int(3)并让它每个记录自动加一:auto_increment并不能为空:not null而且让他成为主字段primary key  </li>
+<li>　　（）将NAME设为长度为的字符字段  </li>
+<li>　　（）将ADDRESS设为长度的字符字段，而且缺省值为深圳。varchar和char有什么区别呢，只有等以后的文章再说了。  </li>
+<li>　　（）将YEAR设为日期字段。  </li>
+<li>　　如果你在mysql提示符键入上面的命令也可以，但不方便调试。你可以将以上命令原样写入一个文本文件中假设为school.sql，然后复制到c:\下，并在DOS状态进入目录\mysql\bin，然后键入以下命令：  </li>
+<li>　　mysql -uroot -p密码&lt; c:\school.sql  </li>
+<li>　　如果成功，空出一行无任何显示；如有错误，会有提示。（以上命令已经调试，你只要将//的注释去掉即可使用）。  </li>
+<li>四、将文本数据转到数据库中  </li>
+<li>　　、文本数据应符合的格式：字段数据之间用tab键隔开，null值用\n来代替.  </li>
+<li>　　例：  </li>
+<li>　　rose 深圳二中1976-10-10  </li>
+<li>　　mike 深圳一中1975-12-23  </li>
+<li>　　、数据传入命令load data local infile “文件名” into table 表名;  </li>
+<li>　　注意：你最好将文件复制到\mysql\bin目录下，并且要先用use命令打表所在的库。  </li>
+<li>五、备份数据库：（命令在DOS的\mysql\bin目录下执行）  </li>
+<li>　　mysqldump –opt school&gt;school.bbb  </li>
+<li>　　注释:将数据库school备份到school.bbb文件，school.bbb是一个文本文件，文件名任取，打开看看你会有新发现。  </li>
+<li>一.SELECT语句的完整语法为：  </li>
+<li>SELECT[ALL|DISTINCT|DISTINCTROW|TOP]  </li>
+<li>{<em>|talbe.</em>|[table.]field1[AS alias1][,[table.]field2[AS alias2][,…]]}  </li>
+<li>FROM tableexpression[,…][IN externaldatabase]  </li>
+<li>[WHERE…]  </li>
+<li>[GROUP BY…]  </li>
+<li>[HAVING…]  </li>
+<li>[ORDER BY…]  </li>
+<li>[WITH OWNERACCESS OPTION]  </li>
+<li>说明：  </li>
+<li>用中括号([])括起来的部分表示是可选的，用大括号({})括起来的部分是表示必须从中选择其中的一个。  </li>
+<li>1 FROM子句  </li>
+<li>FROM 子句指定了SELECT语句中字段的来源。FROM子句后面是包含一个或多个的表达式(由逗号分开)，其中的表达式可为单一表名称、已保存的查询或由INNER JOIN、LEFT JOIN 或RIGHT JOIN 得到的复合结果。如果表或查询存储在外部数据库，在IN 子句之后指明其完整路径。  </li>
+<li>例：下列SQL语句返回所有有定单的客户：  </li>
+<li>SELECT OrderID,Customer.customerID  </li>
+<li>FROM Orders Customers  </li>
+<li>WHERE Orders.CustomerID=Customers.CustomeersID  </li>
+<li>2 ALL、DISTINCT、DISTINCTROW、TOP谓词  </li>
+<li>(1) ALL 返回满足SQL语句条件的所有记录。如果没有指明这个谓词，默认为ALL。  </li>
+<li>例：SELECT ALL FirstName,LastName  </li>
+<li>FROM Employees  </li>
+<li>(2) DISTINCT 如果有多个记录的选择字段的数据相同，只返回一个。  </li>
+<li>(3) DISTINCTROW 如果有重复的记录，只返回一个  </li>
+<li>(4) TOP显示查询头尾若干记录。也可返回记录的百分比，这是要用TOP N PERCENT子句（其中N 表示百分比）  </li>
+<li>例：返回%定货额最大的定单  </li>
+<li>SELECT TOP 5 PERCENT*  </li>
+<li>FROM [ Order Details]  </li>
+<li>ORDER BY UnitPrice<em>Quantity</em>(1-Discount) DESC  </li>
+<li>3 用AS 子句为字段取别名  </li>
+<li>如果想为返回的列取一个新的标题，或者，经过对字段的计算或总结之后，产生了一个新的值，希望把它放到一个新的列里显示，则用AS保留。  </li>
+<li>例：返回FirstName字段取别名为NickName  </li>
+<li>SELECT FirstName AS NickName ,LastName ,City  </li>
+<li>FROM Employees  </li>
+<li>例：返回新的一列显示库存价值  </li>
+<li>SELECT ProductName ,UnitPrice ,UnitsInStock ,UnitPrice*UnitsInStock AS valueInStock  </li>
+<li>FROM Products  </li>
+<li>二.WHERE 子句指定查询条件  </li>
+<li>1 比较运算符  </li>
+<li>比较运算符含义  </li>
+<li>= 等于  </li>
+<li>> 大于  </li>
+<li>&lt; 小于  </li>
+<li>>= 大于等于  </li>
+<li>&lt;= 小于等于  </li>
+<li>&lt;&gt; 不等于  </li>
+<li>!&gt; 不大于  </li>
+<li>!&lt; 不小于  </li>
+<li>例：返回年月的定单  </li>
+<li>SELECT OrderID, CustomerID, OrderDate  </li>
+<li>FROM Orders  </li>
+<li>WHERE OrderDate&gt;#1/1/96# AND OrderDate&lt;#1/30/96#  </li>
+<li>注意：  </li>
+<li>Mcirosoft JET SQL 中，日期用‘#’定界。日期也可以用Datevalue()函数来代替。在比较字符型的数据时，要加上单引号’’，尾空格在比较中被忽略。  </li>
+<li>例：  </li>
+<li>WHERE OrderDate&gt;#96-1-1#  </li>
+<li>也可以表示为：  </li>
+<li>WHERE OrderDate&gt;Datevalue(‘/1/96’)  </li>
+<li>使用NOT 表达式求反。  </li>
+<li>例：查看年月日以后的定单  </li>
+<li>WHERE Not OrderDate&lt;=#1/1/96#  </li>
+<li>2 范围（BETWEEN 和NOT BETWEEN）  </li>
+<li>BETWEEN …AND…运算符指定了要搜索的一个闭区间。  </li>
+<li>例：返回年月到年月的定单。  </li>
+<li>WHERE OrderDate Between #1/1/96# And #2/1/96#  </li>
+<li>3 列表（IN ，NOT IN）  </li>
+<li>IN 运算符用来匹配列表中的任何一个值。IN子句可以代替用OR子句连接的一连串的条件。  </li>
+<li>例：要找出住在London、Paris或Berlin的所有客户  </li>
+<li>SELECT CustomerID, CompanyName, ContactName, City  </li>
+<li>FROM Customers  </li>
+<li>WHERE City In(‘London’,’Paris’,’Berlin’)  </li>
+<li>4 模式匹配(LIKE)  </li>
+<li>LIKE运算符检验一个包含字符串数据的字段值是否匹配一指定模式。  </li>
+<li>LIKE运算符里使用的通配符  </li>
+<li>通配符含义  </li>
+<li>？任何一个单一的字符  </li>
+<li><em>任意长度的字符</em>  </li>
+<li># 0~9之间的单一数字  </li>
+<li>[字符列表] 在字符列表里的任一值  </li>
+<li>[！字符列表] 不在字符列表里的任一值  </li>
+<li><ul>
+<li>指定字符范围，两边的值分别为其上下限  </li>
+</ul>
+</li>
+<li>例：返回邮政编码在（）-0000到（）-9999之间的客户  </li>
+<li>SELECT CustomerID ,CompanyName,City,Phone  </li>
+<li>FROM Customers  </li>
+<li>WHERE Phone Like ‘(171)555-####’  </li>
+<li>LIKE运算符的一些样式及含义  </li>
+<li>样式含义不符合  </li>
+<li>LIKE ‘A’A后跟任意长度的字符Bc,c255  </li>
+<li>LIKE’[<em>]’5\</em>5 555*  </li>
+<li>LIKE’?5’5与之间有任意一个字符55,5wer5  </li>
+<li>LIKE’##5’5235，5kd5,5346  </li>
+<li>LIKE’[a-z]’a-z间的任意一个字符5,%  </li>
+<li>LIKE’[!0-9]’非-9间的任意一个字符0,1  </li>
+<li>LIKE’[[]’1,  </li>
+<li>三.用ORDER BY子句排序结果  </li>
+<li>ORDER子句按一个或多个（最多个）字段排序查询结果，可以是升序（ASC）也可以是降序（DESC），缺省是升序。ORDER子句通常放在SQL语句的最后。  </li>
+<li>ORDER子句中定义了多个字段，则按照字段的先后顺序排序。  </li>
+<li>例：  </li>
+<li>SELECT ProductName,UnitPrice, UnitInStock  </li>
+<li>FROM Products  </li>
+<li>ORDER BY UnitInStock DESC , UnitPrice DESC, ProductName  </li>
+<li>ORDER BY 子句中可以用字段在选择列表中的位置号代替字段名，可以混合字段名和位置号。  </li>
+<li>例：下面的语句产生与上列相同的效果。  </li>
+<li>SELECT ProductName,UnitPrice, UnitInStock  </li>
+<li>FROM Products  </li>
+<li>ORDER BY 1 DESC , 2 DESC,3  </li>
+<li>四.运用连接关系实现多表查询  </li>
+<li>例：找出同一个城市中供应商和客户的名字  </li>
+<li>SELECT Customers.CompanyName, Suppliers.ComPany.Name  </li>
+<li>FROM Customers, Suppliers  </li>
+<li>WHERE Customers.City=Suppliers.City  </li>
+<li>例：找出产品库存量大于同一种产品的定单的数量的产品和定单  </li>
+<li>SELECT ProductName,OrderID, UnitInStock, Quantity  </li>
+<li>FROM Products, [Order Deails]  </li>
+<li>WHERE Product.productID=[Order Details].ProductID  </li>
+<li>AND UnitsInStock&gt;Quantity  </li>
+<li>另一种方法是用Microsof JET SQL 独有的JNNER JOIN  </li>
+<li>语法：  </li>
+<li>FROM table1 INNER JOIN table2  </li>
+<li>ON table1.field1 comparision table2.field2  </li>
+<li>其中comparision 就是前面WHERE子句用到的比较运算符。  </li>
+<li>SELECT FirstName,lastName,OrderID,CustomerID,OrderDate  </li>
+<li>FROM Employees  </li>
+<li>INNER JOIN Orders ON Employees.EmployeeID=Orders.EmployeeID  </li>
+<li>注意：  </li>
+<li>INNER JOIN不能连接Memo OLE Object Single Double 数据类型字段。  </li>
+<li>在一个JOIN语句中连接多个ON子句  </li>
+<li>语法：  </li>
+<li>SELECT fields  </li>
+<li>FROM table1 INNER JOIN table2  </li>
+<li>ON table1.field1 compopr table2.field1 AND  </li>
+<li>ON table1.field2 compopr table2.field2 OR  </li>
+<li>ON table1.field3 compopr table2.field3  </li>
+<li>也可以  </li>
+<li>SELECT fields  </li>
+<li>FROM table1 INNER JOIN  </li>
+<li>（table2 INNER JOIN [( ]table3  </li>
+<li>[INNER JOER] [( ]tablex[INNER JOIN]  </li>
+<li>ON table1.field1 compopr table2.field1  </li>
+<li>ON table1.field2 compopr table2.field2  </li>
+<li>ON table1.field3 compopr table2.field3  </li>
+<li>外部连接返回更多记录，在结果中保留不匹配的记录，不管存不存在满足条件的记录都要返回另一侧的所有记录。  </li>
+<li>FROM table [LEFT|RIGHT]JOIN table2  </li>
+<li>ON table1.field1comparision table.field2  </li>
+<li>用左连接来建立外部连接，在表达式的左边的表会显示其所有的数据  </li>
+<li>例：不管有没有定货量，返回所有商品  </li>
+<li>SELECT ProductName ,OrderID  </li>
+<li>FROM Products  </li>
+<li>LEFT JOIN Orders ON Products.PrductsID=Orders.ProductID  </li>
+<li>右连接与左连接的差别在于：不管左侧表里有没有匹配的记录，它都从左侧表中返回所有记录。  </li>
+<li>例：如果想了解客户的信息，并统计各个地区的客户分布，这时可以用一个右连接，即使某个地区没有客户，也要返回客户信息。  </li>
+<li>空值不会相互匹配，可以通过外连接才能测试被连接的某个表的字段是否有空值。  </li>
+<li>SELECT   </li>
+<li>FROM talbe1  </li>
+<li>LEFT JOIN table2 ON table1.a=table2.c  </li>
+<li>1 连接查询中使用Iif函数实现以值显示空值  </li>
+<li>Iif表达式：Iif(IsNull(Amount,0,Amout)  </li>
+<li>例：无论定货大于或小于￥，都要返回一个标志。  </li>
+<li>Iif([Amount]&gt;50,?Big order?,?Small order?)  </li>
+<li>五. 分组和总结查询结果  </li>
+<li>在SQL的语法里，GROUP BY和HAVING子句用来对数据进行汇总。GROUP BY子句指明了按照哪几个字段来分组，而将记录分组后，用HAVING子句过滤这些记录。  </li>
+<li>GROUP BY 子句的语法  </li>
+<li>SELECT fidldlist  </li>
+<li>FROM table  </li>
+<li>WHERE criteria  </li>
+<li>[GROUP BY groupfieldlist [HAVING groupcriteria]]  </li>
+<li>注：Microsoft Jet数据库Jet 不能对备注或OLE对象字段分组。  </li>
+<li>GROUP BY字段中的Null值以备分组但是不能被省略。  </li>
+<li>在任何SQL合计函数中不计算Null值。  </li>
+<li>GROUP BY子句后最多可以带有十个字段，排序优先级按从左到右的顺序排列。  </li>
+<li>例：在‘WA’地区的雇员表中按头衔分组后，找出具有同等头衔的雇员数目大于人的所有头衔。  </li>
+<li>SELECT Title ,Count(Title) as Total  </li>
+<li>FROM Employees  </li>
+<li>WHERE Region = ‘WA’  </li>
+<li>GROUP BY Title  </li>
+<li>HAVING Count(Title)&gt;1  </li>
+<li>JET SQL 中的聚积函数  </li>
+<li>聚集函数意义  </li>
+<li>SUM ( ) 求和  </li>
+<li>AVG ( ) 平均值  </li>
+<li>COUNT ( ) 表达式中记录的数目  </li>
+<li>COUNT ( ) 计算记录的数目  </li>
+<li>MAX 最大值  </li>
+<li>MIN 最小值  </li>
+<li>VAR 方差  </li>
+<li>STDEV 标准误差  </li>
+<li>FIRST 第一个值  </li>
+<li>LAST 最后一个值  </li>
+<li>六. 用Parameters声明创建参数查询  </li>
+<li>Parameters声明的语法:  </li>
+<li>PARAMETERS name datatype[,name datatype[, …]]  </li>
+<li>其中name 是参数的标志符,可以通过标志符引用参数.  </li>
+<li>Datatype说明参数的数据类型.  </li>
+<li>使用时要把PARAMETERS 声明置于任何其他语句之前.  </li>
+<li>例:  </li>
+<li>PARAMETERS[Low price] Currency,[Beginning date]datatime  </li>
+<li>SELECT OrderID ,OrderAmount  </li>
+<li>FROM Orders  </li>
+<li>WHERE OrderAMount&gt;[low price]  </li>
+<li>AND OrderDate&gt;=[Beginning date]  </li>
+<li>七. 功能查询  </li>
+<li>所谓功能查询,实际上是一种操作查询,它可以对数据库进行快速高效的操作.它以选择查询为目的,挑选出符合条件的数据,再对数据进行批处理.功能查询包括更新查询,删除查询,添加查询,和生成表查询.  </li>
+<li>1 更新查询  </li>
+<li>UPDATE子句可以同时更改一个或多个表中的数据.它也可以同时更改多个字段的值.  </li>
+<li>更新查询语法:  </li>
+<li>UPDATE 表名  </li>
+<li>SET 新值  </li>
+<li>WHERE 准则  </li>
+<li>例:英国客户的定货量增加%,货运量增加%  </li>
+<li>UPDATE OEDERS  </li>
+<li>SET OrderAmount = OrderAmount <em>1.1</em>  </li>
+<li>Freight = Freight*1.03  </li>
+<li>WHERE ShipCountry = ‘UK’  </li>
+<li>2 删除查询  </li>
+<li>DELETE子句可以使用户删除大量的过时的或冗于的数据.  </li>
+<li>注:删除查询的对象是整个记录.  </li>
+<li>DELETE子句的语法:  </li>
+<li>DELETE [表名.]  </li>
+<li>FROM 来源表  </li>
+<li>WHERE 准则  </li>
+<li>例: 要删除所有年前的定单  </li>
+<li>DELETE   </li>
+<li>FROM Orders  </li>
+<li>WHERE OrderData&lt;#94-1-1#  </li>
+<li>3 追加查询  </li>
+<li>INSERT子句可以将一个或一组记录追加到一个或多个表的尾部.  </li>
+<li>INTO 子句指定接受新记录的表  </li>
+<li>valueS 关键字指定新记录所包含的数据值.  </li>
+<li>INSERT 子句的语法:  </li>
+<li>INSETR INTO 目的表或查询(字段,字段,…)  </li>
+<li>valueS(数值,数值,…)  </li>
+<li>例:增加一个客户  </li>
+<li>INSERT INTO Employees(FirstName,LastName,title)  </li>
+<li>valueS(‘Harry’,’Washington’,’Trainee’)  </li>
+<li>4 生成表查询  </li>
+<li>可以一次性地把所有满足条件的记录拷贝到一张新表中.通常制作记录的备份或副本或作为报表的基础.  </li>
+<li>SELECT INTO子句用来创建生成表查询语法:  </li>
+<li>SELECT 字段,字段,…  </li>
+<li>INTO 新表[IN 外部数据库]  </li>
+<li>FROM 来源数据库  </li>
+<li>WHERE 准则  </li>
+<li>例:为定单制作一个存档备份  </li>
+<li>SELECT   </li>
+<li>INTO OrdersArchive  </li>
+<li>FROM Orders  </li>
+<li>八. 联合查询  </li>
+<li>UNION运算可以把多个查询的结果合并到一个结果集里显示.  </li>
+<li>UNION运算的一般语法:  </li>
+<li>[表]查询UNION [ALL]查询UNION …  </li>
+<li>例:返回巴西所有供给商和客户的名字和城市  </li>
+<li>SELECT CompanyName,City  </li>
+<li>FROM Suppliers  </li>
+<li>WHERE Country = ‘Brazil’  </li>
+<li>UNION  </li>
+<li>SELECT CompanyName,City  </li>
+<li>FROM Customers  </li>
+<li>WHERE Country = ‘Brazil’  </li>
+<li>注:  </li>
+<li>缺省的情况下,UNION子句不返回重复的记录.如果想显示所有记录,可以加ALL选项  </li>
+<li>UNION运算要求查询具有相同数目的字段.但是,字段数据类型不必相同.  </li>
+<li>每一个查询参数中可以使用GROUP BY 子句或HAVING 子句进行分组.要想以指定的顺序来显示返回的数据,可以在最后一个查询的尾部使用OREER BY子句.  </li>
+<li>九. 交叉查询  </li>
+<li>交叉查询可以对数据进行总和,平均,计数或其他总和计算法的计算,这些数据通过两种信息进行分组:一个显示在表的左部,另一个显示在表的顶部.  </li>
+<li>Microsoft Jet SQL 用TRANSFROM语句创建交叉表查询语法:  </li>
+<li>TRANSFORM aggfunction  </li>
+<li>SELECT 语句  </li>
+<li>GROUP BY 子句  </li>
+<li>PIVOT pivotfield[IN(value1 [,value2[,…]]) ]  </li>
+<li>Aggfounction指SQL聚积函数,  </li>
+<li>SELECT语句选择作为标题的的字段,  </li>
+<li>GROUP BY 分组  </li>
+<li>说明：  </li>
+<li>Pivotfield 在查询结果集中创建列标题时用的字段或表达式,用可选的IN子句限制它的取值.  </li>
+<li>value代表创建列标题的固定值.  </li>
+<li>例:显示在年里每一季度每一位员工所接的定单的数目:  </li>
+<li>TRANSFORM Count(OrderID)  </li>
+<li>SELECT FirstName&amp;’’&amp;LastName AS FullName  </li>
+<li>FROM Employees INNER JOIN Orders  </li>
+<li>ON Employees.EmployeeID = Orders.EmployeeID  </li>
+<li>WHERE DatePart(“yyyy”,OrderDate)= ‘’  </li>
+<li>GROUP BY FirstName&amp;’’&amp;LastName  </li>
+<li>ORDER BY FirstName&amp;’’&amp;LastName  </li>
+<li>POVOT DatePart(“q”,OrderDate)&amp;’季度’  </li>
+<li>十.子查询  </li>
+<li>子查询可以理解为套查询.子查询是一个SELECT语句.  </li>
+<li>1 表达式的值与子查询返回的单一值做比较  </li>
+<li>语法:  </li>
+<li>表达式comparision <a href="https://blog.csdn.net/qq_35409127/article/details/%E5%AD%90%E6%9F%A5%E8%AF%A2" target="_blank" rel="noopener">ANY|ALL|SOME</a>  </li>
+<li>说明：  </li>
+<li>ANY 和SOME谓词是同义词,与比较运算符(=,&lt;,&gt;,&lt;&gt;,&lt;=,&gt;=)一起使用.返回一个布尔值True或False.ANY的意思是,表达式与子查询返回的一系列的值逐一比较,只要其中的一次比较产生True结果,ANY测试的返回True值(既WHERE子句的结果),对应于该表达式的当前记录将进入主查询的结果中.ALL测试则要求表达式与子查询返回的一系列的值的比较都产生True结果,才回返回True值.  </li>
+<li>例:主查询返回单价比任何一个折扣大于等于%的产品的单价要高的所有产品  </li>
+<li>SELECT  FROM Products  </li>
+<li>WHERE UnitPrice&gt;ANY  </li>
+<li>(SELECT UnitPrice FROM[Order Details] WHERE Discount&gt;0.25)  </li>
+<li>2 检查表达式的值是否匹配子查询返回的一组值的某个值  </li>
+<li>语法:  </li>
+<li>[NOT]IN(子查询)  </li>
+<li>例:返回库存价值大于等于的产品.  </li>
+<li>SELECT ProductName FROM Products  </li>
+<li>WHERE ProductID IN  </li>
+<li>(SELECT PrdoctID FROM [Order DEtails]  </li>
+<li>WHERE UnitPrice*Quantity&gt;= 1000)  </li>
+<li>3检测子查询是否返回任何记录  </li>
+<li>语法:  </li>
+<li>[NOT]EXISTS (子查询)  </li>
+<li>例:用EXISTS检索英国的客户  </li>
+<li>SELECT ComPanyName,ContactName  </li>
+<li>FROM Orders  </li>
+<li>WHERE EXISTS  </li>
+<li>(SELECT   </li>
+<li>FROM Customers  </li>
+<li>WHERE Country = ‘UK’AND  </li>
+<li>Customers.CustomerID= Orders.CustomerID)  </li>
+</ol>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

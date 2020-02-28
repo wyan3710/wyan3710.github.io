@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Mysql主从 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#在阿里云Centos7-6上面配置Mysql主从数据库-master-slave-，实现读写分离"><span class="toc-text">在阿里云Centos7.6上面配置Mysql主从数据库(master/slave)，实现读写分离</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Mysql主从
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-02-23 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#MySql" title="MySql">MySql</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#数据库" title="数据库">数据库</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="在阿里云Centos7-6上面配置Mysql主从数据库-master-slave-，实现读写分离"><a href="#在阿里云Centos7-6上面配置Mysql主从数据库-master-slave-，实现读写分离" class="headerlink" title="在阿里云Centos7.6上面配置Mysql主从数据库(master/slave)，实现读写分离"></a>在阿里云Centos7.6上面配置Mysql主从数据库(master/slave)，实现读写分离</h1><p>​    在之前的一篇文章中，阐述了如何在高并发高负载的场景下使用nginx做后台服务的负载均衡:<a href="https://v3u.cn/a_id_77" target="_blank" rel="noopener">在阿里云Centos上配置nginx+uwsgi+负载均衡配置</a>,但是不要以为这样做了就是一劳永逸的，到了数据业务层、数据访问层，如果还是传统的数据结构，或者只是单单靠一台服务器负载，如此多的数据库连接操作，数据库必然会崩溃，数据库如果宕机的话，后果更是不堪设想。这时候，我们会考虑如何减少数据库的连接，一方面采用优秀的代码框架，进行代码的优化，采用优秀的数据缓存技术如：redis,如果资金丰厚的话，必然会想到架设mysql服务集群，来分担主数据库的压力。今天总结一下利用MySQL主从配置，实现读写分离，减轻数据库压力。</p>
+<p>​    明确目的，部署mysql集群，采用一主一从的策略，写入操作使用主库，从库实时同步主库的数据，从库负责读取的业务，从而完成读写分离的目的。</p>
+<p>​    mysql主从同步的原理很简单，从库生成两个线程，一个I/O线程，一个SQL线程；i/o线程去请求主库 的binlog（二进制日志），并将得到的binlog日志写到relay log（中继日志） 文件中；主库会生成一个 log dump 线程，用来给从库 i/o线程传binlog；</p>
+<p>​    SQL 线程，会读取relay log文件中的日志，并解析成具体操作，来实现主从的操作一致，而最终数据一致。</p>
+<p>​    <img src="https://v3u.cn/v3u/Public/js/editor/attached/image/20190529/20190529071516_23557.png" alt="img"></p>
+<p>​    首先准备两台阿里云服务器，一台作为主机(master)，一台作为从机(slave)，都安装好mysql5.7。</p>
+<p>​    进入master服务器</p>
+<p>​    修改mysql配置文件 vim /etc/my.cnf，加入如下配置</p>
+<p>​    </p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server-id</span>=<span class="number">1</span></span><br><span class="line"><span class="attr">innodb_flush_log_at_trx_commit</span>=<span class="number">2</span></span><br><span class="line"><span class="attr">sync_binlog</span>=<span class="number">1</span></span><br><span class="line"><span class="attr">log-bin</span>=mysql-bin-<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>​    </p>
+<p>配置说明：</p>
+<p>保存后，重启mysql</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">systemctl restart mysqld</span></span><br></pre></td></tr></table></figure>
+<p>进入mysql命令行 mysql -uroot -p你的密码</p>
+<p>输入授权命令</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">REPLICATION</span> <span class="keyword">SLAVE</span> <span class="keyword">ON</span> *.* <span class="keyword">to</span> <span class="string">'repl'</span>@<span class="string">'%'</span> <span class="keyword">identified</span> <span class="keyword">by</span> <span class="string">'Admin123!'</span>;</span><br></pre></td></tr></table></figure>
+<p>意思是所有slave都可以通过账号repl和密码Admin123!来同步master的数据</p>
+<p>然后查看master的状态:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">master</span> <span class="keyword">status</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://v3u.cn/v3u/Public/js/editor/attached/image/20190529/20190529072527_35767.png" alt="img"></p>
+<p>把file列和Position列记录下来，一会配置slave要用到</p>
+<p>此时Master的配置已经搞定，登录一下从机(slave)</p>
+<p>同理修改slave服务器的mysql配置 vim /etc/my.cnf 加入下面的配置，需要注意的是server-id不要和master一样</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server-id</span>=<span class="number">201</span> </span><br><span class="line"><span class="attr">innodb_flush_log_at_trx_commit</span>=<span class="number">2</span> </span><br><span class="line"><span class="attr">sync_binlog</span>=<span class="number">1</span> </span><br><span class="line"><span class="attr">log-bin</span>=mysql-bin-<span class="number">201</span></span><br></pre></td></tr></table></figure>
+<p>保存后重启服务 systemctl restart mysqld</p>
+<p>进入mysql命令行 mysql -uroot -p你的密码</p>
+<p>输入命令：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">change master <span class="keyword">to</span> <span class="attribute">master_host</span>=<span class="string">'39.106.228.179'</span>,master_user='repl' ,<span class="attribute">master_password</span>=<span class="string">'Admin123!'</span>, <span class="attribute">master_log_file</span>=<span class="string">'mysql-bin.000002'</span> ,<span class="attribute">master_log_pos</span>=154</span><br></pre></td></tr></table></figure>
+<p>命令说明：</p>
+<p>master_host: 主机的ip<br>master_user : 主机授权的用户.<br>master_password : 主机授权时候填写的密码<br>master_log_file : 主机show master status;中的File<br>master_log_pos: 主机show master status;中的Position.</p>
+<p>输入命令启动slave</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">start</span> <span class="keyword">slave</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">slave</span> <span class="keyword">status</span> G;</span><br></pre></td></tr></table></figure>
+<p>然后我们就可以测试一下对master进行写入，看看salve是否可以同步数据了</p>
+<p><img src="https://v3u.cn/v3u/Public/js/editor/attached/image/20190529/20190529073320_84778.png" alt="img"></p>
+<p>当然了，mysql的读写分离主从配置并不是万能的，根据不同的应用场景选择不同的策略，MySQL的主从复制功能有一定的延迟性，如果对数据实时一致性的要求比较高的场景不推荐使用。</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

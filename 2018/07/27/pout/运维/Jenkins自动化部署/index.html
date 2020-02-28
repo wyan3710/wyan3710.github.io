@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Jenkins自动化部署 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#在阿里云Centos7-6上利用docker搭建Jenkins来自动化部署Django项目"><span class="toc-text">在阿里云Centos7.6上利用docker搭建Jenkins来自动化部署Django项目</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Jenkins自动化部署
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2018-07-27 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#运维" title="运维">运维</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="在阿里云Centos7-6上利用docker搭建Jenkins来自动化部署Django项目"><a href="#在阿里云Centos7-6上利用docker搭建Jenkins来自动化部署Django项目" class="headerlink" title="在阿里云Centos7.6上利用docker搭建Jenkins来自动化部署Django项目"></a>在阿里云Centos7.6上利用docker搭建Jenkins来自动化部署Django项目</h1><p>​    需求分析—原型设计—开发代码—内网部署-提交测试—确认上线—备份数据—外网更新-最终测试，如果发现外网部署的代码有异常，需要及时回滚。</p>
+<p>​    整个过程相当复杂而漫长，其中还需要输入不少的命令，比如上传代码，git的拉取或者合并分支等等。</p>
+<p>​    Jenkins是目前非常流行的一款持续集成工具，可以帮助大家把更新后的代码自动部署到服务器上运行，整个流程非常自动化，你可以理解为部署命令操作的可视化界面。</p>
+<p>​    </p>
+<p>​    Jenkins主要有三种安装方式<br>    下载官方war包，放到tomcat中直接运行。<br>    yum安装。<br>    使用官方docker镜像。</p>
+<p>​    </p>
+<p>​    毫无疑问，既然有docker这么简单方便的工具，就没必要选择前两种复杂的安装方式了。</p>
+<p>​    首先安装docker</p>
+<p>​    </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">centos 安装docker</span><br><span class="line">1 docker 要求 CentOS 系统的内核版本高于 3.10 ，查看本页面的前提条件来验证你的CentOS 版本是否支持 Docker </span><br><span class="line">2、使用 root 权限登录 Centos。确保 yum 包更新到最新。</span><br><span class="line">sudo yum <span class="keyword">update</span></span><br><span class="line"><span class="number">3</span>、卸载旧版本(如果安装过旧版本的话)</span><br><span class="line">sudo yum remove docker  docker-common docker-selinux docker-<span class="keyword">engine</span></span><br><span class="line"><span class="number">4</span>、安装需要的软件包， yum-util 提供yum-config-manager功能，另外两个是devicemapper驱动依赖的</span><br><span class="line">sudo yum <span class="keyword">install</span> -y yum-utils device-mapper-persistent-<span class="keyword">data</span> lvm2</span><br><span class="line"><span class="number">5</span>、设置yum源</span><br><span class="line">sudo yum-config-manager <span class="comment">--add-repo https://download.docker.com/linux/centos/docker-ce.repo</span></span><br><span class="line"><span class="number">6</span>、可以查看所有仓库中所有docker版本，并选择特定版本安装</span><br><span class="line"> yum <span class="keyword">list</span> docker-ce <span class="comment">--showduplicates | sort -r</span></span><br><span class="line"><span class="number">7</span>、安装docker</span><br><span class="line">sudo yum <span class="keyword">install</span> docker-ce </span><br><span class="line"><span class="number">8</span>、启动并加入开机启动</span><br><span class="line">sudo systemctl <span class="keyword">start</span> docker</span><br><span class="line">sudo systemctl <span class="keyword">enable</span> docker</span><br><span class="line"><span class="number">9</span>、验证安装是否成功(有<span class="keyword">client</span>和service两部分表示docker安装启动都成功了)</span><br><span class="line">docker <span class="keyword">version</span></span><br></pre></td></tr></table></figure>
+<p>然后下载jenkins官方docker镜像</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">docker</span> pull jenkins/jenkins</span><br></pre></td></tr></table></figure>
+<p>查看镜像 docker images</p>
+<p><img src="https://v3u.cn/v3u/Public/js/editor/attached/image/20190528/20190528100231_11283.png" alt="img"></p>
+<p>在主机上创建目录，并添加读写权限以便jenkins应用运行时读写文件</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir <span class="regexp">/root/</span>j_node</span><br><span class="line">chmod <span class="number">777</span> <span class="regexp">/root/</span>j_node</span><br></pre></td></tr></table></figure>
+<p>后台将镜像以容器的形式起服务，对端口映射，同时把刚刚建立的目录挂载到容器中</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --name jenkins -<span class="selector-tag">p</span> <span class="number">8081</span>:<span class="number">8080</span> -<span class="selector-tag">p</span> <span class="number">50000</span>:<span class="number">50000</span> -v /root/j_node:/var/jenkins_home jenkins/jenkins</span><br></pre></td></tr></table></figure>
+<p>这里注意，如果是阿里云的话，安全策略需要暴露8081端口</p>
+<p>通过网址访问 http://你的ip:8081</p>
+<p>然后通过命令获取安装秘钥</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">docker logs jenkins</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://v3u.cn/v3u/Public/js/editor/attached/image/20190528/20190528101043_90703.png" alt="img"></p>
+<p>完毕后，根据提示设置登陆账户</p>
+<p>然后新建一个项目，在源代码控制那一栏，输入你的项目的线上git仓库地址，注意默认应该是master分支，因为生产环境部署的代码必须是主分支</p>
+<p><img src="https://v3u.cn/v3u/Public/js/editor/attached/image/20190528/20190528101449_38616.png" alt="img"></p>
+<p>保存后，点击Build Now进行部署，jenkins会自动去git版本库中抽取最新的master分支进行部署，同时每部署一次的历史记录都会被保存下来</p>
+<p><img src="https://v3u.cn/v3u/Public/js/editor/attached/image/20190528/20190528101737_28436.png" alt="img"></p>
+<p>此时，进入/root/j_node 目录下 发现项目已经部署在了workspace目录下</p>
+<p><img src="https://v3u.cn/v3u/Public/js/editor/attached/image/20190528/20190528101900_12377.png" alt="img"></p>
+<p>整个过程非常简单，每次上线之前，项目经理只需要检查各个组员的代码，然后统一合并到主分支master，最后进入jenkins点击部署按钮即可，节约了不少时间。</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

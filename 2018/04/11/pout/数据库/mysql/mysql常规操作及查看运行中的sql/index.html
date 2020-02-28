@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        mysql常规操作及查看运行中的sql - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#MYSQL常用命令"><span class="toc-text">MYSQL常用命令</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1-导出整个数据库"><span class="toc-text">1.导出整个数据库</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2-导出一个表"><span class="toc-text">2.导出一个表</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-导出一个数据库结构"><span class="toc-text">3.导出一个数据库结构</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#4-导入数据库"><span class="toc-text">4.导入数据库</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#一、启动与退出"><span class="toc-text">一、启动与退出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、库操作"><span class="toc-text">二、库操作</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1-创建数据库"><span class="toc-text">1.创建数据库</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2、显示所有数据库"><span class="toc-text">2、显示所有数据库</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3、删除数据库"><span class="toc-text">3、删除数据库</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#4、连接数据库"><span class="toc-text">4、连接数据库</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#5、查看当前使用的数据库"><span class="toc-text">5、查看当前使用的数据库</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#6、当前数据库包含的表信息："><span class="toc-text">6、当前数据库包含的表信息：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、表操作，操作之前应连接某个数据库"><span class="toc-text">三、表操作，操作之前应连接某个数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1、建表"><span class="toc-text">1、建表</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2、获取表结构"><span class="toc-text">2、获取表结构</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3、删除表"><span class="toc-text">3、删除表</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#4、插入数据"><span class="toc-text">4、插入数据</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#5、查询表中的数据"><span class="toc-text">5、查询表中的数据</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#6、删除表中数据"><span class="toc-text">6、删除表中数据</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#7、修改表中数据：update-表名-set-字段-新值-…where-条件"><span class="toc-text">7、修改表中数据：update 表名 set 字段=新值,…where 条件</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#8、在表中增加字段："><span class="toc-text">8、在表中增加字段：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#9、更改表名："><span class="toc-text">9、更改表名：</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MYSQL查看正在运行的SQL"><span class="toc-text">MYSQL查看正在运行的SQL</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1、使用processlist"><span class="toc-text">1、使用processlist</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2、开启日志模式"><span class="toc-text">2、开启日志模式</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        mysql常规操作及查看运行中的sql
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2018-04-11 17:16:37</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#mysql" title="mysql">mysql</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <h1 id="MYSQL常用命令"><a href="#MYSQL常用命令" class="headerlink" title="MYSQL常用命令"></a>MYSQL常用命令</h1><h6 id="1-导出整个数据库"><a href="#1-导出整个数据库" class="headerlink" title="1.导出整个数据库"></a>1.导出整个数据库</h6><p>​    mysqldump -u 用户名 -p –default-character-set=latin1 数据库名 &gt; 导出的文件名(数据库默认编码是latin1)  </p>
+<p>​    mysqldump -u wcnc -p smgp_apps_wcnc &gt; wcnc.sql  </p>
+<h6 id="2-导出一个表"><a href="#2-导出一个表" class="headerlink" title="2.导出一个表"></a>2.导出一个表</h6><p>​    mysqldump -u 用户名 -p 数据库名 表名&gt; 导出的文件名  </p>
+<p>​    mysqldump -u wcnc -p smgp_apps_wcnc users&gt; wcnc_users.sql  </p>
+<h6 id="3-导出一个数据库结构"><a href="#3-导出一个数据库结构" class="headerlink" title="3.导出一个数据库结构"></a>3.导出一个数据库结构</h6><p>​    mysqldump -u wcnc -p -d –add-drop-table smgp_apps_wcnc &gt;d:wcnc_db.sql  </p>
+<p>​    -d 没有数据 –add-drop-table 在每个create语句之前增加一个drop table  </p>
+<h6 id="4-导入数据库"><a href="#4-导入数据库" class="headerlink" title="4.导入数据库"></a>4.导入数据库</h6><p>​    A:常用source 命令  </p>
+<p>​        进入mysql数据库控制台，  </p>
+<p>​        如mysql -u root -p  </p>
+<p>​        mysql&gt;use 数据库  </p>
+<p>​        然后使用source命令，后面参数为脚本文件(如这里用到的.sql)  </p>
+<p>​        mysql&gt;source wcnc_db.sql  </p>
+<p>​    B:使用mysqldump命令  </p>
+<p>​        mysqldump -u username -p dbname &lt; filename.sql  </p>
+<p>​    C:使用mysql命令  </p>
+<p>​        mysql -u username -p -D dbname &lt; filename.sql  </p>
+<h3 id="一、启动与退出"><a href="#一、启动与退出" class="headerlink" title="一、启动与退出"></a>一、启动与退出</h3><p>​    1、进入MySQL：启动MySQL Command Line Client（MySQL的DOS界面），直接输入安装时的密码即可。此时的提示符是：mysql&gt;  </p>
+<p>​    2、退出MySQL：quit或exit  </p>
+<h3 id="二、库操作"><a href="#二、库操作" class="headerlink" title="二、库操作"></a>二、库操作</h3><h6 id="1-创建数据库"><a href="#1-创建数据库" class="headerlink" title="1.创建数据库"></a>1.创建数据库</h6><p>命令：create database &lt;数据库名&gt;  </p>
+<p>​    例如：建立一个名为xhkdb的数据库  </p>
+<p>​        mysql&gt; create database xhkdb;  </p>
+<h6 id="2、显示所有数据库"><a href="#2、显示所有数据库" class="headerlink" title="2、显示所有数据库"></a>2、显示所有数据库</h6><p>命令：show databases （注意：最后有个s）  </p>
+<p>​    mysql&gt; show databases;  </p>
+<h6 id="3、删除数据库"><a href="#3、删除数据库" class="headerlink" title="3、删除数据库"></a>3、删除数据库</h6><p>命令：drop database &lt;数据库名&gt;  </p>
+<p>​    例如：删除名为 xhkdb的数据库  </p>
+<p>​        mysql&gt; drop database xhkdb;  </p>
+<h6 id="4、连接数据库"><a href="#4、连接数据库" class="headerlink" title="4、连接数据库"></a>4、连接数据库</h6><p>命令：use &lt;数据库名&gt;  </p>
+<p>​    例如：如果xhkdb数据库存在，尝试存取它：  </p>
+<p>​        mysql&gt; use xhkdb;  </p>
+<p>​        屏幕提示：Database changed  </p>
+<h6 id="5、查看当前使用的数据库"><a href="#5、查看当前使用的数据库" class="headerlink" title="5、查看当前使用的数据库"></a>5、查看当前使用的数据库</h6><p>​    mysql&gt; select database();  </p>
+<h6 id="6、当前数据库包含的表信息："><a href="#6、当前数据库包含的表信息：" class="headerlink" title="6、当前数据库包含的表信息："></a>6、当前数据库包含的表信息：</h6><p>​    mysql&gt; show tables; （注意：最后有个s）  </p>
+<h3 id="三、表操作，操作之前应连接某个数据库"><a href="#三、表操作，操作之前应连接某个数据库" class="headerlink" title="三、表操作，操作之前应连接某个数据库"></a>三、表操作，操作之前应连接某个数据库</h3><h6 id="1、建表"><a href="#1、建表" class="headerlink" title="1、建表"></a>1、建表</h6><p>​    命令：create table &lt;表名&gt; ( &lt;字段名&gt; &lt;类型&gt; [,..&lt;字段名n&gt; &lt;类型n&gt;]);  </p>
+<p>​        mysql&gt; create table MyClass(  </p>
+<p>​            > id int(4) not null primary key auto_increment,  </p>
+<p>​            &gt; name char(20) not null,  </p>
+<p>​            &gt; sex int(4) not null default ’′,  </p>
+<p>​            > degree double(16,2));  </p>
+<h6 id="2、获取表结构"><a href="#2、获取表结构" class="headerlink" title="2、获取表结构"></a>2、获取表结构</h6><p>​    命令：desc 表名，或者show columns from 表名  </p>
+<p>​        mysql&gt;DESCRIBE MyClass  </p>
+<p>​            mysql&gt; desc MyClass;  </p>
+<p>​            mysql&gt; show columns from MyClass;  </p>
+<h6 id="3、删除表"><a href="#3、删除表" class="headerlink" title="3、删除表"></a>3、删除表</h6><p>​    命令：drop table &lt;表名&gt;  </p>
+<p>​        例如：删除表名为 MyClass 的表  </p>
+<p>​            mysql&gt; drop table MyClass;  </p>
+<h6 id="4、插入数据"><a href="#4、插入数据" class="headerlink" title="4、插入数据"></a>4、插入数据</h6><p>​    命令：insert into &lt;表名&gt; [( &lt;字段名&gt;[,..&lt;字段名n &gt; ])] values ( 值 )[, ( 值n )]  </p>
+<p>​        例如，往表 MyClass中插入二条记录, 这二条记录表示：编号为的名为Tom的成绩                                 为.45, 编    号为 的名为Joan 的成绩为.99，编号为 的名为Wang 的成绩为.5.  </p>
+<p>​            mysql&gt; insert into MyClass values(1,’Tom’,96.45),(2,’Joan’,82.99), (2,’Wang’,             96.59);  </p>
+<h6 id="5、查询表中的数据"><a href="#5、查询表中的数据" class="headerlink" title="5、查询表中的数据"></a>5、查询表中的数据</h6><p>​    1)、查询所有行  </p>
+<p>​        命令：select &lt;字段，字段，…&gt; from &lt; 表名 &gt; where &lt; 表达式 &gt;  </p>
+<p>​        例如：查看表 MyClass 中所有数据  </p>
+<p>​            mysql&gt; select  from MyClass;  </p>
+<p>​    2）、查询前几行数据  </p>
+<p>​        例如：查看表 MyClass 中前行数据  </p>
+<p>​            mysql&gt; select  from MyClass order by id limit 0,2;  </p>
+<p>​        或者：  </p>
+<p>​            mysql&gt; select  from MyClass limit 0,2;  </p>
+<h6 id="6、删除表中数据"><a href="#6、删除表中数据" class="headerlink" title="6、删除表中数据"></a>6、删除表中数据</h6><p>​        命令：delete from 表名 where 表达式  </p>
+<p>​            例如：删除表 MyClass中编号为 的记录  </p>
+<p>​                mysql&gt; delete from MyClass where id=1;  </p>
+<h6 id="7、修改表中数据：update-表名-set-字段-新值-…where-条件"><a href="#7、修改表中数据：update-表名-set-字段-新值-…where-条件" class="headerlink" title="7、修改表中数据：update 表名 set 字段=新值,…where 条件"></a>7、修改表中数据：update 表名 set 字段=新值,…where 条件</h6><p>​        mysql&gt; update MyClass set name=’Mary’where id=1;  </p>
+<h6 id="8、在表中增加字段："><a href="#8、在表中增加字段：" class="headerlink" title="8、在表中增加字段："></a>8、在表中增加字段：</h6><p>​        命令：alter table 表名 add字段 类型 其他;  </p>
+<p>​            例如：在表MyClass中添加了一个字段passtest，类型为int(4)，默认值为  </p>
+<p>​                mysql&gt; alter table MyClass add passtest int(4) default ’′  </p>
+<h6 id="9、更改表名："><a href="#9、更改表名：" class="headerlink" title="9、更改表名："></a>9、更改表名：</h6><p>​        命令：rename table 原表名 to 新表名;  </p>
+<p>​            例如：在表MyClass名字更改为YouClass  </p>
+<p>​                mysql&gt; rename table MyClass to YouClass;  </p>
+<p>​            更新字段内容  </p>
+<p>​                update 表名 set 字段名 = 新内容  </p>
+<p>​                update 表名 set 字段名 = replace(字段名,’旧内容’,’新内容’)  </p>
+<p>​                update article set content=concat(‘　　’,content); </p>
+<h1 id="MYSQL查看正在运行的SQL"><a href="#MYSQL查看正在运行的SQL" class="headerlink" title="MYSQL查看正在运行的SQL"></a>MYSQL查看正在运行的SQL</h1><p>有2个方法：</p>
+<h6 id="1、使用processlist"><a href="#1、使用processlist" class="headerlink" title="1、使用processlist"></a>1、使用processlist</h6><p>​    但是有个弊端，就是只能查看正在执行的sql语句，对应历史记录，查看不到。好处是不用设置，不会保存。</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-- use information_schema;</span><br><span class="line">-- show processlist;</span><br><span class="line">或者：</span><br><span class="line">-- <span class="keyword">select</span> * <span class="keyword">from</span> information_schema.<span class="symbol">`PROCESSLIST`</span> <span class="keyword">where</span> info <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
+<h6 id="2、开启日志模式"><a href="#2、开启日志模式" class="headerlink" title="2、开启日志模式"></a>2、开启日志模式</h6><figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-- <span class="number">1</span>、设置</span><br><span class="line">-- <span class="keyword">SET</span> GLOBAL <span class="comment">log_output =</span> <span class="comment">'TABLE'</span>;  <span class="keyword">SET</span> GLOBAL <span class="comment">general_log =</span> <span class="comment">'ON'</span>;</span><br><span class="line">-- <span class="keyword">SET</span> GLOBAL <span class="comment">log_output =</span> <span class="comment">'TABLE'</span>;  <span class="keyword">SET</span> GLOBAL <span class="comment">general_log =</span> <span class="comment">'OFF'</span>;</span><br><span class="line"></span><br><span class="line">-- <span class="number">2</span>、查询</span><br><span class="line">SELECT * from mysql.general_log ORDER BY    event_time DESC</span><br><span class="line"></span><br><span class="line">-- <span class="number">3</span>、清空表（delete对于这个表，不允许使用，只能用truncate）</span><br><span class="line">-- truncate <span class="keyword">table</span> mysql.general_log;</span><br></pre></td></tr></table></figure>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

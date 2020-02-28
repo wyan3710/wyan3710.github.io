@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        可变类型和不可变类型 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#列表和元组之间的区别是？"><span class="toc-text">列表和元组之间的区别是？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#列表和字典的区别"><span class="toc-text">列表和字典的区别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#可变与不可变"><span class="toc-text">可变与不可变</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#列表底层实现"><span class="toc-text">列表底层实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#列表推导"><span class="toc-text">列表推导</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#字典底层实现"><span class="toc-text">字典底层实现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#集合"><span class="toc-text">集合</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        可变类型和不可变类型
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2018-07-03 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#python中高级面试题" title="python中高级面试题">python中高级面试题</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="列表和元组之间的区别是？"><a href="#列表和元组之间的区别是？" class="headerlink" title="列表和元组之间的区别是？"></a>列表和元组之间的区别是？</h1><p>二者的主要区别是列表是可变的，而元组是不可变的</p>
+<p>不同点一：不可变 VS 可变 两种类型除了字面上的区别(括号与方括号)之外，最重要的一点是tuple是不可变类型，大小固定，而 list 是可变类型、数据可以动态变化，这种差异使得两者提供的方法、应用场景、性能上都有很大的区别。</p>
+<p>不同点二：同构 VS 异构 tuple 用于存储异构(heterogeneous)数据，当做没有字段名的记录来用，比如用 tuple 来记录一个人的身高、体重、年龄。</p>
+<p>person = (“zhangsan”, 20, 180, 80) 比如记录坐标上的某个点</p>
+<p>point = (x, y) 而列表一般用于存储同构数据(homogenous)，同构数据就是具有相同意义的数据，比如下面的都是字符串类型</p>
+<p>[“zhangsan”, “Lisi”, “wangwu”] 再比如 list 存放的多条用户记录</p>
+<p>[(“zhangsan”, 20, 180, 80), (“wangwu”, 20, 180, 80)] 数据库操作中查询出来的记录就是由元组构成的列表结构。</p>
+<p>因为 tuple 作为没有名字的记录来使用在某些场景有一定的局限性，所以又有了一个 namedtuple 类型的存在，namedtuple 可以指定字段名，用来当做一种轻量级的类来使用。</p>
+<h1 id="列表和字典的区别"><a href="#列表和字典的区别" class="headerlink" title="列表和字典的区别"></a>列表和字典的区别</h1><p>列表是序列，可以理解为数据结构中的数组，字典可以理解为数据结构中的hashmap</p>
+<p>他俩都可以作为集合来存储数据</p>
+<p>从差异特征上来说</p>
+<ol>
+<li>list是有序的，dict是无需的</li>
+<li>list通过索引访问，dict使用key访问</li>
+<li>list随着数量的正常增长要想查找元素的时间复杂度为O(n), dict不随数量而增长而变化，时间负责都为O(1)</li>
+<li>dict的占用内存稍比list大，会在1.5倍左右</li>
+</ol>
+<p>特征决定用途：</p>
+<p>list一般可作为队列、堆栈使用，而dict一般作为聚合统计或者快速使用特征访问等</p>
+<h1 id="可变与不可变"><a href="#可变与不可变" class="headerlink" title="可变与不可变"></a>可变与不可变</h1><p>可变类型（mutable）：列表，字典</p>
+<p>不可变类型（unmutable）：数字，字符串，元组</p>
+<p>这里的可变不可变，是指内存中的那块内容（value）是否可以被改变。如果是不可变类型，在对对象本身操作的时候，必须在内存中新申请一块区域(因为老区域#不可变#)。如果是可变类型，对对象操作的时候，不需要再在其他地方申请内存，只需要在此对象后面连续申请(+/-)即可，也就是它的address会保持不变，但区域会变长或者变短。</p>
+<p>copy.copy() 浅拷贝</p>
+<p>copy.deepcopy() 深拷贝</p>
+<p>浅拷贝是新创建了一个跟原对象一样的类型，但是其内容是对原对象元素的引用。这个拷贝的对象本身是新的，但内容不是。拷贝序列类型对象（列表\元组）时，默认是浅拷贝。</p>
+<h1 id="列表底层实现"><a href="#列表底层实现" class="headerlink" title="列表底层实现"></a>列表底层实现</h1><p>实现细节 python中的列表的英文名是list，因此很容易和其它语言(C++, Java等)标准库中常见的链表混淆。事实上CPython的列表根本不是列表（可能换成英文理解起来容易些：python中的list不是list）。在CPython中，列表被实现为长度可变的数组。</p>
+<p>从细节上看，Python中的列表是由对其它对象的引用组成的连续数组。指向这个数组的指针及其长度被保存在一个列表头结构中。这意味着，每次添加或删除一个元素时，由引用组成的数组需要该标大小（重新分配）。幸运的是，Python在创建这些数组时采用了指数过分配，所以并不是每次操作都需要改变数组的大小。但是，也因为这个原因添加或取出元素的平摊复杂度较低。</p>
+<p>不幸的是，在普通链表上“代价很小”的其它一些操作在Python中计算复杂度相对过高。</p>
+<p>利用 list.insert方法在任意位置插入一个元素——复杂度O(N) 利用 list.delete或del删除一个元素——复杂度O(N)</p>
+<h3 id="列表推导"><a href="#列表推导" class="headerlink" title="列表推导"></a>列表推导</h3><p>要习惯用列表推导，因为这更加高效和简短，涉及的语法元素少。在大型的程序中，这意味着更少的错误，代码也更容易阅读。</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt;[i for i in range(<span class="number">10</span>) if i % <span class="number">2</span> == <span class="number">0</span>]</span><br><span class="line">    [<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">8</span>]</span><br></pre></td></tr></table></figure>
+<p>1.使用enumerate.在循环使用序列时，这个内置函数可以方便的获取其索引：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="selector-tag">i</span>, element <span class="keyword">in</span> enumerate([<span class="string">'one'</span>, <span class="string">'two'</span>, <span class="string">'three'</span>]):</span><br><span class="line">    print(<span class="selector-tag">i</span>, element)</span><br></pre></td></tr></table></figure>
+<h1 id="字典底层实现"><a href="#字典底层实现" class="headerlink" title="字典底层实现"></a>字典底层实现</h1><p>字典是python中最通用的数据结构之一。dict可以将一组唯一的键映射到相应的值。</p>
+<p>字典推导式</p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">squares = &#123;<span class="keyword">number</span>: <span class="keyword">number</span>**<span class="number">2</span> for <span class="keyword">number</span> <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>)&#125;</span><br><span class="line"><span class="built_in">print</span>(squares)</span><br></pre></td></tr></table></figure>
+<p>在遍历字典元素时，有一点需要特别注意。字典里的keys(), values()和items()3个方法的返回值不再是列表，而是视图对象（view objects）。</p>
+<p>keys(): 返回dict_keys对象，可以查看字典所有键</p>
+<p>values():返回dict_values对象，可以查看字典的所有值</p>
+<p>items():返回dict_items对象，可以查看字典所有的{key, value}二元元组。</p>
+<p>CPython使用伪随机探测(pseudo-random probing)的散列表(hash table)作为字典的底层数据结构。由于这个实现细节，只有可哈希的对象才能作为字典的键。</p>
+<p>Python中所有不可变的内置类型都是可哈希的。可变类型（如列表，字典和集合）就是不可哈希的，因此不能作为字典的键。</p>
+<p>字典的三个基本操作（添加元素，获取元素和删除元素）的平均事件复杂度为O(1)，但是他们的平摊最坏情况复杂度要高得多，为O(N).</p>
+<p>还有一点很重要，在复制和遍历字典的操作中，最坏的复杂度中的n是字典曾经达到的最大元素数目，而不是当前的元素数目。换句话说，如果一个字典曾经元素个数很多，后来又大大减小了，那么遍历这个字典可能会花费相当长的事件。因此在某些情况下，如果需要频繁的遍历某个词典，那么最好创建一个新的字典对象，而不是仅在旧字典中删除元素。</p>
+<p>字典的缺点和替代方案</p>
+<p>使用字典的常见陷阱就是，它并不会按照键的添加顺序来保存元素的顺序。在某些情况下，字典的键是连续的，对应的散列值也是连续值（例如整数），那么由于字典的内部实现，元</p>
+<p>素的实现可能和添加的顺序相同：</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">keys = &#123;<span class="built_in">num</span>: None <span class="keyword">for</span> <span class="built_in">num</span> <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>)&#125;.keys()</span><br><span class="line"><span class="built_in">print</span>(keys)</span><br></pre></td></tr></table></figure>
+<p>如果我们需要保存添加顺序怎么办？python 标准库的collections模块提供了名为OrderedDicr的有序字典</p>
+<h1 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h1><p>集合是一种鲁棒性很好的数据结构，当元素顺序的重要性不如元素的唯一性和测试元素是否包含在集合中的效率时，大部分情况下这种数据结构极其有用。</p>
+<p>python的内置集合类型有两种：</p>
+<p>set(): 一种可变的、无序的、有限的集合，其元素是唯一的、不可变的（可哈希的）对象。 frozenset(): 一种不可变的、可哈希的、无序的集合，其元素是唯一的，不可变的哈希对象。</p>
+<p>set里的元素必须是唯一的，不可变的。但是set是可变的，所以set作为set的元素会报错。</p>
+<p>实现细节</p>
+<p>CPython中集合和字典非常相似。事实上，集合被实现为带有空值的字典，只有键才是实际的集合元素。此外，集合还利用这种没有值的映射做了其它的优化。</p>
+<p>由于这一点，可以快速的向集合中添加元素、删除元素、检查元素是否存在。平均时间复杂度为O(1),最坏的事件复杂度是O(n)。</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

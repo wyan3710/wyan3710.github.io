@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        MySQL存储引擎如何选择 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#定义以及作用"><span class="toc-text">定义以及作用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Mysql的存储引擎有哪些："><span class="toc-text">Mysql的存储引擎有哪些：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#修改数据库引擎"><span class="toc-text">修改数据库引擎</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#如何查看是否修改成功-查看当前数据库的引擎"><span class="toc-text">如何查看是否修改成功(查看当前数据库的引擎)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MyISAM、InnoDB和MEMORY引擎之间的区别"><span class="toc-text">MyISAM、InnoDB和MEMORY引擎之间的区别:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#怎样选择合理的存储引擎"><span class="toc-text">怎样选择合理的存储引擎</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        MySQL存储引擎如何选择
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-12-31 09:45:01</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#MySql" title="MySql">MySql</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#数据库" title="数据库">数据库</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <h4 id="定义以及作用"><a href="#定义以及作用" class="headerlink" title="定义以及作用"></a>定义以及作用</h4><blockquote>
+<p>数据库引擎是用于存储、处理和保护数据的核心服务。</p>
+<p>利用数据库引擎可控制访问权限并快速处理事务，从而满足企业内大多数需要处理大量数据的应用程序的要求。 </p>
+<p>使用数据库引擎创建用于联机(客户端与服务端能够实时通信。由客户机发起，直到服务器确认。)事务处理或联机分析处理数据的关系数据库。这包括创建用于存储数据的表和用于查看、管理和保护数据安全的数据库对象（如索引、视图和存储过程）。</p>
+</blockquote>
+<h4 id="Mysql的存储引擎有哪些："><a href="#Mysql的存储引擎有哪些：" class="headerlink" title="Mysql的存储引擎有哪些："></a>Mysql的存储引擎有哪些：</h4><blockquote>
+<p>InnoDB</p>
+<blockquote>
+<p>这是MySQL 5.5或更高版本的默认存储引擎。它提供了事务安全(ACID兼容)表，支持外键引用完整性约束。它支持提交、回滚和紧急恢复功能来保护数据。它还支持行级锁定。当在多用户环境中使用时，它的“一致非锁定读取”提高了性能。它将数据存储在集群索引中，从而减少了基于主键的查询的I/O。</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>MyISAM</p>
+<blockquote>
+<p>该存储引擎管理非事务性表，提供高速存储和检索，支持全文搜索。</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>MEMORY</p>
+<blockquote>
+<p>提供内存中的表，以前称为堆。它在RAM中处理所有数据，以便比在磁盘上存储数据更快地访问。用于快速查找引用和其他相同的数据。</p>
+</blockquote>
+</blockquote>
+<h4 id="修改数据库引擎"><a href="#修改数据库引擎" class="headerlink" title="修改数据库引擎"></a>修改数据库引擎</h4><blockquote>
+<p>方式壹：</p>
+<blockquote>
+<p>修改配置文件my.ini</p>
+<p>将mysql.ini另存为my.ini，在[mysqld]后面添加default-storage-engine=Innodb,重启服务，数据库默认的引擎修改为Innodb</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>方式贰：</p>
+<blockquote>
+<p>在建表得时候指定</p>
+<p>create table table_name(你的各个字段名)type=MyISAM;</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>方式叁：</p>
+<blockquote>
+<p>建表后更改</p>
+<p>alert table table_name type=Innodb;</p>
+</blockquote>
+</blockquote>
+<h4 id="如何查看是否修改成功-查看当前数据库的引擎"><a href="#如何查看是否修改成功-查看当前数据库的引擎" class="headerlink" title="如何查看是否修改成功(查看当前数据库的引擎)"></a>如何查看是否修改成功(查看当前数据库的引擎)</h4><blockquote>
+<p>方式壹：</p>
+<blockquote>
+<p>show table status from table_name;</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>方拾贰：</p>
+<blockquote>
+<p>show create table table_name;</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>方式叁：</p>
+<blockquote>
+<p>使用数据库管理工具(具体自己去问度娘)<br>注意：不同版本之间有可能命令有些不同</p>
+</blockquote>
+</blockquote>
+<h4 id="MyISAM、InnoDB和MEMORY引擎之间的区别"><a href="#MyISAM、InnoDB和MEMORY引擎之间的区别" class="headerlink" title="MyISAM、InnoDB和MEMORY引擎之间的区别:"></a>MyISAM、InnoDB和MEMORY引擎之间的区别:</h4><blockquote>
+<p>InnoDB存储引擎</p>
+<blockquote>
+<p>InnoDB给MySQL的表提供了事务处理、回滚、崩溃修复能力和多版本并发控制的事务安全。在MySQL从3.23.34a开始包含InnnoDB。它是MySQL上第一个提供外键约束的表引擎。而且InnoDB对事务处理的能力，也是其他存储引擎不能比拟的。靠后版本的MySQL的默认存储引擎就是InnoDB。</p>
+<p>InnoDB存储引擎总支持AUTO_INCREMENT。自动增长列的值不能为空，并且值必须唯一。MySQL中规定自增列必须为主键。在插入值的时候，如果自动增长列不输入值，则插入的值为自动增长后的值；如果输入的值为0或空（NULL），则插入的值也是自动增长后的值；如果插入某个确定的值，且该值在前面没有出现过，就可以直接插入。</p>
+<p>InnoDB还支持外键（FOREIGN KEY）。外键所在的表叫做子表，外键所依赖（REFERENCES）的表叫做父表。父表中被字表外键关联的字段必须为主键。当删除、更新父表中的某条信息时，子表也必须有相应的改变，这是数据库的参照完整性规则。</p>
+<p>InnoDB中，创建的表的表结构存储在.frm文件中（我觉得是frame的缩写吧）。数据和索引存储在innodb_data_home_dir和innodb_data_file_path定义的表空间中。</p>
+<p>InnoDB的优势在于提供了良好的事务处理、崩溃修复能力和并发控制。缺点是读写效率较差，占用的数据空间相对较大。</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>MyISAM存储引擎</p>
+<blockquote>
+<p>MyISAM是MySQL中常见的存储引擎，曾经是MySQL的默认存储引擎。MyISAM是基于ISAM引擎发展起来的，增加了许多有用的扩展。</p>
+<p>MyISAM的表存储成3个文件。文件的名字与表名相同。拓展名为frm、MYD、MYI。其实，frm文件存储表的结构；MYD文件存储数据，是MYData的缩写；MYI文件存储索引，是MYIndex的缩写。</p>
+<p>基于MyISAM存储引擎的表支持3种不同的存储格式。包括静态型、动态型和压缩型。其中，静态型是MyISAM的默认存储格式，它的字段是固定长度的；动态型包含变长字段，记录的长度不是固定的；压缩型需要用到myisampack工具，占用的磁盘空间较小。</p>
+<p>MyISAM的优势在于占用空间小，处理速度快。缺点是不支持事务的完整性和并发性。</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>MEMORY存储引擎</p>
+<blockquote>
+<p>MEMORY是MySQL中一类特殊的存储引擎。它使用存储在内存中的内容来创建表，而且数据全部放在内存中。这些特性与前面的两个很不同。</p>
+<p>每个基于MEMORY存储引擎的表实际对应一个磁盘文件。该文件的文件名与表名相同，类型为frm类型。该文件中只存储表的结构。而其数据文件，都是存储在内存中，这样有利于数据的快速处理，提高整个表的效率。值得注意的是，服务器需要有足够的内存来维持MEMORY存储引擎的表的使用。如果不需要了，可以释放内存，甚至删除不需要的表。</p>
+<p>MEMORY默认使用哈希索引。速度比使用B型树索引快。当然如果你想用B型树索引，可以在创建索引时指定。</p>
+<p>注意，MEMORY用到的很少，因为它是把数据存到内存中，如果内存出现异常就会影响数据。如果重启或者关机，所有数据都会消失。因此，基于MEMORY的表的生命周期很短，一般是一次性的</p>
+</blockquote>
+</blockquote>
+<h4 id="怎样选择合理的存储引擎"><a href="#怎样选择合理的存储引擎" class="headerlink" title="怎样选择合理的存储引擎"></a>怎样选择合理的存储引擎</h4><blockquote>
+<p>InnoDB：支持事务处理，支持外键，支持崩溃修复能力和并发控制。如果需要对事务的完整性要求比较高（比如银行），要求实现并发控制（比如售票），那选择InnoDB有很大的优势。如果需要频繁的更新、删除操作的数据库，也可以选择InnoDB，因为支持事务的提交（commit）和回滚（rollback）。 </p>
+<p>MyISAM：插入数据快，空间和内存使用比较低。如果表主要是用于插入新记录和读出记录，那么选择MyISAM能实现处理高效率。如果应用的完整性、并发性要求比 较低，也可以使用。</p>
+<p>MEMORY：所有的数据都在内存中，数据的处理速度快，但是安全性不高。如果需要很快的读写速度，对数据的安全性要求较低，可以选择MEMOEY。它对表的大小有要求，不能建立太大的表。所以，这类数据库只使用在相对较小的数据库表。</p>
+<p>注意，同一个数据库也可以使用多种存储引擎的表。如果一个表要求比较高的事务处理，可以选择InnoDB。这个数据库中可以将查询要求比较高的表选择MyISAM存储。如果该数据库需要一个用于查询的临时表，可以选择MEMORY存储引擎。</p>
+</blockquote>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

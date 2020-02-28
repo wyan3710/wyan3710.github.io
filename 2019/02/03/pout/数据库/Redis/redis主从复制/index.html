@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Redis主从 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis主从"><span class="toc-text">Redis主从</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#主从复制的作用"><span class="toc-text">主从复制的作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主从拓扑结构"><span class="toc-text">主从拓扑结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主从复制的实现原理"><span class="toc-text">主从复制的实现原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#连接建立阶段"><span class="toc-text">连接建立阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#step1：保存主节点信息"><span class="toc-text">step1：保存主节点信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#step2：建立socket连接"><span class="toc-text">step2：建立socket连接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#step3：发送ping命令"><span class="toc-text">step3：发送ping命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#step4：身份验证"><span class="toc-text">step4：身份验证</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#step5：发送从节点端口信息"><span class="toc-text">step5：发送从节点端口信息</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据同步阶段"><span class="toc-text">数据同步阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#命令传播阶段"><span class="toc-text">命令传播阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#【数据同步阶段】全量复制和部分复制"><span class="toc-text">【数据同步阶段】全量复制和部分复制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#全量复制"><span class="toc-text">全量复制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#部分复制"><span class="toc-text">部分复制</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#offset-复制偏移量"><span class="toc-text">offset 复制偏移量</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#复制积压缓冲区"><span class="toc-text">复制积压缓冲区</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#runid-服务器运行ID"><span class="toc-text">runid 服务器运行ID</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PSYNC命令"><span class="toc-text">PSYNC命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#PSYNC命令格式"><span class="toc-text">PSYNC命令格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#psync命令的执行"><span class="toc-text">psync命令的执行</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#【命令传播阶段】心跳机制"><span class="toc-text">【命令传播阶段】心跳机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#主-gt-从：PING"><span class="toc-text">主-&gt;从：PING</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#从-gt-主：REPLCONF-ACK"><span class="toc-text">从-&gt;主：REPLCONF ACK</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开启主从复制"><span class="toc-text">开启主从复制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#修改配置文件方法："><span class="toc-text">修改配置文件方法：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-配置从服务配置文件redis-conf"><span class="toc-text">1. 配置从服务配置文件redis.conf</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-重新启动从服务即实现主从连接"><span class="toc-text">2. 重新启动从服务即实现主从连接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#遇到的报错："><span class="toc-text">遇到的报错：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-Error-condition-on-socket-for-SYNC-Connection-refused"><span class="toc-text">1. Error condition on socket for SYNC: Connection refused</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-‘-DENIED-Redis-is-running-in-protected-mode-because-protected-mode-is-enabled-no-bind-address-was-specified-no-authentication-password-is-requested-to-clients-In-this-mode-connections-are-only-accepted-from-the-loopback-interface-If-you-want-to-connec"><span class="toc-text">2. ‘-DENIED Redis is running in protected mode because protected mode is enabled, no bind address was specified, no authentication password is requested to clients. In this mode connections are only accepted from the loopback interface. If you want to connec</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-error-READONLY-You-can’t-write-against-a-read-only-replica"><span class="toc-text">3. (error) READONLY You can’t write against a read only replica.</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#断开主从复制"><span class="toc-text">断开主从复制</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Redis主从
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-02-03 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#Redis" title="Redis">Redis</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#数据库" title="数据库">数据库</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h2 id="Redis主从"><a href="#Redis主从" class="headerlink" title="Redis主从"></a>Redis主从</h2><p><strong>参考链接：</strong></p>
+<p><a href="https://www.cnblogs.com/leeSmall/p/8398401.html" target="_blank" rel="noopener">Redis主从复制和哨兵 参考1</a></p>
+<p><a href="https://www.cnblogs.com/chenhuabin/p/10048854.html" target="_blank" rel="noopener">Redis主从复制和哨兵 参考2</a></p>
+<p><a href="https://www.cnblogs.com/lxx666/articles/10693844.html" target="_blank" rel="noopener">Redis主从架构和主从从架构集群搭建详细步骤</a></p>
+<p><a href="https://www.cnblogs.com/wade-luffy/p/9639986.html" target="_blank" rel="noopener">Redis主从复制原理</a></p>
+<p><a href="http://doc.redisfans.com/topic/replication.html" target="_blank" rel="noopener">Redis复制官方文档翻译</a></p>
+<blockquote>
+<p>​    主从复制，是指将一台Redis服务器的数据，复制到其他的Redis服务器。前者称为主节点(master/leader)，后者称为从节点(slave/follower)；数据的复制是单向的，只能由主节点到从节点。</p>
+<p>​    默认情况下，每台Redis服务器都是主节点；且一个主节点可以有多个从节点(或没有从节点)，但一个从节点只能有一个主节点。</p>
+</blockquote>
+<h3 id="主从复制的作用"><a href="#主从复制的作用" class="headerlink" title="主从复制的作用"></a>主从复制的作用</h3><ol>
+<li><p><strong>数据冗余：</strong>主从复制实现了数据的热备份，是持久化之外的一种数据冗余方式。</p>
+</li>
+<li><p><strong>故障恢复：</strong>当主节点出现问题时，可以由从节点提供服务，实现快速的故障恢复；实际上是一种服务的冗余。</p>
+</li>
+<li><p><strong>负载均衡：</strong>在主从复制的基础上，配合读写分离，可以由主节点提供写服务，由从节点提供读服务（即写Redis数据时应用连接主节点，读Redis数据时应用连接从节点），分担服务器负载；尤其是在写少读多的场景下，通过多个从节点分担读负载，可以大大提高Redis服务器的并发量。</p>
+</li>
+<li><p><strong>高可用基石：</strong>主从复制还是哨兵和集群能够实施的基础，因此说主从复制是Redis高可用的基础。</p>
+</li>
+</ol>
+<h3 id="主从拓扑结构"><a href="#主从拓扑结构" class="headerlink" title="主从拓扑结构"></a>主从拓扑结构</h3><p>​    <strong>一主一从：</strong></p>
+<p><img src="../../img/6996ce2ff55342fb040221d6bf914bf.png" alt="1539768-20181201112713274-1680086476"></p>
+<p>　　这一结构主要用于主节点故障从节点，当主节点的“写”命令并发高且需要持久化，可以只在从节点开启AOF（主节点不需要），这样即保证了数据的安全性，也避免持久化对主节点的影响。<br>　　<br>​    <strong>一主多从：</strong></p>
+<p><img src="../../img/c05fa5ff18646dde563e6f8bf5e98be.png" alt="1539768-20181201112740108-1961344396"></p>
+<p>　　这一结构主要针对“读”较多的场景，“读”由多个从节点来分担，但节点越多，主节点同步到多节点的次数也越多，影响带宽，也加重主节点的稳定。<br>　　<br>​    <strong>树状主从:</strong></p>
+<p><img src="../../img/917d24ce5cee2ad4663d5bff1b5ada0.png" alt="1539768-20181201112824130-1051891659"></p>
+<p>　　这一结构是对一主多从的补充，主节点只推送一次数据到slave1和slave2，再由从slave2推送到slave3和 slave4，减轻主节点推送的压力。</p>
+<h2 id="主从复制的实现原理"><a href="#主从复制的实现原理" class="headerlink" title="主从复制的实现原理"></a>主从复制的实现原理</h2><p>主从复制过程大体可以分为3个阶段：<strong>连接建立阶段（即准备阶段）</strong>、<strong>数据同步阶段</strong>、<strong>命令传播阶段</strong>；</p>
+<h3 id="连接建立阶段"><a href="#连接建立阶段" class="headerlink" title="连接建立阶段"></a>连接建立阶段</h3><h4 id="step1：保存主节点信息"><a href="#step1：保存主节点信息" class="headerlink" title="step1：保存主节点信息"></a>step1：保存主节点信息</h4><p>​    从节点服务器内部维护了两个字段，即<strong>masterhost</strong>和<strong>masterport</strong>字段，用于存储主节点的<strong>ip</strong>和<strong>port</strong>信息。</p>
+<p>​    <strong>slaveof是异步命令，从节点完成主节点ip和port的保存后，向发送slaveof命令的客户端直接返回OK，实际的复制操作在这之后才开始进行。</strong></p>
+<h4 id="step2：建立socket连接"><a href="#step2：建立socket连接" class="headerlink" title="step2：建立socket连接"></a>step2：建立socket连接</h4><p>​    <strong>从节点每秒1次调用复制定时函数replicationCron()</strong>，如果发现了有主节点可以连接，便会根据主节点的ip和port，创建socket连接。</p>
+<p><strong>如果连接成功：</strong></p>
+<p>​    <strong>从节点：</strong>为该socket建立一个专门处理复制工作的文件事件处理器，负责后续的复制工作，如接收RDB文件、接收命令传播等。</p>
+<p>​    <strong>主节点：</strong>接收到从节点的socket连接后（即accept之后），为该socket创建相应的客户端状态，并将从节点看做是连接到主节点的一个客户端，后面的步骤会以从节点向主节点发送命令请求的形式来进行。</p>
+<h4 id="step3：发送ping命令"><a href="#step3：发送ping命令" class="headerlink" title="step3：发送ping命令"></a>step3：发送ping命令</h4><p>​    从节点成为主节点的客户端之后，发送ping命令进行首次请求，<strong>目的是：检查socket连接是否可用，以及主节点当前是否能够处理请求。</strong></p>
+<p><strong>从节点发送ping命令后，可能出现3种情况：</strong></p>
+<ol>
+<li><p>返回pong：说明socket连接正常，且主节点当前可以处理请求，复制过程继续。</p>
+</li>
+<li><p>超时：一定时间后从节点仍未收到主节点的回复，说明socket连接不可用，则从节点断开socket连接，并重连。</p>
+</li>
+<li><p>返回pong以外的结果：如果主节点返回其他结果，如正在处理超时运行的脚本，说明主节点当前无法处理命令，则从节点断开socket连接，并重连。</p>
+</li>
+</ol>
+<h4 id="step4：身份验证"><a href="#step4：身份验证" class="headerlink" title="step4：身份验证"></a>step4：身份验证</h4><p>如果从节点中设置了<strong>masterauth</strong>选项，则从节点需要向主节点进行身份验证；没有设置该选项，则不需要验证。</p>
+<p>从节点进行身份验证是通过向主节点发送auth命令进行的，auth命令的参数即为配置文件中的masterauth的值。</p>
+<p>如果主节点设置密码的状态，与从节点masterauth的状态一致（一致是指都存在，且密码相同，或者都不存在），则身份验证通过，复制过程继续；如果不一致，则从节点断开socket连接，并重连。</p>
+<h4 id="step5：发送从节点端口信息"><a href="#step5：发送从节点端口信息" class="headerlink" title="step5：发送从节点端口信息"></a>step5：发送从节点端口信息</h4><p>身份验证之后，从节点会向主节点发送其监听的端口号，主节点将该信息保存到该从节点对应的客户端的slave_listening_port字段中；<strong>该端口信息除了在主节点中执行info Replication时显示以外，没有其他作用。</strong></p>
+<h3 id="数据同步阶段"><a href="#数据同步阶段" class="headerlink" title="数据同步阶段"></a>数据同步阶段</h3><p>主从节点之间的连接建立以后，便可以开始进行数据同步，该阶段可以理解为从节点数据的初始化。</p>
+<p>具体执行的方式是：从节点向主节点发送<strong>psync命令</strong>，开始同步。</p>
+<p>数据同步阶段是主从复制最核心的阶段，根据主从节点当前状态的不同，可以分为<strong>全量复制和部分复制</strong>。</p>
+<blockquote>
+<p>在数据同步阶段之前，从节点是主节点的客户端，主节点不是从节点的客户端；而到了这一阶段及以后，主从节点互为客户端。原因在于：在此之前，主节点只需要响应从节点的请求即可，不需要主动发请求，而在数据同步阶段和后面的命令传播阶段，主节点需要主动向从节点发送请求（如推送缓冲区中的写命令），才能完成复制。</p>
+</blockquote>
+<h3 id="命令传播阶段"><a href="#命令传播阶段" class="headerlink" title="命令传播阶段"></a>命令传播阶段</h3><p>​    数据同步阶段完成后，主从节点进入命令传播阶段；在这个阶段主节点将自己执行的写命令发送给从节点，从节点接收命令并执行，从而保证主从节点数据的一致性。</p>
+<p>​    在命令传播阶段，除了发送写命令，主从节点还维持着心跳机制：PING和REPLCONF ACK。</p>
+<p><strong>PS：</strong></p>
+<p>​    <strong>延迟与不一致：</strong>命令传播是异步的过程，即主节点发送写命令后并不会等待从节点的回复；因此实际上主从节点之间很难保持实时的一致性，延迟在所难免。数据不一致的程度，与主从节点之间的网络状况、主节点写命令的执行频率、以及主节点中的repl-disable-tcp-nodelay配置等有关。</p>
+<p>​    <strong>repl-disable-tcp-nodelay no：</strong>该配置作用于命令传播阶段，控制主节点是否禁止与从节点的TCP_NODELAY；默认no，即不禁止TCP_NODELAY。当设置为yes时，TCP会对包进行合并从而减少带宽，但是发送的频率会降低，从节点数据延迟增加，一致性变差；具体发送频率与Linux内核的配置有关，默认配置为40ms。当设置为no时，TCP会立马将主节点的数据发送给从节点，带宽增加但延迟变小。一般来说，只有当应用对Redis数据不一致的容忍度较高，且主从节点之间网络状况不好时，才会设置为yes；多数情况使用默认值no。</p>
+<h3 id="【数据同步阶段】全量复制和部分复制"><a href="#【数据同步阶段】全量复制和部分复制" class="headerlink" title="【数据同步阶段】全量复制和部分复制"></a>【数据同步阶段】全量复制和部分复制</h3><p>在Redis2.8以前，从节点向主节点发送sync命令请求同步数据，此时的同步方式是全量复制；</p>
+<p>在Redis2.8以后，从节点可以发送psync命令请求同步数据，此时根据主从节点当前状态的不同，同步方式可能是全量复制或部分复制。</p>
+<ol>
+<li>全量复制：用于初次复制或其他无法进行部分复制的情况，将主节点中的所有数据都发送给从节点，是一个非常重型的操作。</li>
+<li>部分复制：用于网络中断等情况后的复制，只将中断期间主节点执行的写命令发送给从节点，与全量复制相比更加高效。需要注意的是，如果网络中断时间过长，导致主节点没有能够完整地保存中断期间执行的写命令，则无法进行部分复制，仍使用全量复制。</li>
+</ol>
+<h4 id="全量复制"><a href="#全量复制" class="headerlink" title="全量复制"></a>全量复制</h4><p><strong>Redis通过psync命令进行全量复制的过程如下：</strong></p>
+<ol>
+<li><p>从节点判断无法进行部分复制，向主节点发送全量复制的请求；或从节点发送部分复制的请求，但主节点判断无法进行全量复制；</p>
+</li>
+<li><p>主节点收到全量复制的命令后，执行bgsave，在后台生成RDB文件，并使用一个缓冲区（称为复制缓冲区）记录从现在开始执行的所有写命令。</p>
+</li>
+<li><p>主节点的bgsave执行完成后，将RDB文件发送给从节点；从节点首先清除自己的旧数据，然后载入接收的RDB文件，将数据库状态更新至主节点执行bgsave时的数据库状态。</p>
+</li>
+<li><p>主节点将前述复制缓冲区中的所有写命令发送给从节点，从节点执行这些写命令，将数据库状态更新至主节点的最新状态。</p>
+</li>
+<li><p>如果从节点开启了AOF，则会触发bgrewriteaof的执行，从而保证AOF文件更新至主节点的最新状态。</p>
+</li>
+</ol>
+<p><strong>通过全量复制的过程可以看出，全量复制是非常重型的操作：</strong></p>
+<ol>
+<li><p>主节点通过<strong>bgsave</strong>命令<strong>fork</strong>子进程进行<strong>RDB</strong>持久化，该过程是非常消耗CPU、内存(页表复制)、硬盘IO的；</p>
+</li>
+<li><p>主节点通过网络将RDB文件发送给从节点，对主从节点的带宽都会带来很大的消耗。</p>
+</li>
+<li><p>从节点清空老数据、载入新RDB文件的过程是阻塞的，无法响应客户端的命令；如果从节点执行bgrewriteaof，也会带来额外的消耗。</p>
+</li>
+</ol>
+<h4 id="部分复制"><a href="#部分复制" class="headerlink" title="部分复制"></a>部分复制</h4><p>​    由于全量复制在主节点数据量较大时效率太低，因此Redis2.8开始提供部分复制，用于处理网络中断时的数据同步。</p>
+<p>​    部分复制的实现，依赖于三个重要的概念：复制偏移量，复制积压缓冲区，服务器运行ID</p>
+<h5 id="offset-复制偏移量"><a href="#offset-复制偏移量" class="headerlink" title="offset 复制偏移量"></a>offset 复制偏移量</h5><p>​        在主从复制的Master(主节点)和Slave(从节点)双方都会各自维持一个offset，代表的是<strong>主节点向从节点传递的字节数</strong>；Master成功发送N个字节的命令后会将Master的offset加上N，Slave在接收到N个字节命令后同样会将Slave的offset增加N。Master和Slave如果状态是一致的那么它的的offset也应该是一致的。</p>
+<p>​        offset用于判断主从节点的数据库状态是否一致：如果二者offset相同，则一致；如果offset不同，则不一致，此时可以根据两个offset找出从节点缺少的那部分数据。例如，如果主节点的offset是1000，而从节点的offset是500，那么部分复制就需要将offset为501-1000的数据传递给从节点。而offset为501-1000的数据存储的位置，就是下面要介绍的复制积压缓冲区。</p>
+<h5 id="复制积压缓冲区"><a href="#复制积压缓冲区" class="headerlink" title="复制积压缓冲区"></a>复制积压缓冲区</h5><p>  复制积压缓冲区是由<strong>Master(主节点)维护的一个固定长度的FIFO队列(先进先出)</strong>，默认大小1MB；当主节点开始有从节点时创建，它的作用是缓存已经传播出去的命令。当Master进行命令传播时，不仅将命令发送给所有Slave，还会将命令写入到复制积压缓冲区里面。注意，无论主节点有一个还是多个从节点，都只需要一个复制积压缓冲区。</p>
+<p>​        除了存储写命令，复制积压缓冲区中还存储了其中的每个字节对应的复制偏移量（offset）。由于复制积压缓冲区定长且是先进先出，所以它保存的是主节点最近执行的写命令；时间较早的写命令会被挤出缓冲区。</p>
+<p>​        由于该缓冲区长度固定且有限，因此可以备份的写命令也有限，当主从节点offset的差距过大超过缓冲区长度时，将无法执行部分复制，只能执行全量复制。反过来说，为了提高网络中断时部分复制执行的概率，可以根据需要增大复制积压缓冲区的大小(通过配置repl-backlog-size)；例如如果网络中断的平均时间是60s，而主节点平均每秒产生的写命令(特定协议格式)所占的字节数为100KB，则复制积压缓冲区的平均需求为6MB，保险起见，可以设置为12MB，来保证绝大多数断线情况都可以使用部分复制。</p>
+<p><strong>从节点将offset发送给主节点后，主节点根据offset和缓冲区大小决定能否执行部分复制：</strong></p>
+<ul>
+<li><strong>如果offset偏移量之后的数据，仍然都在复制积压缓冲区里，则执行部分复制；</strong></li>
+<li><strong>如果offset偏移量之后的数据已不在复制积压缓冲区中（数据已被挤出），则执行全量复制。</strong></li>
+</ul>
+<h5 id="runid-服务器运行ID"><a href="#runid-服务器运行ID" class="headerlink" title="runid 服务器运行ID"></a>runid 服务器运行ID</h5><p>​        每个Redis服务器(无论主从)在启动时都会自动生成一个表明自己身份的随机ID(每次启动都不一样)，由40个随机的十六进制字符组成。在PSYNC中发送的这个ID是指之前连接的Master的ID，如果没保存这个ID，PSYNC命令会使用<strong>”PSYNC ? -1”</strong> 这种形式发送给Master，表示需要全量复制。</p>
+<p>​        每个Redis节点，在启动时都会自动生成一个随机ID，由40个随机的十六进制字符组成；</p>
+<p>runid用来唯一识别一个Redis节点。<strong>通过info Server命令，可以查看节点的runid。</strong></p>
+<p>​        主从节点初次复制时，主节点将自己的runid发送给从节点，从节点将这个runid保存起来；当断线重连时，从节点会将这个runid发送给主节点；</p>
+<p><strong>主节点根据runid判断能否进行部分复制：</strong></p>
+<ul>
+<li><p>如果从节点保存的runid与主节点现在的runid相同，说明主从节点之前同步过，主节点会继续尝试使用部分复制(到底能不能部分复制还要看offset和复制积压缓冲区的情况)；</p>
+</li>
+<li><p>如果从节点保存的runid与主节点现在的runid不同，说明从节点在断线前同步的Redis节点并不是当前的主节点，只能进行全量复制。</p>
+</li>
+</ul>
+<h3 id="PSYNC命令"><a href="#PSYNC命令" class="headerlink" title="PSYNC命令"></a>PSYNC命令</h3><p>  Redis在2.8版本提供了PSYNC命令来带代替SYNC命令，为Redis主从复制提供了部分复制的能力。</p>
+<h4 id="PSYNC命令格式"><a href="#PSYNC命令格式" class="headerlink" title="PSYNC命令格式"></a>PSYNC命令格式</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">PSYNC &lt;runid&gt; &lt;offset&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> runid:主服务器ID</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> offset:从服务器最后接收命令的偏移量</span></span><br></pre></td></tr></table></figure>
+<p>  <strong>PSYNC执行过程中比较重要的概念有3个：runid、offset（复制偏移量）以及复制积压缓冲区。</strong></p>
+<h4 id="psync命令的执行"><a href="#psync命令的执行" class="headerlink" title="psync命令的执行"></a>psync命令的执行</h4><p><img src="../../img/e9335bf6a03bc5b9ca5dce5a345eff0.png" alt="990532-20180913134017449-1623896661"></p>
+<ol>
+<li><p>首先从节点根据当前状态，决定如何调用psync命令：</p>
+<ul>
+<li>如果从节点之前未执行过<strong>slaveof</strong>或最近执行了<strong>slaveof no one</strong>，则从节点发送命令为<strong>psync ? -1</strong>，向主节点请求全量复制；</li>
+<li>如果从节点之前执行了<strong>slaveof</strong>，则发送命令为 <strong>psync <runid> <offset> </offset></runid></strong>，其中<strong>runid</strong>为上次复制的主节点的<strong>runid</strong>，<strong>offset</strong>为上次复制截止时从节点保存的复制偏移量。</li>
+</ul>
+</li>
+<li><p>主节点根据收到的psync命令，及当前服务器状态，决定执行全量复制还是部分复制：</p>
+<ul>
+<li>如果主节点版本低于Redis2.8，则返回-ERR回复，此时从节点重新发送sync命令执行全量复制；</li>
+<li>如果主节点版本够新，且runid与从节点发送的runid相同，且从节点发送的offset之后的数据在复制积压缓冲区中都存在，则回复+CONTINUE，表示将进行部分复制，从节点等待主节点发送其缺少的数据即可；</li>
+<li>如果主节点版本够新，但是runid与从节点发送的runid不同，或从节点发送的offset之后的数据已不在复制积压缓冲区中(在队列中被挤出了)，则回复<strong>+FULLRESYNC <runid> <offset></offset></runid></strong>，表示要进行全量复制，其中runid表示主节点当前的runid，offset表示主节点当前的offset，从节点保存这两个值，以备使用。</li>
+</ul>
+</li>
+</ol>
+<h3 id="【命令传播阶段】心跳机制"><a href="#【命令传播阶段】心跳机制" class="headerlink" title="【命令传播阶段】心跳机制"></a>【命令传播阶段】心跳机制</h3><p>在命令传播阶段，除了发送写命令，主从节点还维持着心跳机制：PING和REPLCONF ACK。心跳机制对于主从复制的超时判断、数据安全等有作用。</p>
+<h4 id="主-gt-从：PING"><a href="#主-gt-从：PING" class="headerlink" title="主-&gt;从：PING"></a>主-&gt;从：PING</h4><p>每隔指定的时间，<strong>主节点会向从节点发送PING命令</strong>，这个PING命令的作用，主要是为了让从节点进行超时判断。</p>
+<p>PING发送的频率由 repl-ping-slave-period 参数控制，单位是秒，默认值是10s。</p>
+<h4 id="从-gt-主：REPLCONF-ACK"><a href="#从-gt-主：REPLCONF-ACK" class="headerlink" title="从-&gt;主：REPLCONF ACK"></a>从-&gt;主：REPLCONF ACK</h4><p>在命令传播阶段，<strong>从节点会向主节点发送REPLCONF ACK命令，</strong>频率是每秒1次；</p>
+<p><strong>命令格式为：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REPLCONF ACK &#123;offset&#125;	# offset指从节点保存的复制偏移量。</span><br></pre></td></tr></table></figure>
+<p><strong>REPLCONF ACK命令的作用包括：</strong></p>
+<ol>
+<li><p><strong>实时监测主从节点网络状态：</strong>该命令会被主节点用于复制超时的判断。此外，在主节点中使用info Replication，可以看到其从节点的状态中的lag值，代表的是主节点上次收到该REPLCONF ACK命令的时间间隔，在正常情况下，该值应该是0或1。</p>
+</li>
+<li><p><strong>检测命令丢失：</strong>从节点发送了自身的offset，主节点会与自己的offset对比，如果从节点数据缺失（如网络丢包），主节点会推送缺失的数据（这里也会利用复制积压缓冲区）。</p>
+</li>
+</ol>
+<ul>
+<li><strong>注意：offset和复制积压缓冲区，不仅可以用于部分复制，也可以用于处理命令丢失等情形；区别在于前者是在断线重连后进行的，而后者是在主从节点没有断线的情况下进行的。</strong></li>
+</ul>
+<ol start="3">
+<li><strong>辅助保证从节点的数量和延迟：</strong>Redis主节点中使用min-slaves-to-write和min-slaves-max-lag参数，来保证主节点在不安全的情况下不会执行写命令；所谓不安全，是指从节点数量太少，或延迟过高。例如min-slaves-to-write和min-slaves-max-lag分别是3和10，含义是如果从节点数量小于3个，或所有从节点的延迟值都大于10s，则主节点拒绝执行写命令。而这里从节点延迟值的获取，就是通过主节点接收到REPLCONF ACK命令的时间来判断的，即前面所说的info Replication中的lag值。</li>
+</ol>
+<p>　　</p>
+<h2 id="开启主从复制"><a href="#开启主从复制" class="headerlink" title="开启主从复制"></a>开启主从复制</h2><p>从节点开启主从复制，有3种方式：</p>
+<ul>
+<li>配置文件：在从服务器的配置文件中加入：<strong>slaveof <masterip> <masterport></masterport></masterip></strong></li>
+<li>启动命令：redis-server启动命令后加入： <strong>–slaveof <masterip> <masterport></masterport></masterip></strong></li>
+<li>客户端命令：Redis服务器启动后，直接通过客户端执行命令：<strong>slaveof <masterip> <masterport></masterport></masterip></strong>，则该Redis实例成为从节点。</li>
+</ul>
+<h3 id="修改配置文件方法："><a href="#修改配置文件方法：" class="headerlink" title="修改配置文件方法："></a>修改配置文件方法：</h3><h4 id="1-配置从服务配置文件redis-conf"><a href="#1-配置从服务配置文件redis-conf" class="headerlink" title="1. 配置从服务配置文件redis.conf"></a>1. 配置从服务配置文件redis.conf</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">slaveof 192.168.1.9 6379    #添加属于某台主机的从 服务</span><br><span class="line">masterauth 123456       #从服务连接主服的密码（访问主服务器的密码）</span><br><span class="line">slave-read-only yes     #从服务只读，不可在命令行写入数据</span><br><span class="line"></span><br><span class="line">5.0.4以后：</span><br><span class="line">replicaof &lt;masterip&gt; &lt;masterport&gt;</span><br><span class="line">replica-read-only yes</span><br></pre></td></tr></table></figure>
+<h4 id="2-重新启动从服务即实现主从连接"><a href="#2-重新启动从服务即实现主从连接" class="headerlink" title="2. 重新启动从服务即实现主从连接"></a>2. 重新启动从服务即实现主从连接</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. ./bin/redis-cli	# 启动redis客户端</span><br><span class="line">2. 输入 info replication # 查看与复制相关的状态，了解主从节点的当前状态</span><br></pre></td></tr></table></figure>
+<p><strong>输入info replication 后显示的内容：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Replication</span></span><br><span class="line">role:slave      # 表示此台服务器是主是从</span><br><span class="line">master_host:39.107.38.62     # 主服务器ip</span><br><span class="line">master_port:6379        # 主服务器端口号</span><br><span class="line">master_link_status:up       # 与主服务器是否连接成功 up为成功 down失败</span><br><span class="line">master_last_io_seconds_ago:9</span><br><span class="line">master_sync_in_progress:0</span><br><span class="line">slave_repl_offset:808</span><br><span class="line">slave_priority:100</span><br><span class="line">slave_read_only:1</span><br><span class="line">connected_slaves:0</span><br><span class="line">master_replid:ea5230cc485f9c6f372b2c89a65613fb075aff8b</span><br><span class="line">master_replid2:0000000000000000000000000000000000000000</span><br><span class="line">master_repl_offset:808</span><br><span class="line">second_repl_offset:-1</span><br><span class="line">repl_backlog_active:1</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:15</span><br><span class="line">repl_backlog_histlen:794</span><br></pre></td></tr></table></figure>
+<h4 id="遇到的报错："><a href="#遇到的报错：" class="headerlink" title="遇到的报错："></a>遇到的报错：</h4><h5 id="1-Error-condition-on-socket-for-SYNC-Connection-refused"><a href="#1-Error-condition-on-socket-for-SYNC-Connection-refused" class="headerlink" title="1. Error condition on socket for SYNC: Connection refused"></a>1. Error condition on socket for SYNC: Connection refused</h5><p>  <strong>出现原因</strong>：</p>
+<p>  ​    redis主服务器绑定了127.0.0.1，跨服务器IP的访问就会失败，只能本机才能访问，外部请求会被过滤。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">解决方法：</span><br><span class="line">1. 主服务器绑定ip: bind 39.107.38.62</span><br><span class="line">3. bind 0.0.0.0</span><br><span class="line">2. 注释bind  # 会报下面的错↓</span><br></pre></td></tr></table></figure></p>
+<h5 id="2-‘-DENIED-Redis-is-running-in-protected-mode-because-protected-mode-is-enabled-no-bind-address-was-specified-no-authentication-password-is-requested-to-clients-In-this-mode-connections-are-only-accepted-from-the-loopback-interface-If-you-want-to-connec"><a href="#2-‘-DENIED-Redis-is-running-in-protected-mode-because-protected-mode-is-enabled-no-bind-address-was-specified-no-authentication-password-is-requested-to-clients-In-this-mode-connections-are-only-accepted-from-the-loopback-interface-If-you-want-to-connec" class="headerlink" title="2. ‘-DENIED Redis is running in protected mode because protected mode is enabled, no bind address was specified, no authentication password is requested to clients. In this mode connections are only accepted from the loopback interface. If you want to connec"></a>2. ‘-DENIED Redis is running in protected mode because protected mode is enabled, no bind address was specified, no authentication password is requested to clients. In this mode connections are only accepted from the loopback interface. If you want to connec</h5><p>   <strong>出现原因</strong>：</p>
+<p>   ​    处于保护模式，只能本地链接。没有绑定ip 没有设置验证密码。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">解决方法：</span><br><span class="line">1. 主服务器绑定ip： bind 39.107.38.62</span><br><span class="line">2. 设置主服务器访问密码：requirepass 12345</span><br></pre></td></tr></table></figure>
+<h5 id="3-error-READONLY-You-can’t-write-against-a-read-only-replica"><a href="#3-error-READONLY-You-can’t-write-against-a-read-only-replica" class="headerlink" title="3. (error) READONLY You can’t write against a read only replica."></a>3. (error) READONLY You can’t write against a read only replica.</h5><p>​    <strong>出现原因</strong>：</p>
+<p>​        从库只可读不可写</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">解决方法：</span><br><span class="line">1. 设置slave-read-only no # 代表不限于只读</span><br></pre></td></tr></table></figure>
+<h2 id="断开主从复制"><a href="#断开主从复制" class="headerlink" title="断开主从复制"></a>断开主从复制</h2><p>​    通过<strong>slaveof <masterip> <masterport></masterport></masterip></strong>命令建立主从复制关系以后，可以通过slaveof no one断开。</p>
+<p>从节点断开复制后，不会删除已有的数据，只是不再接受主节点新的数据变化。</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

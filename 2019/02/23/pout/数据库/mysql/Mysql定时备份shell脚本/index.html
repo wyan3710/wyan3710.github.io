@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Mysql定时备份shell脚本 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#MYSQL定时备份任务shell脚本"><span class="toc-text">MYSQL定时备份任务shell脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#备份的必要性"><span class="toc-text">备份的必要性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MYSQL备份数据的几种方式"><span class="toc-text">MYSQL备份数据的几种方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#mysqldump"><span class="toc-text">mysqldump</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mysql定时备份shell脚本"><span class="toc-text">Mysql定时备份shell脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Crontab"><span class="toc-text">Crontab</span></a></li></ol></li></ol></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Mysql定时备份shell脚本
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-02-23 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#MySql" title="MySql">MySql</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#数据库" title="数据库">数据库</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="MYSQL定时备份任务shell脚本"><a href="#MYSQL定时备份任务shell脚本" class="headerlink" title="MYSQL定时备份任务shell脚本"></a>MYSQL定时备份任务shell脚本</h1><h2 id="备份的必要性"><a href="#备份的必要性" class="headerlink" title="备份的必要性"></a>备份的必要性</h2><ul>
+<li>每个公司的业务都是基于数据进行的，数据的存储基本都是数据库</li>
+<li>保证了数据的安全，稳定，也就可以做到防范于未然。</li>
+</ul>
+<p>##冷备和热备</p>
+<ul>
+<li>冷备份：<ul>
+<li>冷备份，off，快，时间点上恢复</li>
+<li>冷备份发生在数据库已经正常关闭的情况下，当正常关闭时会提供给我们一个完整的数据库，冷备份是将关键性文件拷贝的另外位置的一种说法，对于备份数据库信息而言，冷备份是最快和最安全的方法。</li>
+<li>冷备份的优点：<ul>
+<li>低度维护，安全</li>
+<li>容易归档，拷贝文件</li>
+<li>速度快</li>
+<li>恢复简单</li>
+</ul>
+</li>
+<li>冷备份的缺点：<ul>
+<li>不能按表或按用户恢复</li>
+<li>若磁盘空间有限，只能拷贝到磁带等其他外部存储设备上，速度会很慢。</li>
+<li>恢复限制，在备份期间，数据库不能做读写写操作。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>热备份：<ul>
+<li>在数据库运行时，直接进行备份，对运行的数据库没有影响。</li>
+<li>热备份的优点：<ul>
+<li>可在表空间或数据文件级备份，备份时间段。</li>
+<li>灵活，备份时不影响数据库的使用。</li>
+<li>秒级恢复，能够恢复到某一时间点上。</li>
+</ul>
+</li>
+<li>热备份的缺点：<ul>
+<li>严谨性，尽量不要出错，否则后果很严重。</li>
+<li>维护困难</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>温备：（只能读，不可写）<ul>
+<li>上锁（考虑持锁的长久）</li>
+</ul>
+</li>
+</ul>
+<h2 id="MYSQL备份数据的几种方式"><a href="#MYSQL备份数据的几种方式" class="headerlink" title="MYSQL备份数据的几种方式"></a>MYSQL备份数据的几种方式</h2><p>###into outfile###</p>
+<ul>
+<li><p>利用<code>select into outfile +指定的路径</code> 实现指定表数据的备份 备份完的文件是文本文件</p>
+<ul>
+<li><p>在使用<code>select into outfile</code> 使用默认的用户是mysql在操作，使用<code>show variables like &#39;datadir&#39;</code>会显示所属mysql用户的文件件具有一切权限</p>
+</li>
+<li><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [exam]&gt; show variables like 'datadir';</span><br><span class="line">+---------------+-----------------+</span><br><span class="line">| Variable_name | Value           |</span><br><span class="line">+---------------+-----------------+</span><br><span class="line">| datadir       | /var/lib/mysql/ |</span><br><span class="line">+---------------+-----------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>指定路径可以直接放在mysql所属的文件夹下</p>
+</li>
+<li><p>如果指定文件备份位置，会报错<code>ERROR 1 (HY000): Can&#39;t create/write to file &#39;/data/test.txt&#39; (Errcode: 13)</code> 这是代表mysql没有文件目录的操作权限。</p>
+<ul>
+<li>解决办法 <ul>
+<li>直接更改文件目录的所属用户为mysql让mysql拥有一切权限，<code>clown mysql:mysql +指定文件夹的路径</code></li>
+<li>修改文件夹其它用户可以有写的权限。(不建议)</li>
+<li>先备份至mysql所属文件夹内 进行mv</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>可以使用<code>load data infile +备份完数据的路径 into table +表名</code> 进行恢复。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="mysqldump"><a href="#mysqldump" class="headerlink" title="mysqldump"></a>mysqldump</h3><ul>
+<li><p>mysqldump 常用来做温备 （所以需要先对备份的数据施加锁，只能读不能写）本质上就是将指定数据库中的数据已sql语句的方式输出 使用重定向到指定的文件</p>
+</li>
+<li><p>施加读锁的方式：</p>
+<ul>
+<li>flush tables with read lock 施加锁，表示把位于内存上的表统统都同步到磁盘上，然后去施加读锁。</li>
+<li>unlock tables 释放锁。</li>
+</ul>
+</li>
+<li><p>语法：</p>
+<ul>
+<li>-A  –alldatabases 备份所有数据库，含create database</li>
+<li>-B  –databases db_name  指定备份的数据库，包含create database语句</li>
+<li>-E –events  备份相关的所有event scheduler（<a href="https://blog.csdn.net/kelvin_yin/article/details/79128981" target="_blank" rel="noopener">事件调度器</a>)</li>
+<li>-R  –routines  备份所有存储过程和自定义函数</li>
+<li>–tirggers  备份表相关触发器，默认启用，用–skip-triggers，不备份触发器（<a href="https://www.jb51.net/article/164675.htm" target="_blank" rel="noopener">触发器</a>）默认开启</li>
+<li>–default-character-set=utf8(默认)</li>
+<li>–single-transaction 通过在一个事务中导出所有表从而创建一个一致性的快照，（只支持innodb，myisam不支持事务），从而有效的保证了dump文件，即正确的表内容和二进制日志位置。</li>
+<li>–master-data=2 选项开启式默认会打开lock-all-tables 一个是加锁，一个是获取log信息 =1和=2的在于log信息前者不注释，后者注释。</li>
+<li>lock-all-tables 在dump执行的时候会在表上加上读锁，保证数据一致性，innodb不需加上此参数，而使用 –single-tansaction</li>
+<li>–all-databases  导出所有的数据库 也可以指定表名</li>
+<li>-F –flush-logs  备份前滚动日志</li>
+<li>|gzip  对压缩的文件进行压缩（有效的节省磁盘空间）</li>
+<li>gzip -d 对压缩文件解压</li>
+</ul>
+</li>
+<li><p>全量备份</p>
+<ul>
+<li><p>使用mysqldump工具进行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@ax mysql]# mysqldump -uroot -p  --master-data=2 --databases 表名|gzip &gt;/data/mysql/a1_`date +%F`.sql</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>恢复</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@ax mysql]# mysql -uroot -p &lt; 备份文件路径/备份文件名</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>增量备份</p>
+<ul>
+<li><p>使用mysqlbinlog工具进行，本质上就是指定备份文件的log开始偏移量和结束日志的偏移量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@ax mysql]# mysqlbinlog --start-position=3210 /var/lib/mysql/mysql-bin.000009 &gt; /data/mysql/a1_2019-12-19_17.sql</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>–start-position=开始的偏移量</p>
+</li>
+<li><p>–stop-position=结束的偏移量</p>
+</li>
+<li><p>可以先使用<code>show master status</code> 来查看日志版本</p>
+</li>
+<li><p>通过find / -name 日志版本名来查找到路径</p>
+</li>
+<li><p>使用<code>mysqlbinlog --start-position=上次同步的结束位置 查询到的路径</code> 来查看需要同步的结束偏移量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@ax mysql]# mysqlbinlog --start-position=0 /var/lib/mysql/mysql-bin.000010</span><br><span class="line">SET TIMESTAMP=1576755138/*!*/;</span><br><span class="line">insert into a1 values (4,'赵六'),(5,'冯七')</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="meta">#</span><span class="bash"> at 423</span></span><br><span class="line"><span class="meta">#</span><span class="bash">191219 19:32:18 server id 1  end_log_pos 450 	Xid = 919</span></span><br><span class="line">COMMIT/*!*/;</span><br><span class="line"><span class="meta">#</span><span class="bash"> at 450</span></span><br><span class="line"><span class="meta">#</span><span class="bash">191219 19:32:32 server id 1  end_log_pos 531 	Query	thread_id=334	exec_time=0	error_code=0</span></span><br><span class="line">SET TIMESTAMP=1576755152/*!*/;</span><br><span class="line">drop database exam</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="meta">#</span><span class="bash"> at 531</span></span><br><span class="line"><span class="meta">#</span><span class="bash">191219 19:50:53 server id 1  end_log_pos 574 	Rotate to mysql-bin.000011  pos: 4</span></span><br><span class="line">DELIMITER ;</span><br><span class="line"><span class="meta">#</span><span class="bash"> End of <span class="built_in">log</span> file</span></span><br><span class="line">ROLLBACK /* added by mysqlbinlog */;</span><br><span class="line">/*!50003 SET COMPLETION_TYPE=@OLD_COMPLETION_TYPE*/;</span><br><span class="line">/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=0*/;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其中end_log_pos就是结束的偏移量</p>
+</li>
+<li><p>或者直接使用<code>show master status</code> 中查询出来的偏移量，备份到操作该库的最后一次位置</p>
+</li>
+</ul>
+</li>
+<li><p>恢复，和全量恢复是相同的  </p>
+<ul>
+<li>[root@ax mysql]# mysql -uroot -p &lt; 备份文件路径/增量备份名备份文件名</li>
+<li>恢复前先关闭二进制日志 <code>set sql_log_bin=0</code></li>
+<li>滚动日志 <code>flush logs</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>###利用lvm快照备份和恢复##</p>
+<ul>
+<li>LVM（Logical Volume Manager）是一个应用于Linux的内核的逻辑卷管理器，是Linux环境下对磁盘进行分区管理的一种机制。相关名词：<ul>
+<li>PV（物理卷）可以是一个磁盘，一个分区。由PE（物理盘区）组成，多个PV可以组成一个VG（卷组）<ul>
+<li>VG（卷组）多个物理卷组成的一个组，卷组不可以直接使用，需要在上面创建LV（逻辑卷）才可以使用。VG上可以创建多个LV。</li>
+<li>PE（物理盘区），默认是4MB,像磁盘的block块</li>
+<li>LV（逻辑卷）是建立在卷组之上的一个可用空间，有物理边界和逻辑边界两种边界。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>LVM扩展<ul>
+<li><a href="https://www.jb51.net/LINUXjishu/105937.html" target="_blank" rel="noopener">连接</a></li>
+<li>LVM是一种将一个或多个硬盘的分区在逻辑上的集合，相当于一个大硬盘来使用，当空间不够使用时，可以继续将其它硬盘的分区加入其中，这样可以实现一种磁盘空间的动态管理，相对于普通的磁盘分区有很大的灵活性，使用普通的磁盘分区，当一个磁盘的分区空间不够使用的时候，可能就会带来很大的麻烦，使用LVM在一定程度就可以解决普通磁盘分区带来的问题。LVM通常用于装备大量磁盘的系统，但他它同样适于仅有一，两块硬盘的小系统。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Mysql定时备份shell脚本"><a href="#Mysql定时备份shell脚本" class="headerlink" title="Mysql定时备份shell脚本"></a>Mysql定时备份shell脚本</h3><ul>
+<li><p>利用的都是mysqldump，利用Crontab设置定时任务，来自动执行备份命令。直接上代码。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 以下配置信息请自己修改</span></span><br><span class="line">mysql_user="root" #MySQL备份用户</span><br><span class="line">mysql_password="password" #MySQL备份用户的密码</span><br><span class="line">mysql_host="localhost"</span><br><span class="line">mysql_port="3306"</span><br><span class="line">mysql_charset="utf8" #MySQL编码</span><br><span class="line">backup_db_arr=("db1" "db2") #要备份的数据库名称，多个用空格分开隔开 如("db1" "db2" "db3")</span><br><span class="line">backup_location=/data/mysql #备份数据存放位置，末尾请不要带"/",此项可以保持默认，程序会自动创建文件夹</span><br><span class="line">expire_backup_delete="ON" #是否开启过期备份删除 ON为开启 OFF为关闭</span><br><span class="line">expire_days=3 #过期时间天数 默认为三天，此项只有在expire_backup_delete开启时有效</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 本行开始以下不需要修改</span></span><br><span class="line">backup_time=`date +%F:%T` #定义备份详细时间</span><br><span class="line">backup_Ymd=`date +%Y-%m-%d` #定义备份目录中的年月日时间</span><br><span class="line">backup_3ago=`date -d '3 days ago' +%Y-%m-%d` #3天之前的日期</span><br><span class="line">backup_dir=$backup_location/$backup_Ymd #备份文件夹全路径</span><br><span class="line">welcome_msg="Welcome to use MySQL backup tools!" #欢迎语</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 判断MYSQL是否启动,mysql没有启动则备份退出</span></span><br><span class="line">mysql_ps=`ps -ef |grep mysql |wc -l`</span><br><span class="line">mysql_listen=`netstat -an |grep LISTEN |grep $mysql_port|wc -l`</span><br><span class="line">if [ [$mysql_ps == 0] -o [$mysql_listen == 0] ]; then</span><br><span class="line">echo "`date +%F:%T` --ERROR:MySQL is not running! backup stop!"</span><br><span class="line">exit</span><br><span class="line">else</span><br><span class="line">echo "备份时间-- `date +%F:%T`"</span><br><span class="line">echo `date +%F:%T` -- $welcome_msg</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 连接到mysql数据库，无法连接则备份退出</span></span><br><span class="line">mysql -h$mysql_host -P$mysql_port -u$mysql_user -p$mysql_password &lt;&lt;end</span><br><span class="line">use mysql;</span><br><span class="line">select host,user from user where user='root' and host='localhost';</span><br><span class="line">exit</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">flag=`echo $?`</span><br><span class="line">if [ $flag != "0" ]; then</span><br><span class="line">echo "`date +%F:%T` --ERROR:Can't connect mysql server! backup stop!"</span><br><span class="line">exit</span><br><span class="line">else</span><br><span class="line">echo "`date +%F:%T` --MySQL connect ok! Please wait......"</span><br><span class="line"><span class="meta">#</span><span class="bash"> 判断有没有定义备份的数据库，如果定义则开始备份，否则退出备份</span></span><br><span class="line">if [ "$backup_db_arr" != "" ];then</span><br><span class="line"><span class="meta">#</span><span class="bash">dbnames=$(cut -d <span class="string">','</span> -f1-5 <span class="variable">$backup_database</span>)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> <span class="string">"arr is (<span class="variable">$&#123;backup_db_arr[@]&#125;</span>)"</span></span></span><br><span class="line">for dbname in $&#123;backup_db_arr[@]&#125;</span><br><span class="line">do</span><br><span class="line">echo "`date +%F:%T` --database $dbname backup start..."</span><br><span class="line">`mkdir -p $backup_dir`</span><br><span class="line">`mysqldump -h$mysql_host -P$mysql_port -u$mysql_user -p$mysql_password $dbname --default-character-set=$mysql_charset | gzip &gt; $backup_dir/$dbname-$backup_time.sql.gz`</span><br><span class="line">flag=`echo $?`</span><br><span class="line">if [ $flag == "0" ];then</span><br><span class="line">echo "`date +%F:%T` --database $dbname success backup to $backup_dir/$dbname-$backup_time.sql.gz"</span><br><span class="line">else</span><br><span class="line">echo "`date +%F:%T` --database $dbname backup fail!"</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">done</span><br><span class="line">else</span><br><span class="line">echo "`date +%F:%T` --ERROR:No database to backup! backup stop"</span><br><span class="line">exit</span><br><span class="line">fi</span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果开启了删除过期备份，则进行删除操作</span></span><br><span class="line">if [ "$expire_backup_delete" == "ON" -a "$backup_location" != "" ];then</span><br><span class="line"><span class="meta">#</span><span class="bash">`find <span class="variable">$backup_location</span>/ -<span class="built_in">type</span> d -o -<span class="built_in">type</span> f -ctime +<span class="variable">$expire_days</span> -<span class="built_in">exec</span> rm -rf &#123;&#125; \;`</span></span><br><span class="line">`find $backup_location/ -type d -mtime +$expire_days | xargs rm -rf`</span><br><span class="line">echo "`date +%F:%T` --Expired backup data delete complete!"</span><br><span class="line">fi</span><br><span class="line">echo "`date +%F:%T` --All database backup success! Thank you!"</span><br><span class="line">echo ""</span><br><span class="line">exit</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>在非linux界面下操作，sh脚本中每行都会多个\r，导致linux无法执行脚本。解决办法，使用vim编辑shell脚本文件，执行::set ff=unix。文件即使unix文件了。可以使用::set ff? 查看文件的类型。dos就是在ATOM操作后保存的文件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fileformat=unix </span><br><span class="line">fileformat=dos</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>文件的创建默认UGO权限为 -rw-r–r– 代表的这个文件没有执行权限，所以需要给文件增加权限。</p>
+<ul>
+<li><p>文件创建者拥有所有权限，用户组和其他组只有执行权限</p>
+<p><code>chmod 711 备份文件</code></p>
+</li>
+<li><p>r=4 w=2 x=1 </p>
+</li>
+</ul>
+</li>
+<li><p>拥有了执行权限后，该shell脚本就可以执行了，可以执行一下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@ax auto_backup]# ./Backup.sh </span><br><span class="line">备份时间-- 2019-12-20:17:09:40</span><br><span class="line">2019-12-20:17:09:40 -- Welcome to use MySQL backup tools!</span><br><span class="line">host	user</span><br><span class="line">localhost	root</span><br><span class="line">2019-12-20:17:09:40 --MySQL connect ok! Please wait......</span><br><span class="line">2019-12-20:17:09:40 --database exam backup start...</span><br><span class="line">2019-12-20:17:09:40 --database exam success backup to /data/mysql/2019-12-20/exam-2019-12-20:17:09:40.sql.gz</span><br><span class="line">2019-12-20:17:09:40 --database shiyouyun backup start...</span><br><span class="line">mysqldump: Got error: 1049: "Unknown database 'shiyouyun'" when selecting the database</span><br><span class="line">2019-12-20:17:09:40 --database shiyouyun success backup to /data/mysql/2019-12-20/shiyouyun-2019-12-20:17:09:40.sql.gz</span><br><span class="line">2019-12-20:17:09:40 --Expired backup data delete complete!</span><br><span class="line">2019-12-20:17:09:40 --All database backup success! Thank you!</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行成功说明shell没有问题，只剩下写入定时任务了</p>
+</li>
+</ul>
+<h4 id="Crontab"><a href="#Crontab" class="headerlink" title="Crontab"></a>Crontab</h4><ul>
+<li><p>linux下使用crontab命令来提交和管理用户需要定时、周期性的执行任务。</p>
+</li>
+<li><p>linux下默认会安装此服务工具，并且会自动启动crond进程，crond进程会每分钟定期检查是否有要执行的任务。如果有要执行的任务，则自动执行该任务。</p>
+</li>
+<li><p>命令语法：</p>
+<ul>
+<li>crontab（选项） （参数）</li>
+<li>选项：<ul>
+<li>-e  编辑该用户的计时设置</li>
+<li>-l   列出该用户的计时器设置</li>
+<li>-r   删除该用户的计时器设置</li>
+<li>-u   用户名称   指定要设定计时器的用户名称</li>
+</ul>
+</li>
+<li>参数：<ul>
+<li>crontab文件   指定包含待执行任务的crontab文件</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>直接在/etc/crontab文件中添加shell脚本任务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">00 3 * * * root /data/auto_backup/Backup.sh &gt;&gt; /data/mysql/backup.log</span><br></pre></td></tr></table></figure>
+<ul>
+<li>上面代表每天在凌晨3点运行Backup.sh脚本 并将输出重定向追加到backup.log文件中。</li>
+<li>从左往右依次代表<ul>
+<li>分 可取0-59的整数 加/数字 代表每分钟执行多少次</li>
+<li>时 可取0-23的整数  </li>
+<li>天  可取1-31的整数 ，必须是指定月份的有效日期</li>
+<li>月 可取1-12的整数，也可写英文简写</li>
+<li>周几 可取1-7的整数，描述周几</li>
+<li>执行的用户  指定用户</li>
+<li>shell脚本的路径</li>
+<li>log日志的路径</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>添加完后保存，重启crond服务。一切ok</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-attr">[root@ax mysql]</span># <span class="selector-tag">ls</span></span><br><span class="line"><span class="selector-tag">2019-12-20</span>  <span class="selector-tag">backup</span><span class="selector-class">.log</span></span><br><span class="line"><span class="selector-attr">[root@ax mysql]</span># <span class="selector-tag">cd</span> <span class="selector-tag">2019-12-20</span>/</span><br><span class="line"><span class="selector-attr">[root@ax 2019-12-20]</span># <span class="selector-tag">ls</span></span><br><span class="line"><span class="selector-tag">exam-201912201600</span><span class="selector-class">.sql</span><span class="selector-class">.gz</span>  <span class="selector-tag">exam-201912201613</span><span class="selector-class">.sql</span><span class="selector-class">.gz</span>         <span class="selector-tag">exam-2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:31</span><span class="selector-pseudo">:01.sql.gz</span>  <span class="selector-tag">shiyouyun-201912201608</span><span class="selector-class">.sql</span><span class="selector-class">.gz</span>  <span class="selector-tag">shiyouyun-2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:21</span><span class="selector-pseudo">:01.sql.gz</span></span><br><span class="line"><span class="selector-tag">exam-201912201601</span><span class="selector-class">.sql</span><span class="selector-class">.gz</span>  <span class="selector-tag">exam-201912201614</span><span class="selector-class">.sql</span><span class="selector-class">.gz</span>         <span class="selector-tag">exam-2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:32</span><span class="selector-pseudo">:01.sql.gz</span>  <span class="selector-tag">shiyouyun-201912201609</span><span class="selector-class">.sql</span><span class="selector-class">.gz</span>  <span class="selector-tag">shiyouyun-2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:22</span><span class="selector-pseudo">:01.sql.gz</span></span><br><span class="line"><span class="selector-attr">[root@ax mysql]</span># <span class="selector-tag">cat</span> <span class="selector-tag">backup</span><span class="selector-class">.log</span> </span><br><span class="line">备份时间<span class="selector-tag">--</span> <span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:30</span><span class="selector-pseudo">:01</span></span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:30</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--</span> <span class="selector-tag">Welcome</span> <span class="selector-tag">to</span> <span class="selector-tag">use</span> <span class="selector-tag">MySQL</span> <span class="selector-tag">backup</span> <span class="selector-tag">tools</span>!</span><br><span class="line"><span class="selector-tag">host</span>	<span class="selector-tag">user</span></span><br><span class="line"><span class="selector-tag">localhost</span>	<span class="selector-tag">root</span></span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:30</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--MySQL</span> <span class="selector-tag">connect</span> <span class="selector-tag">ok</span>! <span class="selector-tag">Please</span> <span class="selector-tag">wait</span>......</span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:30</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--database</span> <span class="selector-tag">exam</span> <span class="selector-tag">backup</span> <span class="selector-tag">start</span>...</span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:30</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--database</span> <span class="selector-tag">exam</span> <span class="selector-tag">success</span> <span class="selector-tag">backup</span> <span class="selector-tag">to</span> /<span class="selector-tag">data</span>/<span class="selector-tag">mysql</span>/<span class="selector-tag">2019-12-20</span>/<span class="selector-tag">exam-2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:30</span><span class="selector-pseudo">:01.sql.gz</span></span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:30</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--database</span> <span class="selector-tag">shiyouyun</span> <span class="selector-tag">backup</span> <span class="selector-tag">start</span>...</span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:30</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--database</span> <span class="selector-tag">shiyouyun</span> <span class="selector-tag">success</span> <span class="selector-tag">backup</span> <span class="selector-tag">to</span> /<span class="selector-tag">data</span>/<span class="selector-tag">mysql</span>/<span class="selector-tag">2019-12-20</span>/<span class="selector-tag">shiyouyun-2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:30</span><span class="selector-pseudo">:01.sql.gz</span></span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:30</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--Expired</span> <span class="selector-tag">backup</span> <span class="selector-tag">data</span> <span class="selector-tag">delete</span> <span class="selector-tag">complete</span>!</span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:30</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--All</span> <span class="selector-tag">database</span> <span class="selector-tag">backup</span> <span class="selector-tag">success</span>! <span class="selector-tag">Thank</span> <span class="selector-tag">you</span>!</span><br><span class="line"></span><br><span class="line">备份时间<span class="selector-tag">--</span> <span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:31</span><span class="selector-pseudo">:01</span></span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:31</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--</span> <span class="selector-tag">Welcome</span> <span class="selector-tag">to</span> <span class="selector-tag">use</span> <span class="selector-tag">MySQL</span> <span class="selector-tag">backup</span> <span class="selector-tag">tools</span>!</span><br><span class="line"><span class="selector-tag">host</span>	<span class="selector-tag">user</span></span><br><span class="line"><span class="selector-tag">localhost</span>	<span class="selector-tag">root</span></span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:31</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--MySQL</span> <span class="selector-tag">connect</span> <span class="selector-tag">ok</span>! <span class="selector-tag">Please</span> <span class="selector-tag">wait</span>......</span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:31</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--database</span> <span class="selector-tag">exam</span> <span class="selector-tag">backup</span> <span class="selector-tag">start</span>...</span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:31</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--database</span> <span class="selector-tag">exam</span> <span class="selector-tag">success</span> <span class="selector-tag">backup</span> <span class="selector-tag">to</span> /<span class="selector-tag">data</span>/<span class="selector-tag">mysql</span>/<span class="selector-tag">2019-12-20</span>/<span class="selector-tag">exam-2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:31</span><span class="selector-pseudo">:01.sql.gz</span></span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:31</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--database</span> <span class="selector-tag">shiyouyun</span> <span class="selector-tag">backup</span> <span class="selector-tag">start</span>...</span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:31</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--database</span> <span class="selector-tag">shiyouyun</span> <span class="selector-tag">success</span> <span class="selector-tag">backup</span> <span class="selector-tag">to</span> /<span class="selector-tag">data</span>/<span class="selector-tag">mysql</span>/<span class="selector-tag">2019-12-20</span>/<span class="selector-tag">shiyouyun-2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:31</span><span class="selector-pseudo">:01.sql.gz</span></span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:31</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--Expired</span> <span class="selector-tag">backup</span> <span class="selector-tag">data</span> <span class="selector-tag">delete</span> <span class="selector-tag">complete</span>!</span><br><span class="line"><span class="selector-tag">2019-12-20</span><span class="selector-pseudo">:16</span><span class="selector-pseudo">:31</span><span class="selector-pseudo">:01</span> <span class="selector-tag">--All</span> <span class="selector-tag">database</span> <span class="selector-tag">backup</span> <span class="selector-tag">success</span>! <span class="selector-tag">Thank</span> <span class="selector-tag">you</span>!</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

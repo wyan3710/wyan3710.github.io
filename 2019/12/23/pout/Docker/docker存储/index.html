@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Docker 存储 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Docek-镜像层的镜像分层结构"><span class="toc-text">Docek 镜像层的镜像分层结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#容器"><span class="toc-text">容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Docker-为容器提供了两种存放数据的资源："><span class="toc-text">Docker 为容器提供了两种存放数据的资源：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#关于docker镜像的三问"><span class="toc-text">关于docker镜像的三问</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#写时复制（CoW）"><span class="toc-text">写时复制（CoW）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#用时分配（allocate-on-demand）"><span class="toc-text">用时分配（allocate-on-demand）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Docker存储驱动的作用"><span class="toc-text">Docker存储驱动的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Docker五种存储驱动原理及应用场景和性能测试对比"><span class="toc-text">Docker五种存储驱动原理及应用场景和性能测试对比</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#AUFS"><span class="toc-text">AUFS</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Overlay"><span class="toc-text">Overlay</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Overlay2"><span class="toc-text">Overlay2</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Device-mapper"><span class="toc-text">Device mapper</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Btrfs"><span class="toc-text">Btrfs</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#ZFS"><span class="toc-text">ZFS</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#存储驱动的对比及适应场景"><span class="toc-text">存储驱动的对比及适应场景</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#AUFS-VS-Overlay"><span class="toc-text">AUFS VS  Overlay</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Overlay-VS-Device-mapper"><span class="toc-text">Overlay VS Device mapper</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Device-mapper-VS-Btrfs-Driver-VS-ZFS"><span class="toc-text">Device mapper VS Btrfs Driver VS ZFS</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#IO性能对比"><span class="toc-text">IO性能对比</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#测试项的定义和解释"><span class="toc-text">测试项的定义和解释</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#测试数据对比"><span class="toc-text">测试数据对比</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#设置存储驱动程序"><span class="toc-text">设置存储驱动程序</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Data-Volume（数据卷）"><span class="toc-text">Data Volume（数据卷）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#附：bind-mount-与-docker-managed-volume-的区别"><span class="toc-text">附：bind mount 与 docker managed volume 的区别</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#什么是数据卷"><span class="toc-text">什么是数据卷</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Docker-的理念之一："><span class="toc-text">Docker 的理念之一：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#数据卷的设计的目的："><span class="toc-text">数据卷的设计的目的：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#数据卷特点："><span class="toc-text">数据卷特点：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#创建一个数据卷"><span class="toc-text">创建一个数据卷</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#挂载多个目录实现数据卷的"><span class="toc-text">挂载多个目录实现数据卷的</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#容器间的数据共享"><span class="toc-text">容器间的数据共享</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#容器间挂载"><span class="toc-text">容器间挂载</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#备份数据卷"><span class="toc-text">备份数据卷</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#恢复数据给同一个容器"><span class="toc-text">恢复数据给同一个容器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#恢复数据给新的容器"><span class="toc-text">恢复数据给新的容器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#删除数据卷"><span class="toc-text">删除数据卷</span></a></li></ol></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Docker 存储
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-12-23 08:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<p>#Docker 存储</p>
+<h3 id="Docek-镜像层的镜像分层结构"><a href="#Docek-镜像层的镜像分层结构" class="headerlink" title="Docek 镜像层的镜像分层结构"></a>Docek 镜像层的镜像分层结构</h3><ul>
+<li>docker的镜像分层结构，如下所示：</li>
+</ul>
+<p><img src="https://docs.docker.com/storage/storagedriver/images/container-layers.jpg" alt="基于Ubuntu映像的容器层"></p>
+<ul>
+<li><p>docker镜像中引入层layer概念，镜像的制作过程中的每一步都会生产一个新的镜像层</p>
+</li>
+<li><p>容器读写层的工作原理</p>
+<blockquote>
+<p>我们刚刚在说镜像的分层特性的时候说到镜像是只读的。而事实上当我们使用镜像启动一个容器的时候，我们其实是可以在容器里随意读写的，从结果上看，似乎与镜像的只读特性相悖。</p>
+<p>我们继续看上面的图，其实可以看到在镜像的最上层，还有一个读写层。而这个读写层，即在容器启动时为当前容器单独挂载。每一个容器在运行时，都会基于当前镜像在其最上层挂载一个读写层。而用户针对容器的所有操作都在读写层中完成。一旦容器销毁，这个读写层也随之销毁。</p>
+<blockquote>
+<p>知识点： 容器=镜像+读写层</p>
+</blockquote>
+<p>而我们针对这个读写层的操作，主要基于两种方式：写时复制和用时分配。</p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<h3 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h3><p><img src="https://docs.docker.com/storage/storagedriver/images/sharing-layers.jpg" alt="容器共享相同的图像"></p>
+<ul>
+<li><p>容器由最上面一个可写的容器层和若干个只读的镜像层组成，容器的数据就存在这些层中。这种分层结构最大的特点是Copy-on-Write。</p>
+<ol>
+<li><p>新数据会直接存放在最上面的容器层</p>
+</li>
+<li><p>修改现有数据会从镜像层复制文件到容器中，再在容器层修改并保存，镜像层的数据不会发生改变</p>
+</li>
+<li><p>若多个层中有命名相同的文件，用户只能看到最上面一层的文件</p>
+</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li>分层结构使镜像和容器的创建、共享以及分发变得非常高效，而这些都要归功于 Docerk stoage driver。<strong>正是 storage driver 实现了多层数据的堆叠并为用户提供一个单一的合并之后的统一视图</strong>。</li>
+</ul>
+<hr>
+<h3 id="Docker-为容器提供了两种存放数据的资源："><a href="#Docker-为容器提供了两种存放数据的资源：" class="headerlink" title="Docker 为容器提供了两种存放数据的资源："></a>Docker 为容器提供了两种存放数据的资源：</h3><ul>
+<li>由storage driver（存储驱动） 管理的镜像层和容器层<ul>
+<li>用来放一些无状态的数据<ul>
+<li><strong>对于某些容器，直接将数据放在由</strong> storage driver <strong>维护的层中是很好的选择，比如那些无状态的应用。无状态意味着容器没有需要持久化的数据，随时可以从镜像直接创建。即存在与否依赖镜像的存在。</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Data Volume。（数据卷）<ul>
+<li>用来放一些有状态的数据，例如数据库<ul>
+<li><strong>本质上是</strong> Docker Host （主机）<strong>文件系统中的目录或文件，能够直接被 </strong> mount （挂载）<strong>到容器的文件系统中</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="关于docker镜像的三问"><a href="#关于docker镜像的三问" class="headerlink" title="关于docker镜像的三问"></a>关于docker镜像的三问</h4><ul>
+<li>基于镜像A创建镜像B时是否会拷贝A镜像中的所有文件：<code>是不会的</code></li>
+<li>基于镜像创建容器时是否会拷贝镜像中的所有文件至文件层：<code>不会的</code></li>
+<li>容器与镜像在结构上有什么区别：<code>没有区别容器会比镜像多了一个</code> <code>merged</code>文件</li>
+</ul>
+<blockquote>
+<p>在讲原理前，先讲下写时复制和写时分配</p>
+</blockquote>
+<h4 id="写时复制（CoW）"><a href="#写时复制（CoW）" class="headerlink" title="写时复制（CoW）"></a>写时复制（CoW）</h4><blockquote>
+<p>所有驱动都用到的技术——写时复制（CoW）。CoW就是copy-on-write，表示只在需要写时才去复制，这个是针对已有文件的修改场景比如基于一个image启动多个Container，如果为每个Container都去分配一个image一样的文件系统，那么将会占用大量的磁盘空间。而CoW技术可以让所有的容器共享image的文件系统，所有数据都从image中读取，只有当要对文件进行写操作时，才从image里把要写的文件复制到自己的文件系统进行修改。所以无论多少个容器共享同一个image，所作的写操作都是从image中复制到自己的文件系统中的复制本上进行，并不会修改image的源文件，且多个容器操作同一个文件，会在每个容器的文件系统里生成一个复本，每个容器修改的都是自己的复本，相互隔离的，相互不影响。使用CoW可以有效的提高磁盘的利用率。</p>
+</blockquote>
+<h4 id="用时分配（allocate-on-demand）"><a href="#用时分配（allocate-on-demand）" class="headerlink" title="用时分配（allocate-on-demand）"></a>用时分配（allocate-on-demand）</h4><blockquote>
+<p>而用时分配是用在原本没有这个文件的场景，只有在要新写入一个文件时才分配空间，这样可以提高存储资源的利用率。比如启动一个容器，并不会为这个容器预分配一些磁盘空间，而是当有新文件写入时，才按需分配新空间。</p>
+</blockquote>
+<h4 id="Docker存储驱动的作用"><a href="#Docker存储驱动的作用" class="headerlink" title="Docker存储驱动的作用"></a>Docker存储驱动的作用</h4><blockquote>
+<p>将这些分层的镜像文件堆叠起来，并且提供统一的视图.使container的文件系统看上去和我们普通的文件系统没什么区别。<br>当创建一个新的容器的时候,实际上是在镜像的分层上新添加了一层container layer（容器层）.之后所有对容器产生的修改,实际都只影响这一层。</p>
+<p>注意</p>
+<p>容器层：读写层(可写层)<br>镜像层：只读层</p>
+</blockquote>
+<blockquote>
+<p> Docker 支持多种 storage driver，有 AUFS 、Device Mapper 、Btrfs 、OverlayFS 、VFS 和ZFS。它们都能实现分层的架构，同时又有各自的特性。对于Docker 用户来说，具体选择使用哪个 storage driver 是一个难题，因为：</p>
+</blockquote>
+<p>​            没有哪个driver 能够适应所有的场景。</p>
+<p>​            driver 本身在快速发展和迭代。</p>
+<blockquote>
+<p>优先使用 Linux 发行版默认的 storage driver。Docker 安装时会根据当前系统的配置选择默认的 driver。默认 driver 具有最好的稳定性，因为默认 driver 在发行版上经过了严格的测试。</p>
+</blockquote>
+<blockquote>
+<p>运行<code>docker info</code>可以查看可查看当前系统使用的<code>Storage driver</code>。</p>
+<blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; [root@izbp1dg6m4eebtcm77n0smz ~]<span class="comment"># docker info</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Client:</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Debug Mode: <span class="literal">false</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; </span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Server:</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Containers: 6</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Running: 4</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Paused: 0</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Stopped: 2</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Images: 4</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Server Version: 19.03.5</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Storage Driver: overlay2</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Backing Filesystem: extfs</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Supports d_type: <span class="literal">true</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Native Overlay Diff: <span class="literal">false</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Logging Driver: json-file</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt; Cgroup Driver: cgroupfs</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> &gt;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+</blockquote>
+<blockquote>
+</blockquote>
+<hr>
+<blockquote>
+<p>Ubuntu 用的 <code>AUFS</code>，底层文件系统是 <code>extfs</code>，各层数据存放在 <code>/var/lib/docker/aufs</code>。<br>centos默认的<code>driver</code>用的是<code>overlay2</code>，底层的文件系统是xfs,各层数据存放在<code>/var/lib/docker</code></p>
+</blockquote>
+<blockquote>
+<p>而写时分配是用在原本没有这个文件的场景，只有在要新写入一个文件时才分配空间，这样可以提高存储资源的利用率。</p>
+<p>比如启动一个容器，并不是为这个容器预分配一些磁盘空间，而是当有新文件写入时，才按需分配新空间。</p>
+</blockquote>
+<ul>
+<li>docker提供了多种的存储驱动来实现不同的方式存储镜像</li>
+</ul>
+<h5 id="Docker五种存储驱动原理及应用场景和性能测试对比"><a href="#Docker五种存储驱动原理及应用场景和性能测试对比" class="headerlink" title="Docker五种存储驱动原理及应用场景和性能测试对比"></a>Docker五种存储驱动原理及应用场景和性能测试对比</h5><blockquote>
+<p><code>Docker</code> 最开始采用AUFS作为文件系统，也得益于AUFS分层的概念，实现了多个Container可以共享同一个image。但由于<code>AUFS</code> 为并入 <code>Linux</code>内核，且只支持 <code>Ubuntu</code>，考虑到兼容的问题，在 <code>Docker 0.7</code> 版本中引入了存储驱动，就如Docker官网上说的，没有单一的驱动适应所有的应用场景，要根据不同的场景选择合适的存储驱动，才能有效的提高Docker 的性能。如何选择适合的存储驱动，要先了解存储驱动原理才能更好的判断。</p>
+</blockquote>
+<blockquote>
+<p>接下来我们说说这些分层的镜像是如何在磁盘中存储的。</p>
+</blockquote>
+<ul>
+<li><p><code>docker</code> 提供了多种存储驱动来实现不同的方式存储镜像</p>
+<ul>
+<li><p>下列出了 <code>Docker</code> 中支持的存储驱动程序：</p>
+<p>|      技术       |      存储驱动成名称      |<br>| :————-: | :———————-: |<br>|   <code>OverlayFS</code>   | <code>overlay</code> 或  <code>overlay2</code> |<br>|     <code>AUFS</code>      |          <code>aufs</code>          |<br>|     <code>Btrfs</code>     |         <code>btrfs</code>          |<br>| <code>Device Mapper</code> |      <code>devicemapper</code>      |<br>|      <code>VFS</code>      |          <code>vfs</code>           |<br>|      <code>ZFS</code>      |          <code>zfs</code>           |</p>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="AUFS"><a href="#AUFS" class="headerlink" title="AUFS"></a>AUFS</h5><blockquote>
+<p>AUFS（AnotherUnionFS）是一种 Union FS ，是文件级的存储驱动。AUFS 是一个能透明覆盖一个或多个县有文件系统的层状文件系统，把多层合并成文件系统的单层表示。简单来说就是支持将不同目录挂载到同一个虚拟文件系统下的文件系统。这种文件可以一层一层地叠加修改文件。无论低下有多少层都是只读的，只有最上层的文件系统是可写的。当需要修改文件时，AUFS创建该文件的一个副本，使用CoW将文件从只读层复制到可写层进行修改，结果保存在可写层。在Docker中，低下的只读层就是image，可写层就是Container。结构如下图所示：</p>
+</blockquote>
+<p>  <a href="http://dockone.io/uploads/article/20190702/87af417e9f80a3eb8ae9716ae07b3dc1.jpg" target="_blank" rel="noopener"><img src="http://dockone.io/uploads/article/20190702/87af417e9f80a3eb8ae9716ae07b3dc1.jpg" alt="1.jpg"></a></p>
+<blockquote>
+<p><strong>历史</strong>：aufs驱动老早就在Docker中存在了！其实，他在使用<code>graphdriver</code>这个名字之前久存在了。如果你查看项目在那（即首次使用graphdriver名称）提交之前的历史，之前项目中当时只有一个aufs的实现。下边devicemapper部分会讲到更多关于graphdriver这个名称诞生的历史。</p>
+<p><strong>实现</strong>：Aufs最初代表的意思“另一个联合文件系统（another union filesystem）”，试图对当时已经存在的UnionFS实现进行重写。正如你期望的那样，它是一个传统意义的上层覆盖，通过利用aufs称作为“分支（branch）”的特性，让堆叠的目录合并成一个堆叠内容单一挂载点视图。此驱动会将父级信息组合一个有序列表，并把它作为挂载参数，然后把重活移交给aufs来把这些分层组装成一个联合视图。更多的细节信息可以在aufs的<a href="http://aufs.sourceforge.net/aufs3/man.html" target="_blank" rel="noopener">帮助文档</a>上看到。</p>
+<p><strong>优点</strong>：这可能是历史最久且测试最完善的graphdriver后端了。它拥有不错的性能，也比较稳定，适用于广泛的场景。尽管它只在Ubuntu或者Debian的内核上才可以启用（下边有说明），但是这两个发行版和Docker一起使用的场景已经非常多，这让它在广阔的环境中得到了验证。同时，通过让不同的容器从同一个分层里面加载相同的库（因为他们在磁盘上是相同的inode）达到了共享内存页的效果。</p>
+<p><strong>缺点</strong>：Aufs从来没有被上游Linux内核社区接受。多年来Ubuntu和Debian都需要往内核集成一个历史久远的补丁包，且原作者已经放弃了让它被内核采纳的努力。可能与IPV4和IPv6的辩论有些类似，人们担心某一天内核更新后会出现难以整合aufs的补丁的情况，从而导致aufs没得玩。但是就如IPv6，替换aufs势在必行的决心讲了一年又一年。除此之外，它面临着很多其他比较棘手的问题。其中一个最麻烦的、也是比较有历史的问题（尽管某种程度上这是一个安全的特性），是关于在高层更改向上拷贝的文件的权限的，这个问题困扰了不少用户。最终在2015年早期的时候通过编号为<a href="http://dockone.io/docker/docker#11799" target="_blank" rel="noopener">#11799</a>的PR使用aufs的<code>dirperm1</code>特性修复了。自然，这需要内核中有具有<code>dirperm1</code>能力aufs，然而这在今天任何较新版本的Ubuntu或者Debian上都已经不成问题了。</p>
+<p><strong>总结</strong>：如果你在使用Ubtuntu或者Debian，那默认的graphdriver就是aufs，它能满足你绝大多数需求。有人期望有一天它能被overlay的实现取代，但是考虑到overlay文件系统的诸多问题，以及在上游内核中的成熟程度等挑战，这尚未实现。最后，aufs中没有配额的支持。</p>
+</blockquote>
+<h5 id="Overlay"><a href="#Overlay" class="headerlink" title="Overlay"></a>Overlay</h5><blockquote>
+<p>Overlay 是Linux内核3.18后支持的，也是一种Union FS，和AUFS的多层不同的是Overlay只有两层：一个upper文件系统和一个lower文件系统，分别代表Docekr的镜像层和容器层。当需要修改一个文件时，使用CoW将文件从只读的lower复制到可写的upper进行修改，结果也保存在upper层。在Docekr中，底下的只读层就是image，可写层就是Container。目前最新的OverlayFS为Overlay2。结构图如下所示：</p>
+</blockquote>
+<p>  <a href="http://dockone.io/uploads/article/20190702/c12e244abea02f7ed1eb42f0ccdbcf1d.jpg" target="_blank" rel="noopener"><img src="http://dockone.io/uploads/article/20190702/c12e244abea02f7ed1eb42f0ccdbcf1d.jpg" alt="2.jpg"></a></p>
+<blockquote>
+<p><strong>历史</strong>：<strong>2014年8月</strong>，Red Hat的 Alex Larsson在编号为<a href="https://github.com/docker/docker/commit/453552c8384929d8ae04dcf1c6954435c0111da0" target="_blank" rel="noopener">453552c8384929d8ae04dcf1c6954435c0111da0</a>的代码提交中添加了针对OverlayFS（最初的上游内核的名称）的graphdriver。</p>
+<p><strong>实现</strong>：Overlay是一个联合文件系统，它的概念较之aufs的分支模型更为简单。Overlay通过三个概念来实现它的文件系统：一个“下层目录（lower-dir）”，一个“上层目录（upper-dir）”，和一个做为文件系统合并视图的“合并（merged）”目录。受限于只有一个“下层目录”，需要额外的工作来让“下层目录”递归嵌套（下层目录自己又是另外一个overlay的联合），或者按照Docker的实现，将所有位于下层的内容都硬链接到“下层目录”中。正是这种可能潜在的inode爆炸式增长（因为有大量的分层和硬连接）阻碍了很多人采用Overlay。Overlay2通过利用更高内核（4.0以及以上的版本）中提供了的更优雅处理多个位于下层分层的机制解决了这个问题。</p>
+<p><strong>优点</strong>：Overlay作为一个合并进主线Linux内核的一个有完整支持的联合文件系统有望成为人们的焦点。与aufs类似，通过使用磁盘上相同的共享库，它也能让分散的容器实现内存共享。Overlay同时有很多的上游Linux内核基于现代的应用场景，如Docker，被持续开发（参看overlay2）。</p>
+<p><strong>缺点</strong>：硬链接的实现方式已经引发了 <a href="http://dockone.io/docker/docker#10613" target="_blank" rel="noopener">inode耗尽</a>的问题，这阻碍了它的大规模采用。inode耗尽并不是唯一的问题，还有其他一些与用户命名空间、SELinux支持有关的问题，且整体的成熟状况不足也阻碍着overlay直接取代aufs成为Docker默认的graphdriver。随着很多问题的解决，特别是在最新的内核发新版中，overlay的可用度越来越高了。如今出现的Overlay2修复了inode耗尽的问题，应该是从Docker 1.12版本之后的焦点，成为overlay驱动的后续开发对象。出于向后兼容的原因，<code>overlay</code>驱动将会继续留在Docker引擎中继续支持现有的用户。</p>
+<p><strong>总结</strong>：考虑到aufs没有足够多的发行版的支持，能有一个上游集成的联合文件系统且拥有Linux内核文件系统社区的支持，overlay驱动的加入是一个重大进步。Overlay在过去的18-24个月已经成熟了很多，并且随着overlay2的出现，它之前一些麻烦的问题已经解决了。希望overlay（或者更具可能性的overlay2）会成为未来默认的graphdriver。为了overlay最好的体验，上游内核社区在4.4.x的内核系列里面修复了很多overlay实现中存在的问题；选择该系列中更新的版本可以获得overlay更好的性能和稳定性。</p>
+</blockquote>
+<h5 id="Overlay2"><a href="#Overlay2" class="headerlink" title="Overlay2"></a>Overlay2</h5><blockquote>
+<p><strong>历史</strong>：<a href="https://github.com/dmcgowan" target="_blank" rel="noopener">Derek McGowan</a>在编号为<a href="https://github.com/docker/docker/pull/22126" target="_blank" rel="noopener">#22126</a>的PR中添加了overlay2的graphdriver，在<strong>2016年6月</strong>被合并进Docker 1.12版本，正如该PR的标题注明的，要取代之前overlay的主要原因是它能“支持多个下层目录”，能解决原先驱动中inode耗尽的问题。</p>
+<p><strong>实现</strong>：在上面的overlay部分已经讲述了Linux内核中的Overlay的框架。上面链接的PR中改进了原有的设计，基于Linux内核4.0和以后版本中overlay的特性，可以允许有多个下层的目录。</p>
+<p><strong>优点</strong>：overlay2解决了一些因为最初驱动的设计而引发的inode耗尽和一些其他问题。Overlay2继续保留overlay已有的优点，包括在同一个引擎的多个容器间从同一个分层中加载内库从而达到内存共享。</p>
+<p><strong>缺点</strong>：现在可能唯一能挑出overlay2的问题是代码库还比较年轻。很多早期的问题已经在早期测试过程中发现并被及时解决了。但是Docker 1.12是第一个提供overlay2的发行版本，随着使用量的增长，相信可能还会发现其他问题。</p>
+<p><strong>总结</strong>：将Linux内核中的一个现代的、广受支持的联合文件系统，和一个和Docker中一个性能优秀的graphdriver结合起来，这应该是Docker引擎未来打造默认的graphdriver最好的道路，只有这样才能获得各种Linux发行版广泛的支持。</p>
+</blockquote>
+<h5 id="Device-mapper"><a href="#Device-mapper" class="headerlink" title="Device mapper"></a>Device mapper</h5><blockquote>
+<p>Device mapper 是Linux 内核 2.6.9 后支持的，提供的一种从逻辑设备到物理设备的映射框架机制，在该机制下，用户可以很方便的根据自己的需要制定实现存储资源的管理策略。前面讲的 AUFS 和 OverlayFS 都是文件级存储，而 Device mapper 是块级存储，所有的操作都是直接对块进行操作，而不是文件。Device mapper 驱动会先在块设备上创建一个资源池，然后在资源池上创建一个带有文件系统的基本设备，所有镜像都是这个基本设备的快照，而容器则是镜像的快照。所以在容器里看到文件系统是资源池上基本设备的文件系统的快照，并不有为容器分配空间。当要写入一个新文件时，在容器的镜像内为其分配新的块并写入数据，这个用时分配。当要修改已有文件时，再使用 CoW 为容器快照分配块空间，将要修改的数据复制在容器快照中新的块里在进行修改。Device mapper 驱动默认会创建一个 100 G 的文件包含镜像和容器。每个容器被限制在 10G 大小的卷内，可以自己设置调整。结构如下图所示：</p>
+</blockquote>
+<p>  <a href="http://dockone.io/uploads/article/20190702/0ef920a30190955999076f524229f321.jpg" target="_blank" rel="noopener"><img src="http://dockone.io/uploads/article/20190702/0ef920a30190955999076f524229f321.jpg" alt="3.jpg"></a></p>
+<blockquote>
+<p> <strong>历史</strong>：Devicemapper很早就以Ｃ代码的包装器面貌存在了，用来和libdevmapper进行交互； 是2013的９月Alex Larsson在编号为<a href="https://github.com/docker/docker/commit/739af0a17f6a5a9956bbc9fd1e81e4d40bff8167" target="_blank" rel="noopener"> 739af0a17f6a5a9956bbc9fd1e81e4d40bff8167</a>的代码提交中添加的。几个月后的重构了才诞生了我们现在所知道的“graphdriver”这个词；Solomon Hykes在2013年10月份早期代码合并的注释中说：将devmapper和aufs整合进通用的“graphdriver”框架。</p>
+<p>  <strong>实现</strong>：devicemapper这个graphdriver利用了Linux中devicemapper代码中众多特性之一，“轻配置（thin provisioning）”，或者简称为“thinp”。<em>（译注：根据Wikipedia，“thin provisioning是利用虚拟化技术，让人觉得有比实际可用更多的物理资源。如果系统的资源足够，能同时满足所有的虚拟化的资源，那就不能叫做thin-provisioned。”）</em> 这与之前提到的联合文件系统不同，因为devicemapper是基于块设备的。这些“轻配置（thin-provisioned）”的块设备带来的是如联合文件系统所提供的一样轻量的行为，但是最重要的一点是，他们不是基于文件的（而是基于块设备的）。正如你能推测的，这让计算分层之间的差别变得不再容易，也丧失了通过在容器间使用同样的库片段而共享内存的能力。</p>
+<p>  <strong>优点</strong>：Devicemapper在过去的年间也被一些人感到不屑，但是它提供的一个非常重要的能力让红帽系（Fedora,RHEL，Project Atomic）也有了一个graphdriver。因为它是基于块设备而不是基于文件的，它有一些内置的能力如配额支持，而这在其他的实现中是不容易达到的。</p>
+<p>  <strong>缺点</strong>：使用devicemapper没有办法达到开箱立即唾手可得很好的性能。你必须遵循<a href="https://docs.docker.com/engine/userguide/storagedriver/device-mapper-driver/#/configure-direct-lvm-mode-for-production" target="_blank" rel="noopener">安装和配置指示</a>才能得到性能还可以的配置。并且最重要的是，在任何需要用Docke引擎来做点正事的地方，都不要使用“虚拟设备（loopback）”模式（对于运行有devicemapper且负载高的系统，如延迟删除（ deferred removal）这样的特性绝对有必要的，这能减少引擎看起来好似夯住了一样的悲剧。）。它的一些特性依赖libdevmaper特定的版本，并且需要比较高级的技能来验证系统上所有的设置。同时，如果Docker Engine的二进制是静态编译的话，devicemapper会完全无法工作，因为它需要<a href="http://dockone.io/docker/docker#11412" target="_blank" rel="noopener">udev sync</a>的支持，而这不能被静态编译进引擎中。</p>
+<p>  <strong>总结</strong>：对于红帽类发行版本来说，devicemapper已经成为“可以直接用”的选择，并且在过去几年间里得到了红帽团队的大力支持和改进。它质量上有优点也有缺点，如果安装/配置过程中没有特别格外注意的话，可能导致和其他选项比较起来性能低下、质量不高。鉴于overlay和overlay2受到了Fedora和RHEL最新的内核的支持，并且拥有SELinux的支持，除非在Red Hat场景中有某种必须使用devicemapper的需求，我想随着用户的成熟他们会转向overlay的怀抱。</p>
+</blockquote>
+<h5 id="Btrfs"><a href="#Btrfs" class="headerlink" title="Btrfs"></a>Btrfs</h5><blockquote>
+<p>Btrfs 被称为下一代写时复制文件系统，并入Linux内核，也是文件级存储，但可以向 Device mapper 一直操作底层设备。 Btrfs 把文件系统的一部分配置为一个完整的子文件系统，称为 subvolume。那么采用 subvolume ，一个大的文件系统可以被划分为很多个子文件系统，这些子文件系统共享底层的设备空间，在需要磁盘空间使用时便从底层设备中分配，类似应用程序调用 malloc（）分配内存一样。为了灵活利用设备空间， Btrfs 将磁盘空间划分为多个 chunk。每个 chunk 可以使用不同的磁盘空间分配策略。比如某些 chunk 只存放 metadata ，某些chunk 只存放数据。这种模型有很多优点，比如 Btrfs 支持动态添加设备。用户在系统中添加新的磁盘之后，可以使用 Btrfs 的命令将该设备添加到文件系统中。Btrfs 把一个大的文件系统当成一个资源池，配置成多个完整的子文件系统，还可以往资源池里加新的子文件系统，而基础镜像则是子文件系统的快照，每个子镜像和容器都有自己的快照，这些快照都是 subvolume 的快照。</p>
+</blockquote>
+<p>   <a href="http://dockone.io/uploads/article/20190702/99ab3acda52806a948625219d9e96a0b.jpg" target="_blank" rel="noopener"><img src="http://dockone.io/uploads/article/20190702/99ab3acda52806a948625219d9e96a0b.jpg" alt="4.jpg"></a></p>
+<blockquote>
+<p>当写入一个新文件时，为在容器的快照里为其分配一个新的数据块，文件写在这个空间里，这个叫做分配。而当要修改已有文件时，使用 CoW 复制分配一个新的原始数据和快照，在这个新分配的空间变更数据，变结束再跟新相关的数据结构指向新子文件系统和快照，原来的原始数据和快照没有指针指向，被覆盖。</p>
+</blockquote>
+<blockquote>
+<p><strong>历史</strong>：<strong>2013年12月</strong>较晚的时候，Red Hat公司的Alex Larsson在编号为<a href="https://github.com/docker/docker/commit/e51af36a85126aca6bf6da5291eaf960fd82aa56" target="_blank" rel="noopener">e51af36a85126aca6bf6da5291eaf960fd82aa56</a>的提交中，让使用btrfs作为管理<code>/var/lib/docker</code>的文件系统成为可能。</p>
+<p><strong>实现</strong>：Btrfs的原生特性中，有两个是“子卷（subvolumes）”和“快照（snapshots）”。<em>（译注：根据Wikipedia，“子卷在btrfs中不是一个块设备，也不应该被当做是一个块设备。相反，子卷可以被想象成POSIX文件的命名空间。这个命名空间可以通过顶层的子卷来访问到，也可以独立地被挂载。快照在Btrfs中实际上是一个子卷，通过使用Btrfs的写时复制来和其他的子卷共享数据，对快照的更改不会影响原先的子卷。” ）</em> graphdriver实现中主要结合了这两个能力，从而提供了堆叠和类似写时复制的特性。当然，graphdriver的根（默认情况下是：<code>/var/lib/docker</code>）需要是一个被btrfs文件系统格式化的磁盘。</p>
+<p><strong>优点</strong>：Btrfs几年前发布的时候（2007-2009时代），它被视作一个未来的Linux文件系统并<a href="https://lwn.net/Articles/342892/" target="_blank" rel="noopener">受到了大量的关注</a>。如今在上游Linux内核中，该文件系统已经比较健壮，并受到良好的支持，是众多可选的文件系统之一。</p>
+<p><strong>缺点</strong>：但是Btrfs并没有成为Linux发行版的主流选择，所以你不大可能已经有一个btrfs格式化的磁盘。因为这种在Linux发行版中采用不足的原因，它并没有受到类似其他graphdriver一样的关注和采用。</p>
+<p><strong>总结</strong>：如果你正在使用btrfs，那很显然的这个graphdriver应该迎合了你的需求。在过去几年有过很多Bug，并且有一段时间缺乏对SELinux的支持，但是这已经<a href="http://dockone.io/docker/docker#16452" target="_blank" rel="noopener">被修复</a>了。同时，对btrfs配额的支持也直接加进了docker守护进程中，这是<a href="https://github.com/zhuguihua" target="_blank" rel="noopener">Zhu Guihua</a>在编号为<a href="http://dockone.io/docker/docker#19651" target="_blank" rel="noopener">#19651</a>的PR中添加的，这个特性包含在了Docker 1.12版本中。</p>
+</blockquote>
+<h5 id="ZFS"><a href="#ZFS" class="headerlink" title="ZFS"></a>ZFS</h5><blockquote>
+<p>ZFS 文件系统是一个革命性的全新的文件系统，它从根本上改变了文件系统的管理方式， ZFS 完全抛弃了 “ 卷管理 ” ，不再创建虚拟的卷，而是把所有设备集中到一个存储池中进行管理，用 “ 存储池 ”  的概念来管理物理存储空间。过去，文件系统都是构建在物理设备之上的，为了管理这些物理设备，并为数据提供冗余，“ 卷管理 ” 的概念提供了一个单设备的映射。而 ZFS 创建在虚拟的，被称为 “ zpools ” 的存储池之上。每个存储池由若干虚拟设备（ virtual devices ，vdevs ）组成。这些虚拟设备可以是原始磁盘，也节能是一个RAID1 镜像设备，或是非标准 RAID 等级的多磁盘组。  于是 zpool 上的文件系统可以使用这些虚拟设备的总存储容量。</p>
+</blockquote>
+<p>  <a href="http://dockone.io/uploads/article/20190702/d6daba2b7adfe96daca62f9ed90bf0c4.jpg" target="_blank" rel="noopener"><img src="http://dockone.io/uploads/article/20190702/d6daba2b7adfe96daca62f9ed90bf0c4.jpg" alt="5.jpg"></a></p>
+<blockquote>
+<p>下面看一下Docker 里ZFS的使用。首先从 zpool里分配一个ZFS 文件系统给镜像的基础层，而其他镜像层则是这个 ZFS 文件系统快照的克隆，快照是只读的，而克隆是可写的，当容器启动时则在镜像的顶层生成一个可写层。如下图所示：</p>
+</blockquote>
+<p>  <a href="http://dockone.io/uploads/article/20190702/34cc4c9ea6c96b6f83dabb961ed8950e.jpg" target="_blank" rel="noopener"><img src="http://dockone.io/uploads/article/20190702/34cc4c9ea6c96b6f83dabb961ed8950e.jpg" alt="6.jpg"></a></p>
+<blockquote>
+<p>d当要写一个新文件时，使用按需分配，一个新的数据块从 zpool 里生成新的数据写入这个块，而这个新空间存于容器（ ZFS 的克隆 ）里。</p>
+<p>当要修改一个已存在的文件时，使用写时复制，分配一个新空间并把原始数据复制到新空间完成修改。</p>
+</blockquote>
+<blockquote>
+<p><strong>历史</strong>：ZFS的graphdriver是由Arthur Gautier和Jörg Thalheim一起在<a href="http://dockone.io/docker/docker#9411" target="_blank" rel="noopener">#9411</a>的PR中实现的，在<strong>2014年的5月</strong>被合并进了Docker引擎里面，并且从Docker 1.7版本开始用户可以使用。该实现依赖Go的一个三方包<a href="https://github.com/mistifyio/go-zfs" target="_blank" rel="noopener">go-zfs</a>进行相关zfs命令的交互。</p>
+<p><strong>实现</strong>：与btrfs和devicemapper类似，要使用zfs驱动必需要有一个ZFS格式化的块设备挂载到graphdriver路径（默认是/var/lib/docker）。同时也需要安装好zfs工具（在绝大多数的发行版上是一个名为zfs-utils的包）供zfs Go库调用来执行相关操作。ZFS有能力创建快照（与btrfs类似），然后以快照的克隆作为分享层的途径（在ZFS的实现中成了一个快照）。因为ZFS不是一个基于文件的实现，aufs和overlay中所拥有的内存共享能力在ZFS是没有的。</p>
+<p><strong>优点</strong>：ZFS正在受到越来越多的欢迎，在Ubuntu 16.04中，在Ubuntu的LXC/LXD中已经被使用。最初由Sun创建，ZFS已经存在很长的时间了，并且在Solaris和很多BSD的衍生版中使用，并且它的Linux移植版实现看起来也比较稳定，对于容器文件系统的场景也有足够合理性能。<code>ZFS</code>graphdriver也很及时的在Dockr 1.12中通过PR <a href="http://dockone.io/docker/docker#21946" target="_blank" rel="noopener">#21946</a>添加了配额的支持，这让它在配额支持方面和btrfs、devicemapper站在了同一起跑线上。</p>
+<p><strong>缺点</strong>：除了没有基于文件（inode）的共享达到内库共享之外，很难说ZFS和其它同样基于块设备的实现相比有什么缺点。通过比较，ZFS看起来欢迎程度越来越高。对于那些完全支持或者正在使用ZFS的Linux发行版或者UNIX衍生版而言，zfs graphdriver可以是一个非常好的选择。</p>
+<p><strong>总结</strong>：ZFS的支持为Docker引擎中稳定的graphdriver加了分。对于那些ZFS的使用者，或者那些ZFS扮演了更要角色的发行版来说，Docker能直接支持该文件系统，对这些社区来说是一个好消息。对于那些默认文件系统是ext4和xfs的发行版，默认采用overlay驱动的用户来说，时间会告诉我们他们是否会对zfs驱动产生更多的兴趣。</p>
+</blockquote>
+<h4 id="存储驱动的对比及适应场景"><a href="#存储驱动的对比及适应场景" class="headerlink" title="存储驱动的对比及适应场景"></a>存储驱动的对比及适应场景</h4><table>
+<thead>
+<tr>
+<th><strong>存储驱动</strong></th>
+<th><strong>特点</strong></th>
+<th><strong>优点</strong></th>
+<th><strong>缺点</strong></th>
+<th><strong>适用场景</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AUFS</td>
+<td>联合文件系统、未并入内核主线、文件级存储</td>
+<td>作为docker的第一个存储驱动，已经有很长的历史，比较稳定，且在大量的生产中实践过，有较强的社区支持</td>
+<td>有多层，在做写时复制操作时，如果文件比较大且存在比较低的层，可能会慢一些</td>
+<td>大并发但少IO的场景</td>
+</tr>
+<tr>
+<td>overlayFS</td>
+<td>联合文件系统、并入内核主线、文件级存储</td>
+<td>只有两层</td>
+<td>不管修改的内容大小都会复制整个文件，对大文件进行修改显示要比小文件消耗更多的时间</td>
+<td>大并发但少IO的场景</td>
+</tr>
+<tr>
+<td>Devicemapper</td>
+<td>并入内核主线、块级存储</td>
+<td>块级无论是大文件还是小文件都只复制需要修改的块，并不是整个文件</td>
+<td>不支持共享存储，当有多个容器读同一个文件时，需要生成多个复本，在很多容器启停的情况下可能会导致磁盘溢出</td>
+<td>适合io密集的场景</td>
+</tr>
+<tr>
+<td>Btrfs</td>
+<td>并入linux内核、文件级存储</td>
+<td>可以像devicemapper一样直接操作底层设备，支持动态添加设备</td>
+<td>不支持共享存储，当有多个容器读同一个文件时，需要生成多个复本</td>
+<td>不适合在高密度容器的paas平台上使用</td>
+</tr>
+<tr>
+<td>ZFS</td>
+<td>把所有设备集中到一个存储池中来进行管理</td>
+<td>支持多个容器共享一个缓存块，适合内存大的环境</td>
+<td>COW使用碎片化问题更加严重，文件在硬盘上的物理地址会变的不再连续，顺序读会变的性能比较差</td>
+<td>适合paas和高密度的场景</td>
+</tr>
+</tbody>
+</table>
+<p><a href="http://dockone.io/uploads/article/20190702/747be895d53add6ea9ddf868f95ff8ec.jpg" target="_blank" rel="noopener"><img src="http://dockone.io/uploads/article/20190702/747be895d53add6ea9ddf868f95ff8ec.jpg" alt="7.jpg"></a></p>
+<h5 id="AUFS-VS-Overlay"><a href="#AUFS-VS-Overlay" class="headerlink" title="AUFS VS  Overlay"></a>AUFS VS  Overlay</h5><blockquote>
+<p>AUFS和Overlay都是联合文件系统，但AUFS有多层，而Overlay只有两层，所以在做写时复制操作时，如果文件比较大且存在比较低的层，则AUSF可能会慢一些。而且Overlay并入了linux kernel mainline，AUFS没有，所以可能会比AUFS快。但Overlay还太年轻，要谨慎在生产使用。而AUFS做为docker的第一个存储驱动，已经有很长的历史，比较的稳定，且在大量的生产中实践过，有较强的社区支持。目前开源的DC/OS指定使用Overlay。</p>
+</blockquote>
+<h5 id="Overlay-VS-Device-mapper"><a href="#Overlay-VS-Device-mapper" class="headerlink" title="Overlay VS Device mapper"></a>Overlay VS Device mapper</h5><blockquote>
+<p>Overlay是文件级存储，Device mapper是块级存储，当文件特别大而修改的内容很小，Overlay不管修改的内容大小都会复制整个文件，对大文件进行修改显示要比小文件要消耗更多的时间，而块级无论是大文件还是小文件都只复制需要修改的块，并不是整个文件，在这种场景下，显然device mapper要快一些。因为块级的是直接访问逻辑盘，适合IO密集的场景。而对于程序内部复杂，大并发但少IO的场景，Overlay的性能相对要强一些。</p>
+</blockquote>
+<h5 id="Device-mapper-VS-Btrfs-Driver-VS-ZFS"><a href="#Device-mapper-VS-Btrfs-Driver-VS-ZFS" class="headerlink" title="Device mapper VS Btrfs Driver VS ZFS"></a>Device mapper VS Btrfs Driver VS ZFS</h5><blockquote>
+<p>Device mapper和Btrfs都是直接对块操作，都不支持共享存储，表示当有多个容器读同一个文件时，需要生活多个复本，所以这种存储驱动不适合在高密度容器的PaaS平台上使用。而且在很多容器启停的情况下可能会导致磁盘溢出，造成主机不能工作。Device mapper不建议在生产使用。Btrfs在docker build可以很高效。<br>ZFS最初是为拥有大量内存的Salaris服务器设计的，所在在使用时对内存会有影响，适合内存大的环境。ZFS的COW使碎片化问题更加严重，对于顺序写生成的大文件，如果以后随机的对其中的一部分进行了更改，那么这个文件在硬盘上的物理地址就变得不再连续，未来的顺序读会变得性能比较差。ZFS支持多个容器共享一个缓存块，适合PaaS和高密度的用户场景。</p>
+</blockquote>
+<h4 id="IO性能对比"><a href="#IO性能对比" class="headerlink" title="IO性能对比"></a>IO性能对比</h4><blockquote>
+<p>测试工具：IOzone（是一个文件系统的benchmark工具，可以测试不同的操作系统中文件系统的读写性能）<br>测试场景：从4K到1G文件的顺序和随机IO性能<br>测试方法：基于不同的存储驱动启动容器，在容器内安装IOzone，执行命令：</p>
+</blockquote>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./iozone -<span class="selector-tag">a</span> -n <span class="number">4</span>k -g <span class="number">1</span>g -<span class="selector-tag">i</span> <span class="number">0</span> -<span class="selector-tag">i</span> <span class="number">1</span> -<span class="selector-tag">i</span> <span class="number">2</span> -f /root/test<span class="selector-class">.rar</span> -Rb ./iozone.xls</span><br></pre></td></tr></table></figure>
+<h5 id="测试项的定义和解释"><a href="#测试项的定义和解释" class="headerlink" title="测试项的定义和解释"></a>测试项的定义和解释</h5><blockquote>
+<p>Write：测试向一个新文件写入的性能。<br>Re-write：测试向一个已存在的文件写入的性能。<br>Read：测试读一个已存在的文件的性能。<br>Re-Read：测试读一个最近读过的文件的性能。<br>Random Read：测试读一个文件中的随机偏移量的性能。<br>Random Write：测试写一个文件中的随机偏移量的性能。</p>
+</blockquote>
+<h5 id="测试数据对比"><a href="#测试数据对比" class="headerlink" title="测试数据对比"></a>测试数据对比</h5><blockquote>
+<p>Write：</p>
+<p><a href="http://dockone.io/uploads/article/20190702/f592fe0e47c24441541b3970f6775674.jpg" target="_blank" rel="noopener"><img src="http://dockone.io/uploads/article/20190702/f592fe0e47c24441541b3970f6775674.jpg" alt="8.jpg"></a></p>
+<p>Re-write:</p>
+<p><a href="http://dockone.io/uploads/article/20190702/778f51a47542033e0ded1b1b1d0edd63.jpg" target="_blank" rel="noopener"><img src="http://dockone.io/uploads/article/20190702/778f51a47542033e0ded1b1b1d0edd63.jpg" alt="9.jpg"></a></p>
+<p>Read：</p>
+<p><a href="http://dockone.io/uploads/article/20190702/3028c70ce9a0abcfa673459b199612a3.jpg" target="_blank" rel="noopener"><img src="http://dockone.io/uploads/article/20190702/3028c70ce9a0abcfa673459b199612a3.jpg" alt="10.jpg"></a></p>
+<p>Re-Read：</p>
+<p><a href="http://dockone.io/uploads/article/20190702/fb9fe60305c941fbfbc564cb2351e588.jpg" target="_blank" rel="noopener"><img src="http://dockone.io/uploads/article/20190702/fb9fe60305c941fbfbc564cb2351e588.jpg" alt="11.jpg"></a></p>
+<p>Random Read：</p>
+<p><a href="http://dockone.io/uploads/article/20190702/ef273f23ee51927344a224ef3798e75a.jpg" target="_blank" rel="noopener"><img src="http://dockone.io/uploads/article/20190702/ef273f23ee51927344a224ef3798e75a.jpg" alt="12.jpg"></a></p>
+<p>Random Write：</p>
+<p><a href="http://dockone.io/uploads/article/20190702/3a07e8a8a9b4de99602d02dc849b771b.jpg" target="_blank" rel="noopener"><img src="http://dockone.io/uploads/article/20190702/3a07e8a8a9b4de99602d02dc849b771b.jpg" alt="13.jpg"></a></p>
+</blockquote>
+<ul>
+<li>通过以上的性能数据可以看到：<ul>
+<li>AUFS在读的方面性能相比Overlay要差一些，但在写的方面性能比Overlay要好。</li>
+<li>device mapper在512M以上文件的读写性能都非常的差，但在512M以下的文件读写性能都比较好。</li>
+<li>btrfs在512M以上的文件读写性能都非常好，但在512M以下的文件读写性能相比其他的存储驱动都比较差。</li>
+<li>ZFS整体的读写性能相比其他的存储驱动都要差一些。 简单的测试了一些数据，对测试出来的数据原理还需要进一步的解析。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><code>Docker</code> 提供了可插拔的存储驱动程序架构。它使我们能够灵活地 <code>插入</code> <code>Docker</code>中的存储驱动程序。他完全基于<code>Linux</code>文件系统 。</p>
+</blockquote>
+<blockquote>
+<p>要实现这一功能，我们必须 在<code>docker</code> 守护进程的开始时就设置驱动程序。 <code>Docker</code> 守护程序只能运行一个存储驱动程序，并且该守护程序实例创建的所有容器使用相同的存储驱动程序。</p>
+</blockquote>
+<ul>
+<li><p>当前存储驱动</p>
+<ul>
+<li>查看守护程序使用哪个存储驱动程序，可以使用一下命令。</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker info</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>可以看到上面的命令显示了守护进程使用的存储驱动程序。备份文件系统 <code>extfs</code> 。 <code>extfs</code> 表示覆盖存储驱动程序在文件系统的顶部运行。</p>
+<p>后备文件系统实质用于在 <code>/var/lib/docker</code> 录下创建 <code>Docker</code> 主机的本地存储区域的文件系统。</p>
+</blockquote>
+<ul>
+<li><p>下表包含必须与主机备份文件系统相匹配的存储驱动程序。</p>
+<p>|   存储驱动   |      常用      |              已禁用               |<br>| :———-: | :————: | :——————————-: |<br>|   overlay    |    ext4xfs     | btrfs  aufs  overlayzfs  eCryptfs |<br>|   overlay2   |    ext4xfs     | btrfs  aufs  overlayzfs  eCryptfs |<br>|     aufs     |    ext4xfs     |       btrfs  aufs  eCryptfs       |<br>|     aufs     |   btrfsonly    |                N/A                |<br>| devicemapper |   Direct-lvm   |                N/A                |<br>|     vfs      | debugging only |                N/A                |<br>|              |                |                N/A                |</p>
+</li>
+</ul>
+<blockquote>
+<p>注意 ：- “已禁用/Disabled on” 表示某些存储驱动程序无法在某些后台文件系统上运行</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="设置存储驱动程序"><a href="#设置存储驱动程序" class="headerlink" title="设置存储驱动程序"></a>设置存储驱动程序</h4><blockquote>
+<p>可以通过 <code>dockersd</code>命令按指定名称来设置存储驱动程序。以下命令启动守护程序并设置新的驱动程序。</p>
+</blockquote>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ dockerd <span class="attribute">--storage-driver</span>=devicemapper</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>稍后，可以通过 <code>docker info</code> 命令检查 <code>docker</code> 服务驱动程序</p>
+</blockquote>
+<hr>
+<p><strong>对于某些容器，直接将数据放在由</strong> storage driver <strong>维护的层中是很好的选择，比如那些无状态的应用。无状态意味着容器没有需要持久化的数据，随时可以从镜像直接创建。即存在与否依赖镜像的存在。</strong></p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如一些工具箱，启动是为了执行命令，不需要保存数据供以后使用，使用完直接退出，容器删除时存在容器层的工作数据也一起删除，这没问题，下次启动新容器即可。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 但对于另一类应用这种方式就不合适了，它们有持久化数据的需求，容器启动时需要加载已有的数据，容器销毁时希望保留产生的新数据，也就是说，这类容器是有状态的，例如数据库。</span></span><br><span class="line">这就要用到docker 的另一个存储机制：data <span class="keyword">volume</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h3 id="Data-Volume（数据卷）"><a href="#Data-Volume（数据卷）" class="headerlink" title="Data Volume（数据卷）"></a>Data Volume（数据卷）</h3><hr>
+<blockquote>
+<p>对于有些容器，我们可能会持久化数据的需求，也就是容器启动时需要加载已有的数据，容器销毁时希望保留产生的数据，也就是说这类容器是有状态的。</p>
+<p>这就需要用到 <code>Docker</code> 的 <code>Data Volume</code> 存储机制。<code>Data Volume</code>本质上是 <code>Docker host</code>文件系统中的目录或文件，能够直接被 <code>mount</code> 到容器的文件系统。</p>
+<p>在具体的使用上，<code>Docekr</code> 提供了两种类型的Volume：bind mount 和docker managed volume。</p>
+</blockquote>
+<h5 id="附：bind-mount-与-docker-managed-volume-的区别"><a href="#附：bind-mount-与-docker-managed-volume-的区别" class="headerlink" title="附：bind mount 与 docker managed volume 的区别"></a>附：bind mount 与 docker managed volume 的区别</h5><ul>
+<li>这两种 <strong>data volume</strong> 实际上都是使用 <strong>host</strong> 文件系统的中的某个路径作为 <strong>mount</strong> 源。它们不同之处在于：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>不同点</strong></th>
+<th><strong>bind mount</strong></th>
+<th><strong>docker managed volume</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>volume 位置</strong></td>
+<td>可任意指定</td>
+<td><strong>/var/lib/docker/volumes/…</strong></td>
+</tr>
+<tr>
+<td><strong>对已有mount point 影响</strong></td>
+<td>隐藏并替换为 <strong>volume</strong></td>
+<td>原有数据复制到 <strong>volume</strong></td>
+</tr>
+<tr>
+<td><strong>是否支持单个文件</strong></td>
+<td>支持</td>
+<td>不支持，只能是目录</td>
+</tr>
+<tr>
+<td><strong>权限控制</strong></td>
+<td>可设置为只读，默认为读写权限</td>
+<td>无控制，均为读写权限</td>
+</tr>
+<tr>
+<td><strong>移植性</strong></td>
+<td>移植性弱，与 <strong>host path</strong> 绑定</td>
+<td>移植性强，无需指定 <strong>host</strong> 目录</td>
+</tr>
+</tbody>
+</table>
+<h5 id="什么是数据卷"><a href="#什么是数据卷" class="headerlink" title="什么是数据卷"></a>什么是数据卷</h5><ul>
+<li><p>Data Volume 数据卷 ：是可以存放在一个或多个容器内的 <strong>特定的目录</strong>，提供独立于容器之外的<strong>持久化存储</strong>；是经过<strong>特殊设计的目录</strong>，可以绕过联合文件系统（UFS），为一个或多个容器提供访问；</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Docker</span> Contrainer</span><br><span class="line">面向对象中的对象</span><br><span class="line"></span><br><span class="line">对象一旦被销毁，数据就不存在了</span><br><span class="line"></span><br><span class="line">容器一旦被销毁，则容器内的数据将一并被删除</span><br><span class="line"></span><br><span class="line">服务器中的图案也会一并销毁</span><br><span class="line"></span><br><span class="line">容器中的数据不是持久化状态的</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>不使用 <code>volume</code>的时候，对容器进行的改动是不会被保存的，使用 <code>volume</code>可以实现持久化存储；比如运行一个数据的操作，数据库的一个容器，数据库的数据应该被持久化存储的，<code>volume</code>就可以实现这个，并且 <code>volume</code>可以提供容器与容器之间的共享数据；</p>
+</blockquote>
+</li>
+</ul>
+<h5 id="Docker-的理念之一："><a href="#Docker-的理念之一：" class="headerlink" title="Docker 的理念之一："></a>Docker 的理念之一：</h5><blockquote>
+<p>就是将其应用于其运行的环境打包，因此，通过<code>Docker</code> 容器的生存周期，都是与容器中运行的程序相一致的，而我们对数据的要求通常是持久化的；另一方面，<code>docker</code>容器之间也需要有一个 <strong>共享数据的渠道</strong> ，而这些需求就催生出了<code>docker</code>数据卷的产生；</p>
+</blockquote>
+<h5 id="数据卷的设计的目的："><a href="#数据卷的设计的目的：" class="headerlink" title="数据卷的设计的目的："></a>数据卷的设计的目的：</h5><blockquote>
+<p>在于 <strong>数据的永久化</strong> ，它完全独立于容器的生存周期，因此，<code>Docekr</code>不会在容器删除时删除其挂载的数据卷，也不会存在类似垃圾收集机制，对容器引用的数据卷进行处理了；</p>
+</blockquote>
+<h5 id="数据卷特点："><a href="#数据卷特点：" class="headerlink" title="数据卷特点："></a>数据卷特点：</h5><ul>
+<li><ol>
+<li><code>Docker</code>数据卷是独立于<code>Docker</code>的存在，它存在于<code>Docker host</code>（宿主机）中，因此，它与容器的生存周期是分离的；</li>
+<li><code>Docker</code>数据卷本质上是存在于<code>Docker</code>宿主机的本地文件系统中；</li>
+<li><code>Docker</code> 数据卷可以是目录也可以是文件；（不是块设备）</li>
+<li><code>Docker</code> 容器可以利用数据卷的技术与容器宿主机进行数据共享；</li>
+<li>同一个目录或者文件，可以支持多个容器进行访问，这样其实实现了容器的数据共享和交换；</li>
+<li>数据卷是在容器启动是进行初始化的，那么如果容器使用的镜像包含了的数据也会在容器启动时拷贝到容器的数据卷中；</li>
+<li><code>数据卷可以在容器之间共享和重用</code>；</li>
+<li><code>数据卷的修改会立马生效</code>；容器可以对数据卷里的内容直接修改；容器对数据卷进行的修改是及时的，所有的修改都会直接体现在数据卷中；</li>
+<li><code>数据卷的更新不会影响镜像</code>；因为文件不会写到镜像中去，数据卷是独立于联合文件系统的，而镜像本身基于联合文件系统，so镜像与数据卷之间不会有相互影响的情况；</li>
+<li><code>数据卷会一直存在，即使挂载数据卷的容器已经删除</code>因为数据均本质上是宿主机上的一个目录，同时为了提供数据的永久化，它的生存周期与容器是完全隔离的；</li>
+</ol>
+<p><img src="https://img-blog.csdnimg.cn/20190617160156293.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3NTQ2ODkx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<blockquote>
+<p>Docker 容器中的数据操作经过了UFS 的，UFS 会在宿主机中写一次文件，这个文件在宿主机上是临时的，这时候就出现了重复写的情况，会影响系统的性能；此外，删除容器的时候，就没有人能够通过UFS 在访问到宿主机中的文件了；</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20190617160937555.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3NTQ2ODkx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>容器卷可以绕过 UFS 直接操作主机上的文件，当容器删除的时候，宿主机上的文件还在，就在指定的目录下，在重新创建容器的时候们可以指定容器继续读取宿主机上的文件；</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20190617161045446.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3NTQ2ODkx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h5 id="创建一个数据卷"><a href="#创建一个数据卷" class="headerlink" title="创建一个数据卷"></a>创建一个数据卷</h5><blockquote>
+<p>包含数据卷挂载的容器在容器关闭时，如果修改了宿主机下的数据卷会，容器里面会产生改变吗？ </p>
+</blockquote>
+<ul>
+<li><strong>bind mount 数据卷</strong></li>
+</ul>
+<blockquote>
+<p>使用docker run –name nginx-test -p 8080:80 -d -v ~/myvolume:/usr/share/nginx/html nginx  创建一个bind mount 数据卷 是宿主机的存储位置必须是绝对路径。目录不存在则会生成</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 以下两种情况创建的数据卷如果浏览器访问宿主机的ip:8080 会出现报错，因为这是创建的时候清空了容器数据卷下index.html</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建的宿主机和容器的数据卷都有读写的权限</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker run --name nginx-test -p 8080:80 -d -v ~/myvolume:/usr/share/nginx/html nginx</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这样执行后的文件宿主机的~/myvolume 文件如果不存在直接创建，容器的文件路径不存在也会直接创建，如果/usr/share/nginx/html文件存在里面内容会清空</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 给容器里面的数据卷加权限</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker run --name nginx-test -p 8080:80 -d -v ~/myvolume:/usr/share/nginx/html:ro nginx</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果执行这个 :/usr/share/nginx/html:ro这个地方加的是 :ro 是设置的只有读取权限</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 运行dockers inspect 容器名称或容器（ID） 是将容器的配置文件已json字符串的形式返回</span></span><br><span class="line"><span class="string">"Binds"</span>: [</span><br><span class="line">                <span class="string">"/root/myvolume:/usr/share/nginx/html"</span>   <span class="comment"># 宿主机数据卷位置: 容器的目录位置</span></span><br><span class="line">            ],</span><br><span class="line"></span><br><span class="line"><span class="string">"Mounts"</span>: [</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">"Type"</span>: <span class="string">"bind"</span>,</span><br><span class="line">                <span class="string">"Source"</span>: <span class="string">"/root/myvolume"</span>,   <span class="comment"># 是宿主机数据卷的存储位置</span></span><br><span class="line">                <span class="string">"Destination"</span>: <span class="string">"/usr/share/nginx/html"</span>,</span><br><span class="line">                <span class="string">"Mode"</span>: <span class="string">""</span>,</span><br><span class="line">                <span class="string">"RW"</span>: <span class="literal">true</span>,   <span class="comment"># 权限 true是可以读写 fales 是只读</span></span><br><span class="line">                <span class="string">"Propagation"</span>: <span class="string">"rprivate"</span></span><br><span class="line">            &#125;</span><br><span class="line">        ],</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 在宿主机的数据卷下执行:</span></span><br><span class="line">vim index.html </span><br><span class="line"><span class="meta">#</span><span class="bash"> 在文件里写入hello ， 你在访问的时候就可以在页面上看到你写入得数据了</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>执行 docker exec -it 容器名称（容器ID） bahs进入到容器里面，每个容器都会包含一个迷你版的linux系统</p>
+<p>执行 cd /usr/share/nginx/html  </p>
+<p>执行 ls</p>
+<p>你会看到容器目录里会有我们刚才创建好的文件</p>
+<p>index.html</p>
+<p>执行 cat index.html  可以看到里面我们加入的数据</p>
+<p>如果是挂载数据卷的时候加 <code>:ro</code> 容器内修改文件，发现会提示该文件是只读的  </p>
+</blockquote>
+<hr>
+<ul>
+<li><strong>docker managed volume 数据卷</strong><ul>
+<li>创建出来的两个都是有读写权限的</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>使用docker run –name nginx-test2 -p 8080:80 -d -v /usr/share/nginx/html nginx 创建一个<strong>docker managed volume 数据卷</strong> </p>
+<p>这种命令创建是不用指定宿主机数据卷存储位置的默认在 /var/lib/docker/volumes/ 下的文件名是经过<code>sha256</code> 摘要过的</p>
+</blockquote>
+<ul>
+<li>查看宿主机创建出来的数据卷</li>
+</ul>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cd  /var/<span class="class"><span class="keyword">lib</span>/<span class="title">docker</span>/<span class="title">volumes</span>/</span></span><br><span class="line">$ ls </span><br><span class="line"><span class="number">8</span>d668720aaeccee44b5fb554571912a6a257eb3a28cecf334203805a0c9b6fd3  <span class="comment">#这是自己创建出来的数据卷</span></span><br><span class="line"><span class="comment"># 执行 cd _data 进入这这个文件夹里面</span></span><br><span class="line">$ ls</span><br><span class="line"><span class="number">50</span>x.html  index.html   <span class="comment"># 这两个文件是把容器里文件给拷贝了出来</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>可以在宿主机或者容器里面都可以对文件进行读写操作</p>
+</blockquote>
+<h5 id="挂载多个目录实现数据卷的"><a href="#挂载多个目录实现数据卷的" class="headerlink" title="挂载多个目录实现数据卷的"></a>挂载多个目录实现数据卷的</h5><ul>
+<li>就是执行多个 <code>-v</code> 就可以</li>
+</ul>
+<h5 id="容器间的数据共享"><a href="#容器间的数据共享" class="headerlink" title="容器间的数据共享"></a>容器间的数据共享</h5><ul>
+<li>数据卷容器挂载了一个本地文件系统的目录，其它容器通过挂载这个数据卷容器来实现容器间的数据的共享；</li>
+</ul>
+<p><img src="https://img-blog.csdn.net/20180524134945342?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3NTQ2ODkx/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h5 id="容器间挂载"><a href="#容器间挂载" class="headerlink" title="容器间挂载"></a>容器间挂载</h5><blockquote>
+<p>创建数据卷，只要在<code>docker run</code>命令后面跟上<code>-v</code>参数即可创建一个数据卷，当然也可以跟多个<code>-v</code>参数来创建多个数据卷，当创建好带有数据卷的容器后，就可以在其他容器中通过<code>--volumes-from</code>参数来挂载该数据卷了，而不管该容器是否运行。</p>
+</blockquote>
+<figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">docker</span> <span class="comment">run</span> <span class="literal">-</span><span class="comment">tid</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">rm</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">volumes</span><span class="literal">-</span><span class="comment">from</span> <span class="comment">nginx</span><span class="literal">-</span><span class="comment">test</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">name</span> <span class="comment">nginx</span><span class="literal">-</span><span class="comment">test3</span> <span class="comment">nginx</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>-i  : 以交互模式运行容器，通常与 -t 同时使用；</p>
+<p>-t  : 为容器重新分配一个伪输入终端，通常与 -i 同时使用；</p>
+<p>-d : 后台运行容器，并返回容器ID；</p>
+</blockquote>
+<ul>
+<li>再创建一个nginx-test4，挂载nginx-test3中从nginx-test挂载的数据卷，当然也可以直接挂载初识的nginx-test容器的数据卷</li>
+</ul>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">* </span>即使删除了初始的数据卷容器 nginx-test，或者是删除了其他容器，但只要是有容器在使用该数据卷，那么它里面的数据就不会丢失</span><br><span class="line"><span class="bullet">* </span>命令中的rm表示当容器退出即停止的时候，会自动删除该容器</span><br></pre></td></tr></table></figure>
+<hr>
+<h5 id="备份数据卷"><a href="#备份数据卷" class="headerlink" title="备份数据卷"></a>备份数据卷</h5><ul>
+<li>创建一个容器container1，包含两个数据卷/usr/share/nginx/html1和/usr/share/nginx/html2（这两个目录是在容器里的数据卷路径）</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run -tid -v /usr/share/nginx/html1 -v /usr/share/nginx/html2 --name container1 -p 8080:80 nginx</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建容器container1</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it container1 bash   <span class="comment">#进入创建好的容器里面</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> html1/  <span class="comment"># 进入到html1数据卷中</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> html1 &gt;&gt; 1.text <span class="comment"># 向 1.text 文件中追加数据，文件不存在则会创建文件</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> html2/  <span class="comment"># 进入到html2数据卷中</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> html2 &gt;&gt; 2.text <span class="comment"># 向 2.text 文件中追加数据，文件不存在则会创建文件</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>接下来进行数据卷的备份操作</li>
+</ul>
+<blockquote>
+<p>使用  - -volumes-from 来创建一个加载 container1 容器卷的容器，并从宿主机挂载当前所在目录到容器的 /backup 目录，容器内会 tar 压缩 /var/colume1 目录下的文件到 /backup/backup1.tar，因为宿主机当前目录已经映射到 /backup 目录了，因此会在宿主机当前目录也存在该压缩包。备份完毕后 -rm 自动删除该创建的容器。</p>
+</blockquote>
+<ul>
+<li>备份container1容器中的/usr/share/nginx/html1数据卷数据</li>
+</ul>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 备份container1容器中的/usr/share/nginx/html1数据卷数据</span></span><br><span class="line"><span class="comment"># -tid 这个参数加不加都可以</span></span><br><span class="line"><span class="comment"># --rm 加上，备份后就会自动删除这个容器，如果不加这个 --rm 参数，name备份后的容器就会保留，docker ps -a就会查看到）</span></span><br><span class="line"><span class="comment"># $(pwd) </span></span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># pwd</span></span><br><span class="line">/root</span><br><span class="line"></span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># docker run -tid --rm --volumes-from container1 -v $(pwd):/backup nginx tar cvf /backup/backup1.tar /usr/share/nginx/html1</span></span><br><span class="line">b3663a3bdd302a38036d6a156471cd448c8e5b9333a20f9480b3c61cbd9270df</span><br><span class="line"></span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># ls</span></span><br><span class="line">backup1.tar</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>–volumes-from [containerName]：这个命令来指定需要备份的容器的名字；（数据卷容器的名字）</li>
+<li>-v $(pwd):/backup:权限：使用-v命令来指定希望备份文件存放的位置；本地存放目录：容器存放目录：读写权限；（默认权限是读写）</li>
+<li>tar cvf /backup/backup.tar [container data volume]：tar表示执行备份的操作是：压缩文件的命令；</li>
+<li>/backup/backup.tar是文件存放的地址， [container data volume]指定需要备份的目录；</li>
+<li>tar cvf 压缩；tar xvf解压缩；</li>
+</ul>
+</blockquote>
+<ul>
+<li>备份container1容器中的/usr/share/nginx/html2数据卷数据</li>
+</ul>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 备份container1容器中的/usr/share/nginx/html2数据卷数据</span></span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># pwd</span></span><br><span class="line">/root</span><br><span class="line"></span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># docker run -tid --rm --volumes-from container1 -v $(pwd):/backup nginx tar cvf /backup/backup2.tar /usr/share/nginx/html2</span></span><br><span class="line">001129bc393d5d0ed4665d053d4ca7972584cf2bd56980064be182ec758138cd</span><br><span class="line"></span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># ll</span></span><br><span class="line">total 22464</span><br><span class="line">-rw-r--r--<span class="number"> 1 </span>root root   <span class="number"> 10240 </span>Dec<span class="number"> 16 </span>18:52 backup1.tar  <span class="comment"># 文件1</span></span><br><span class="line">-rw-r--r--<span class="number"> 1 </span>root root   <span class="number"> 10240 </span>Dec<span class="number"> 16 </span>19:05 backup2.tar  <span class="comment"># 文件2</span></span><br><span class="line">drwxr-xr-x<span class="number"> 2 </span>root root    <span class="number"> 4096 </span>Dec<span class="number"> 16 </span>16:45 myvolume</span><br><span class="line">-rw-r--r--<span class="number"> 1 </span>root root<span class="number"> 22973527 </span>Mar<span class="number"> 26 </span><span class="number"> 2019 </span>Python-3.7.3.tgz</span><br></pre></td></tr></table></figure>
+<ul>
+<li>备份container1 容器中的 /usr/share/nginx/html1 和 /usr/share/nginx/html2 数据卷数据</li>
+</ul>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  备份container1 容器中的 /usr/share/nginx/html2 和 /usr/share/nginx/html2 数据卷数据</span></span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># pwd</span></span><br><span class="line">/root</span><br><span class="line"></span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># docker run -tid --rm --volumes-from container1 -v $(pwd):/backup nginx tar cvf /backup/backup.tar /usr/share/nginx/html1 /usr/share/nginx/html2</span></span><br><span class="line">441df929e123cbe51564ca3d6bf3f06a5ea415298a34bb9871f1ed2b68a60102</span><br><span class="line"></span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># ll</span></span><br><span class="line">total 22476</span><br><span class="line">-rw-r--r--<span class="number"> 1 </span>root root   <span class="number"> 10240 </span>Dec<span class="number"> 16 </span>18:52 backup1.tar</span><br><span class="line">-rw-r--r--<span class="number"> 1 </span>root root   <span class="number"> 10240 </span>Dec<span class="number"> 16 </span>19:05 backup2.tar</span><br><span class="line">-rw-r--r--<span class="number"> 1 </span>root root   <span class="number"> 10240 </span>Dec<span class="number"> 16 </span>19:09 backup.tar</span><br><span class="line">drwxr-xr-x<span class="number"> 2 </span>root root    <span class="number"> 4096 </span>Dec<span class="number"> 16 </span>16:45 myvolume</span><br><span class="line">-rw-r--r--<span class="number"> 1 </span>root root<span class="number"> 22973527 </span>Mar<span class="number"> 26 </span><span class="number"> 2019 </span>Python-3.7.3.tgz</span><br></pre></td></tr></table></figure>
+<h5 id="恢复数据给同一个容器"><a href="#恢复数据给同一个容器" class="headerlink" title="恢复数据给同一个容器"></a>恢复数据给同一个容器</h5><blockquote>
+<p>之前的数据卷是从 container1 中备份的，现在模拟 container1 数据卷丢失，然后直接用之前备份的 backup.tar 进行恢复</p>
+</blockquote>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 为了测试恢复，先删除容器里原先的数据（注意：数据卷目录不能删除，只能删除其中的数据）</span></span><br><span class="line">[root<span class="variable">@iz2zefaujekcdpmfw1qs4az</span> ~]<span class="comment"># docker exec -it container1 bash </span></span><br><span class="line"><span class="comment">#进入到创建的容器里</span></span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/</span><span class="comment"># ls</span></span><br><span class="line">bin  boot  dev	etc  home  lib	lib64  media  mnt  opt	proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/</span><span class="comment"># cd /usr/share/nginx  </span></span><br><span class="line"><span class="comment">#进入到容器里面的数据卷所在的目录</span></span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/usr/share/nginx</span><span class="comment"># ls</span></span><br><span class="line">html  html1  html2  </span><br><span class="line"></span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/usr/share/nginx</span><span class="comment"># cd html1</span></span><br><span class="line"><span class="comment"># 进入到 html1 数据卷目录</span></span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/usr/share/nginx/html1</span><span class="comment"># ls</span></span><br><span class="line"><span class="number">1</span>.text</span><br><span class="line"></span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/usr/share/nginx/html1</span><span class="comment"># rm -rf 1.text </span></span><br><span class="line"><span class="comment"># 删除 1.text 文件</span></span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/usr/share/nginx/html1</span><span class="comment"># ls</span></span><br><span class="line"></span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/usr/share/nginx</span><span class="comment"># cd html2</span></span><br><span class="line"><span class="comment"># 进入到 html2 的数据卷目录</span></span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/usr/share/nginx/html2</span><span class="comment"># ls</span></span><br><span class="line"><span class="number">2</span>.text</span><br><span class="line"></span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/usr/share/nginx/html2</span><span class="comment"># rm -rf 2.text </span></span><br><span class="line"><span class="comment"># 删除 2.text 文件</span></span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/usr/share/nginx/html2</span><span class="comment"># ls</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行数据卷恢复，恢复数据卷中的所有数据</span></span><br><span class="line">注意-C后面的路径，表示将数据恢复到容器里的路径直接使用压缩包中文件的各个路径。比如压缩包中的结果如下：</span><br><span class="line">tar -xvf backup.tar   <span class="comment">#解压压缩文件</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据1</span></span><br><span class="line">usr/share/nginx/html1/<span class="number">1</span>.text</span><br><span class="line">--usr</span><br><span class="line">	--share</span><br><span class="line">		--nginx</span><br><span class="line">			--html1</span><br><span class="line">				--<span class="number">1</span>.text</span><br><span class="line"><span class="comment"># 数据2		</span></span><br><span class="line">usr/share/nginx/html2/<span class="number">2</span>.text</span><br><span class="line">--usr</span><br><span class="line">	--share</span><br><span class="line">		--nginx</span><br><span class="line">			--html2</span><br><span class="line">				--<span class="number">2</span>.text</span><br><span class="line"><span class="comment"># 直接将文件解压到 /usr/share/nginx/html1 和 /usr/share/nginx/html2 目录</span></span><br><span class="line">[root<span class="variable">@iz2zefaujekcdpmfw1qs4az</span> ~]<span class="comment"># docker run --rm --volumes-from container1 -v $(pwd):/backup nginx tar xvf /backup/backup.tar -C /</span></span><br><span class="line">usr/share/nginx/html1/</span><br><span class="line">usr/share/nginx/html1/<span class="number">1</span>.text</span><br><span class="line">usr/share/nginx/html2/</span><br><span class="line">usr/share/nginx/html2/<span class="number">2</span>.text</span><br><span class="line"></span><br><span class="line"><span class="comment"># 直接进入容器查看</span></span><br><span class="line">[root<span class="variable">@iz2zefaujekcdpmfw1qs4az</span> ~]<span class="comment"># docker exec -it container1 bash</span></span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/</span><span class="comment"># cd /usr/share/nginx/ </span></span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/usr/share/nginx</span><span class="comment"># ls</span></span><br><span class="line">html  html1  html2</span><br><span class="line"><span class="comment"># 查看数据是否存在</span></span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/usr/share/nginx</span><span class="comment"># ls html1</span></span><br><span class="line"><span class="number">1</span>.text</span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/usr/share/nginx</span><span class="comment"># ls html2</span></span><br><span class="line"><span class="number">2</span>.text</span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/usr/share/nginx</span><span class="comment"># cat html1/1.text </span></span><br><span class="line">html1</span><br><span class="line">root<span class="variable">@6869560e6ff5</span><span class="symbol">:/usr/share/nginx</span><span class="comment"># cat html2/2.text </span></span><br><span class="line">html2</span><br></pre></td></tr></table></figure>
+<h5 id="恢复数据给新的容器"><a href="#恢复数据给新的容器" class="headerlink" title="恢复数据给新的容器"></a>恢复数据给新的容器</h5><figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 新建一个容器container2</span></span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># docker run -tid -v /usr/share/nginx/html1 -v /usr/share/nginx/html2 --name container2 nginx</span></span><br><span class="line">89abb55858fb1e3dddc07c2066d05614349aaf78ba446a1ea12f1241b98e4896</span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># docker ps</span></span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES</span><br><span class="line">89abb55858fb        nginx               "/bin/bash"        <span class="number"> 9 </span>seconds ago       Up<span class="number"> 8 </span>seconds        80/tcp              container2</span><br><span class="line">6869560e6ff5        nginx               "/bin/bash"        <span class="number"> 2 </span>hours ago         Up<span class="number"> 2 </span>hours          80/tcp              container1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开始恢复数据</span></span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># pwd</span></span><br><span class="line">/root</span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># ll</span></span><br><span class="line">total 22476</span><br><span class="line">-rw-r--r--<span class="number"> 1 </span>root root   <span class="number"> 10240 </span>Dec<span class="number"> 16 </span>18:52 backup1.tar</span><br><span class="line">-rw-r--r--<span class="number"> 1 </span>root root   <span class="number"> 10240 </span>Dec<span class="number"> 16 </span>19:05 backup2.tar</span><br><span class="line">-rw-r--r--<span class="number"> 1 </span>root root   <span class="number"> 10240 </span>Dec<span class="number"> 16 </span>19:09 backup.tar</span><br><span class="line">drwxr-xr-x<span class="number"> 2 </span>root root    <span class="number"> 4096 </span>Dec<span class="number"> 16 </span>16:45 myvolume</span><br><span class="line">-rw-r--r--<span class="number"> 1 </span>root root<span class="number"> 22973527 </span>Mar<span class="number"> 26 </span><span class="number"> 2019 </span>Python-3.7.3.tgz</span><br><span class="line"></span><br><span class="line"><span class="comment"># 恢复数据</span></span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># docker run --rm --volumes-from container2 -v $(pwd):/backup nginx tar xvf /backup/backup.tar -C /</span></span><br><span class="line">usr/share/nginx/html1/</span><br><span class="line">usr/share/nginx/html1/1.text</span><br><span class="line">usr/share/nginx/html2/</span><br><span class="line">usr/share/nginx/html2/2.text</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看确实已经恢复了</span></span><br><span class="line">[root@iz2zefaujekcdpmfw1qs4az ~]<span class="comment"># docker exec -it container2 bash</span></span><br><span class="line">root@89abb55858fb:/<span class="comment"># ls /usr/share/nginx/</span></span><br><span class="line">html  html1  html2</span><br><span class="line">root@89abb55858fb:/<span class="comment"># ls /usr/share/nginx/html1</span></span><br><span class="line">1.text</span><br><span class="line">root@89abb55858fb:/<span class="comment"># ls /usr/share/nginx/html2</span></span><br><span class="line">2.text</span><br><span class="line">root@89abb55858fb:/<span class="comment"># cat /usr/share/nginx/html1/1.text </span></span><br><span class="line">html1</span><br><span class="line">root@89abb55858fb:/<span class="comment"># cat /usr/share/nginx/html2/2.text </span></span><br><span class="line">html2</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：</p>
+<ul>
+<li>–volumes-from [containerName]：这个命令来指定需要备份的容器的名字；（数据卷容器的名字）</li>
+<li>-v $(pwd):/backup:权限：使用-v命令来指定希望备份文件存放的位置；本地存放目录：容器存放目录：读写权限；（默认权限是读写）</li>
+<li>tar cvf /backup/backup.tar [container data volume]：tar表示执行备份的操作是：压缩文件的命令；</li>
+<li>/backup/backup.tar是文件存放的地址， [container data volume]指定需要备份的目录；</li>
+<li><p>tar cvf 压缩；tar xvf解压缩；</p>
+</li>
+<li><p>新容器创建时挂载的数据卷路径最好和之前备份的数据卷路径一致</p>
+</li>
+<li>新容器创建时，如果挂载的数据卷只是备份卷的一部分，那么恢复的时候也只是恢复一部分数据。</li>
+<li>比如新建容器挂载数据卷为 <code>-v /usr/share/nginx/html1</code> ,那么使用 <code>backup.tar</code> 恢复时，只会恢复 <code>/usr/share/nginx/html1</code> 的数据， <code>/usr/share/nginx/html2</code> 的数据是不会恢复的</li>
+<li>比如新容器创建时挂载的数据卷目录和备份的数据卷目录不一致，那么数据恢复不了，除非修改 - C 后面的路径，比如新建容器时指定数据卷目录为 <code>/usr/share/nginx/html</code> ，恢复时也是用 <code>-C /usr/share/nginx/html</code>，则是可以成功恢复的</li>
+</ul>
+</blockquote>
+<h5 id="删除数据卷"><a href="#删除数据卷" class="headerlink" title="删除数据卷"></a>删除数据卷</h5><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">volume</span><span class="bash"> ls     列出所有的数据卷</span></span><br><span class="line"><span class="bash">docker volume ls --filter dangling=<span class="literal">true</span>     过滤不在使用的数据卷</span></span><br><span class="line"><span class="bash">docker volume rm [volume name]     删除一个数据卷，容器正在使用的数据卷不能删除，绑定挂载的数据卷无法删除</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker volume rm <span class="keyword">my</span>-volio  删除数据卷 <span class="keyword">my</span>-volio</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>数据卷 是被设计用来持久化数据的，它的生命周期独立于容器，Docker 不会在容器被删除后自动删除 数据卷，并且也不存在垃圾回收这样的机制来处理没有任何容器引用的 数据卷。如果需要在删除容器的同时移除数据卷。可以在删除容器的时候使用 docker rm -v 这个命令。</p>
+</blockquote>
+<ul>
+<li>无主的数据卷可能会占据很多空间，要清理请使用以下命令</li>
+</ul>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker <span class="keyword">volume</span><span class="bash"> prune</span></span><br></pre></td></tr></table></figure>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Docker简介 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是Docker"><span class="toc-text">什么是Docker</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Docker能解决什么问题"><span class="toc-text">Docker能解决什么问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Docker架构"><span class="toc-text">Docker架构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Docker核心原理"><span class="toc-text">Docker核心原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Namespaces"><span class="toc-text">Namespaces</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Docker镜像原理"><span class="toc-text">Docker镜像原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#镜像是什么"><span class="toc-text">镜像是什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-UnionFS-联合文件系统"><span class="toc-text">1.1 UnionFS(联合文件系统)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-Docker镜像加载原理"><span class="toc-text">1.2 Docker镜像加载原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-分层的镜像"><span class="toc-text">1.3 分层的镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-为什么docker镜像要采用这种分层结构呢"><span class="toc-text">1.4 为什么docker镜像要采用这种分层结构呢</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#镜像的特点"><span class="toc-text">镜像的特点</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Docker容器原理"><span class="toc-text">Docker容器原理</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Docker简介
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-12-23 08:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="什么是Docker"><a href="#什么是Docker" class="headerlink" title="什么是Docker"></a>什么是Docker</h1><p>Docker 是一个开源的应用容器引擎，可以轻松的为任何应用创建一个轻量级的、可移植的、自给自足的容器。开发者在本地编译测试通过的容器可以批量地在生产环境中部署，包括VMs（虚拟机）、bare metal、OpenStack 集群和其他的基础应用平台。</p>
+<p>简单的理解，Docker类似于集装箱，各式各样的货物，经过集装箱的标准化进行托管，而集装箱和集装箱之间没有影响。也就是说，Docker平台就是一个软件集装箱化平台，这就意味着我们自己可以构建应用程序，将其依赖关系一起打包到一个容器中，然后这容器就很容易运送到其他的机  器上进行运行，而且非常易于装载、复制、移除，非常适合软件弹性架构。 </p>
+<p>因此，就像船只、火车或卡车运输集装箱而不论其内部的货物一样，软件容器充当软件部署的标准单元，其中可以包含不同的代码和依赖项。 按照这种方式容器化软件，开发人员和 IT 专业人员只需进行极少修改或不修改，即可将其部署到不同的环境。</p>
+<p>总而 言之，Docker 是一个开放平台，使开发人员和管理员可以在称为容器的松散隔离的环境中构建镜像、交付和运行分布式应用程序。以便在开发、QA 和生产环境之间进行高效的应用程序生命周期管理。</p>
+<h1 id="Docker能解决什么问题"><a href="#Docker能解决什么问题" class="headerlink" title="Docker能解决什么问题"></a>Docker能解决什么问题</h1><p>高效有序利用资源</p>
+<ul>
+<li>机器资源有限；</li>
+<li>单台机器得部署多个应用；</li>
+<li>应用之间互相隔离；</li>
+<li>应用之间不能发生资源抢占，每个应用只能使用事先注册申请的资源。</li>
+</ul>
+<p>一次编译，到处运行</p>
+<ul>
+<li>类似于java代码，应用及依赖的环境构建一次，可以到处运行</li>
+</ul>
+<h1 id="Docker架构"><a href="#Docker架构" class="headerlink" title="Docker架构"></a>Docker架构</h1><p>Docker使用C/S架构，Client 通过接口与Server进程通信实现容器的构建，运行和发布。client和server可以运行在同一台集群，也可以通过跨主机实现远程通信。</p>
+<p><img src="https://img-blog.csdnimg.cn/20181108181808777.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0NsZXZlckNvZGU=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="Docker核心原理"><a href="#Docker核心原理" class="headerlink" title="Docker核心原理"></a>Docker核心原理</h1><h3 id="Namespaces"><a href="#Namespaces" class="headerlink" title="Namespaces"></a>Namespaces</h3><p>命名空间（namespaces）是 Linux 为我们提供的用于分离进程树、网络接口、挂载点以及进程间通信等资源的方法。在日常使用 Linux 或者 macOS 时，我们并没有运行多个完全分离的服务器的需要，但是如果我们在服务器上启动了多个服务，这些服务其实会相互影响的，每一个服务都能看到其他服务的进程，也可以访问宿主机器上的任意文件，这是很多时候我们都不愿意看到的，我们更希望运行在同一台机器上的不同服务能做到完全隔离，就像运行在多台不同的机器上一样。</p>
+<p><a href="http://dockone.io/uploads/article/20190625/6498a2be3f3ddcb2a032df838ac24069.png" target="_blank" rel="noopener"><img src="http://dockone.io/uploads/article/20190625/6498a2be3f3ddcb2a032df838ac24069.png" alt="3.png"></a></p>
+<p>在这种情况下，一旦服务器上的某一个服务被入侵，那么入侵者就能够访问当前机器上的所有服务和文件，这也是我们不想看到的，而 Docker 其实就通过 Linux 的 Namespaces 对不同的容器实现了隔离。</p>
+<p>Linux 的命名空间机制提供了以下七种不同的命名空间，包括 CLONE_NEWCGROUP、CLONE_NEWIPC、CLONE_NEWNET、CLONE_NEWNS、CLONE_NEWPID、CLONE_NEWUSER 和 CLONE_NEWUTS，通过这七个选项我们能在创建新的进程时设置新进程应该在哪些资源上与宿主机器进行隔离。</p>
+<h1 id="Docker镜像原理"><a href="#Docker镜像原理" class="headerlink" title="Docker镜像原理"></a>Docker镜像原理</h1><ol>
+<li><h2 id="镜像是什么"><a href="#镜像是什么" class="headerlink" title="镜像是什么"></a>镜像是什么</h2><p>镜像是一种轻量级、可执行的独立软件包，用来打包软件运行环境和基于运行环境开发的软件, 它包含运行某个软件所需的所有内容，包括代码、运行时、库、环境变量和配置文件。</p>
+</li>
+</ol>
+<h3 id="1-1-UnionFS-联合文件系统"><a href="#1-1-UnionFS-联合文件系统" class="headerlink" title="1.1 UnionFS(联合文件系统)"></a>1.1 UnionFS(联合文件系统)</h3><p>UnionFS(联合文件系统): Union文件系统(UnionFS)是一种分层、轻量级并且高性能的文件系统，它支持对文件系统的修改作为一次提交来一层层的叠加，同时可以将不同目录挂载到同一个虚拟文件系统下(unite several directories into a single virtual filesystem)。Union文件系统是Docker镜像的基础。镜像可以通过分层来进行继承, 基于基础镜像(没有父镜像)， 可以制作各种具体的应用镜像。<br>特性: 一次同时加载多个文件系统，但从外面看起来，只能看到一个文件系统，联合加载会把各层文件系统叠加起来，这样最终的文件系统会包含所有底层的文件和目录。</p>
+<h3 id="1-2-Docker镜像加载原理"><a href="#1-2-Docker镜像加载原理" class="headerlink" title="1.2 Docker镜像加载原理"></a>1.2 Docker镜像加载原理</h3><p>docker的镜像实际上由一层一层的文件系统组成，这种层级的文件系统UnionFS。</p>
+<p><strong>bootfs(boot file system)</strong>主要包含bootloader和kernel，bootloader主要是引导加载kernel，Linux刚启动时会加载bootfs文件系统，在Docker镜像的最底层是bootfs。这一层与我们典型的Linux/Unix系统是一样的, 包含boot加载器和内核。当boot加载完成之后整个内核就都在内存中了，此时内存的使用权已由bootfs转交给内核，此时系统也会卸载bootfs。</p>
+<p>rootfs(root file system), 在bootfs之上。包含的就是典型Linux系统中的/dev, /proc, /bin, /etc等标准目录和文件。rootfs就是各种不同的操作系统发行版，比如Ubuntu，Centos等等。</p>
+<p>平时我们安装虚拟机的CentOS都是好几个G，为什么docker这里才200M？linux mini 200G 2G </p>
+<p>对于一个精简的OS，rootfs可以很小，只需要包括最基本的命令、工具和程序库就可以了，因为底层直接用Host的kernel，自己只需要提供rootfs就行了。由此可见对于不同的linux发行版，bootfs基本是一致的，rootfs会有差别，因此不同的发行版可以共用bootfs。</p>
+<h3 id="1-3-分层的镜像"><a href="#1-3-分层的镜像" class="headerlink" title="1.3 分层的镜像"></a>1.3 分层的镜像</h3><p>以我们的pull为例，在下载的过程中我们可以看到docker的镜像好像是在一层一层的在下载</p>
+<h3 id="1-4-为什么docker镜像要采用这种分层结构呢"><a href="#1-4-为什么docker镜像要采用这种分层结构呢" class="headerlink" title="1.4 为什么docker镜像要采用这种分层结构呢"></a>1.4 为什么docker镜像要采用这种分层结构呢</h3><p>最大的一个好吃就是共享资源<br>比如：有多个镜像都从相同的base镜像构建而来，那么宿主机只需在磁盘上保存一份base镜像,同时内存中也只需加载一份base镜像，就可以为所有容器服务了。而且镜像的每一层都可以被共享。</p>
+<ol start="2">
+<li><h4 id="镜像的特点"><a href="#镜像的特点" class="headerlink" title="镜像的特点"></a>镜像的特点</h4><p>Docker镜像都是只读的<br>当容器启动时，一个新的可写层被加载到镜像的顶部。<br>这一层通常被称作为”容器层”，“容器层”之下的都叫”镜像层”。</p>
+</li>
+</ol>
+<h1 id="Docker容器原理"><a href="#Docker容器原理" class="headerlink" title="Docker容器原理"></a>Docker容器原理</h1><p><strong>Docker 容器通过 Docker 镜像来创建，容器与镜像的关系类似于面向对象编程中的对象与类。</strong></p>
+<p>如图所示基本架构：</p>
+<p><img src="http://p3.pstatp.com/large/pgc-image/1536290868344c25780cff9" alt="阿里P8架构师谈:Docker容器的原理、特征、基本架构、与应用场景"></p>
+<p><strong>Docker 镜像(Images)</strong></p>
+<p>Docker 镜像是用于创建 Docker 容器的模板。</p>
+<p><strong>Docker 容器(Container)</strong></p>
+<p>容器是独立运行的一个或一组应用。</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

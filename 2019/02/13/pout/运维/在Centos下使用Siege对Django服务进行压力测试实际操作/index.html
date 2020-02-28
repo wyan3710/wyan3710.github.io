@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        在Centos下使用Siege对Django服务进行压力测试 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#在Centos下使用Siege对Django服务进行压力测试"><span class="toc-text">在Centos下使用Siege对Django服务进行压力测试</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        在Centos下使用Siege对Django服务进行压力测试
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-02-13 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#运维" title="运维">运维</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="在Centos下使用Siege对Django服务进行压力测试"><a href="#在Centos下使用Siege对Django服务进行压力测试" class="headerlink" title="在Centos下使用Siege对Django服务进行压力测试"></a>在Centos下使用Siege对Django服务进行压力测试</h1><p><a href="https://v3u.cn/" target="_blank" rel="noopener">首页</a> - <a href="https://v3u.cn/l_id_4" target="_blank" rel="noopener">Mac &amp; Linux</a> /2019-05-31</p>
+<p>​    Siege是linux下的一个web系统的压力测试工具，支持多链接，支持get和post请求，可以对web系统进行多并发下持续请求的压力测试。今天我们就使用Siege来对Django进行一次压力测试，看看单台Django服务到底能抗住多少的并发数。</p>
+<p>​    首先安装Siege</p>
+<p>​    </p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">wget http:<span class="comment">//download.joedog.org/siege/siege-3.0.8.tar.gz</span></span><br><span class="line">tar zxvf siege-<span class="number">3.0</span>.<span class="number">8</span><span class="selector-class">.tar</span><span class="selector-class">.gz</span></span><br><span class="line">cd siege-<span class="number">3.0</span>.<span class="number">8</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line">验证安装结果：输入siege -V 如果输出了版本号就代表安装没问题</span><br></pre></td></tr></table></figure>
+<p>Siege命令常用参数</p>
+<p>-c 200 指定并发数200<br>-r 5 指定测试的次数5<br>-f urls.txt 制定url的文件<br>-i internet系统，随机发送url<br>-b 请求无需等待 delay=0<br>-t 5 持续测试5分钟</p>
+<p>测试指标说明：</p>
+<p>Transactions: 4 hits 完成4次处理<br>Availability: 100.00 % 成功率<br>Elapsed time: 1.19 secs 总共用时<br>Data transferred: 0.03MB 共数据传输：0.03MB<br>Response time: 0.13 secs 相应用时0.13秒，显示网络连接的速度<br>Transaction rate: 3.36 trans/sec平均每秒完成3.36次处理，表示服务器后台处理的速度<br>Throughput: 0.03MB/sec 平均每秒传送数据：0.03MB<br>Concurrency: 0.45 最高并发数 0.45<br>Successful transactions: 4成功处理次数<br>Failed transactions: 0 失败处理次数<br>Longest  transaction：0.25请求最长响应时间/每次传输所花最长时间<br>Shortest  transaction：0.09请求最短响应时间/每次传输所花最短时间</p>
+<p>主要参考指标是 Transaction rate</p>
+<p>测试背景:  </p>
+<p>软件：python3.7.2 Django2.0.4 </p>
+<p>硬件 内存:1g cpu:1个1核  这个硬件配置有点惨，没办法了，因为没钱买好的</p>
+<p>业务场景：Django使用mysql进行普通的读操作，没有使用任何缓存</p>
+<p>压测命令：255个用户并发访问localhost:8000，持续时间为1分钟</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">siege</span> <span class="selector-tag">-c255</span> <span class="selector-tag">-t60S</span> <span class="selector-tag">-v</span> <span class="selector-tag">-b</span> 127<span class="selector-class">.0</span><span class="selector-class">.0</span><span class="selector-class">.1</span><span class="selector-pseudo">:8000</span></span><br></pre></td></tr></table></figure>
+<p>首先使用runserver的起服务方式进行压测：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">python3</span> <span class="selector-tag">manage</span><span class="selector-class">.py</span> <span class="selector-tag">runserver</span> 0<span class="selector-class">.0</span><span class="selector-class">.0</span><span class="selector-class">.0</span><span class="selector-pseudo">:8000</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://v3u.cn/v3u/Public/js/editor/attached/image/20190531/20190531073440_46036.png" alt="img"></p>
+<p>可以看到，这个有点凄惨，每秒后台只能处理166的请求，失败次数也有点高，更加说明了，runserver最好就是本地调试开发的时候用用就可以了，在生产环境使用runserver无异于自杀，不过在一些测试服务器上，如果懒得搭建uwsgi或者gunicorn，可以使用nohup配合runserver临时用一下。</p>
+<p>使用uwsgi来起服务，uwsgi作为一款高性能的服务器，安装方式请见：<a href="https://v3u.cn/a_id_72" target="_blank" rel="noopener">https://v3u.cn/a_id_72</a> 起8个worker</p>
+<figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">uwsgi</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">http</span> <span class="comment">:8000</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">module</span> <span class="comment">mypro</span><span class="string">.</span><span class="comment">wsgi</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">processes</span> <span class="comment">8</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://v3u.cn/v3u/Public/js/editor/attached/image/20190531/20190531094643_42366.png" alt="img"></p>
+<p>可以看到使用了uwsgi的提升还是很可观的，失败次数也减少了一半左右</p>
+<p>​    最后，我们来试一试Gunicorn</p>
+<p>​    Gunicorn是使用Python实现的WSGI服务器, 直接提供了http服务, 并且在woker上提供了多种选择, gevent, eventlet这些都支持, 在多worker最大化里用CPU的同时, 还可以使用协程来提供并发支撑, 对于网络IO密集的服务比较有利</p>
+<p>安装 gunicorn</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 <span class="keyword">install</span> gunicorn</span><br></pre></td></tr></table></figure>
+<p>起4个worker,50个线程</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gunicorn --env DJANGO_SETTINGS_MODULE=mypro<span class="selector-class">.settings</span> mypro<span class="selector-class">.wsgi</span>:application -w <span class="number">4</span> -<span class="selector-tag">b</span> <span class="number">0.0</span>.<span class="number">0.0</span>:<span class="number">8000</span> -k gthread --threads <span class="number">50</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://v3u.cn/v3u/Public/js/editor/attached/image/20190531/20190531100545_47571.png" alt="img"></p>
+<p>可以看到性能上和uwsgi差不太多，但是失败数比较多。以1g1核的服务器，并发阈值也就在200左右了。</p>
+<p>​    综上，单以性能论，Django的表现并非很好，但是你不能忽略它的学习成本低，简单并且容易上手的优势，鱼与熊掌不能兼得，如果要求高性能，可以试试tornado, 如果tornado依然无法满足，可以尝试使用golang，毕竟golang是以高并发著称的编译语言，而且基于它的web框架也很容易上手，性能很可观，例如Iris。</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

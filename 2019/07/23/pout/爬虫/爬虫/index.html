@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        爬虫常用库及相关知识 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#爬虫常用库"><span class="toc-text">爬虫常用库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#增量爬虫"><span class="toc-text">增量爬虫</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Scrapy-相关"><span class="toc-text">Scrapy 相关</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Scrapy整体架构"><span class="toc-text">Scrapy整体架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据流（流程，类似抓取任务生命周期）"><span class="toc-text">数据流（流程，类似抓取任务生命周期）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装"><span class="toc-text">安装</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#scrapy-中间件"><span class="toc-text">scrapy 中间件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分布式爬虫"><span class="toc-text">分布式爬虫</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#应对反爬"><span class="toc-text">应对反爬</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#headers头文件"><span class="toc-text">headers头文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#伪造Cookie"><span class="toc-text">伪造Cookie</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代理ip"><span class="toc-text">代理ip</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代理池的概念"><span class="toc-text">代理池的概念</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抓取App端数据"><span class="toc-text">抓取App端数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抓取视频"><span class="toc-text">抓取视频</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        爬虫常用库及相关知识
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-07-23 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#爬虫" title="爬虫">爬虫</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h2 id="爬虫常用库"><a href="#爬虫常用库" class="headerlink" title="爬虫常用库"></a>爬虫常用库</h2><p>requests、selenium、puppeteer，beautifulsoup4、pyquery、pymysql、pymongo、redis、lxml和scrapy框架</p>
+<p>其中发起请求课可以使用requests和scrapy</p>
+<p>解析内容可以用 beautifulsoup4,lxml,pyquery</p>
+<p>存储内容可以使用 mysql(清洗后的数据) redis(代理池) mongodb(未清洗的数据)</p>
+<p>抓取动态渲染的内容可以使用:selenium,puppeteer</p>
+<h2 id="增量爬虫"><a href="#增量爬虫" class="headerlink" title="增量爬虫"></a>增量爬虫</h2><p>一个网站，本来一共有10页，过段时间之后变成了100页。假设，已经爬取了前10页，为了增量爬取，我们现在只想爬取第11-100页。</p>
+<p>因此，为了增量爬取，我们需要将前10页请求的指纹保存下来。以下命令是将内存中的set里指纹保存到本地硬盘的一种方式。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scrapy crawl somespider -s <span class="attribute">JOBDIR</span>=crawls/somespider-1</span><br></pre></td></tr></table></figure>
+<p>但还有更常用的，是将scrapy中的指纹存在一个redis数据库中，这个操作已经有造好轮子了，即scrapy-redis库。</p>
+<p>scrapy-redis库将指纹保存在了redis数据库中，是可以持久保存的。（基于此，还可以实现分布式爬虫，那是另外一个用途了）scrapy-redis库不仅存储了已请求的指纹，还存储了带爬取的请求，这样无论这个爬虫如何重启，每次scrapy从redis中读取要爬取的队列，将爬取后的指纹存在redis中。如果要爬取的页面的指纹在redis中就忽略，不在就爬取。</p>
+<h2 id="Scrapy-相关"><a href="#Scrapy-相关" class="headerlink" title="Scrapy 相关"></a>Scrapy 相关</h2><p>scrapy基于twisted异步IO框架，downloader是多线程的。</p>
+<p>但是，由于python使用GIL（全局解释器锁，保证同时只有一个线程在使用解释器），这极大限制了并行性，在处理运算密集型程序的时候，Python的多线程效果很差，而如果开多个线程进行耗时的IO操作时，Python的多线程才能发挥出更大的作用。（因为Python在进行长时IO操作时会释放GIL） 所以简单的说，scrapy是多线程的，不需要再设置了，由于目前版本python的特性，多线程地不是很完全，但实际测试scrapy效率还可以。</p>
+<p>requests 是一个基本库，目前只能用来发送http请求，所以涉及爬虫的多线程或者协程需要自己定制编写</p>
+<h2 id="Scrapy整体架构"><a href="#Scrapy整体架构" class="headerlink" title="Scrapy整体架构"></a>Scrapy整体架构</h2><p>• 引擎(Scrapy Engine)，用来处理整个系统的数据流处理，触发事务 。</p>
+<p>• 调度器(Scheduler)，用来接受引擎发过来的请求，压入队列中，并在引擎再次请求的时候返回。</p>
+<p>• 下载器(Downloader)，用于下载网页内容，并将网页内容返回给蜘蛛。</p>
+<p>• 蜘蛛(Spiders)，蜘蛛是主要干活的，用它来制订特定域名或网页的解析规则。编写用于分析response并提取item(即获取到的item)或额外跟进的URL的类。每个spider负责处理一个特定(或一些)网站。</p>
+<p>• 项目管道(ItemPipeline)，负责处理有蜘蛛从网页中抽取的项目，他的主要任务是清晰、验证和存储数据。当页面被蜘蛛解析后，将被发送到项目管道，并经过几个特定的次序处理数据。</p>
+<p>• 下载器中间件(DownloaderMiddlewares)，位于Scrapy引擎和下载器之间的钩子框架，主要是处理Scrapy引擎与下载器之间的请求及响应。</p>
+<p>• 蜘蛛中间件(SpiderMiddlewares)，介于Scrapy引擎和蜘蛛之间的钩子框架，主要工作是处理蜘蛛的响应输入和请求输出。</p>
+<p>• 调度中间件(SchedulerMiddlewares)，介于Scrapy引擎和调度之间的中间件，从Scrapy引擎发送到调度的请求和响应。</p>
+<p><img src="../img/spider1.png" alt="img"></p>
+<p>爬取流程：上图绿线是数据流向，</p>
+<p>首先从初始URL开始，Scheduler会将其交给Downloader进行下载，下载之后会交给Spider进行分析，</p>
+<p>Spider分析出来的结果有两种：</p>
+<p>一种是需要进一步抓取的链接，例如之前分析的“下一页”的链接，这些东西会被传回Scheduler；</p>
+<p>另一种是需要保存的数据，它们则被送到Item Pipeline那里，那是对数据进行后期处理（详细分析、过滤、存储等）的地方。</p>
+<p>另外，在数据流动的通道里还可以安装各种中间件，进行必要的处理。</p>
+<h2 id="数据流（流程，类似抓取任务生命周期）"><a href="#数据流（流程，类似抓取任务生命周期）" class="headerlink" title="数据流（流程，类似抓取任务生命周期）"></a>数据流（流程，类似抓取任务生命周期）</h2><p>Scrapy中的数据流由执行引擎控制，其过程如下:</p>
+<p>1.引擎打开一个网站(open adomain)，找到处理该网站的Spider并向该spider请求第一个要爬取的URL(s)。</p>
+<p>2.引擎从Spider中获取到第一个要爬取的URL并在调度器(Scheduler)以Request调度。</p>
+<p>3.引擎向调度器请求下一个要爬取的URL。</p>
+<p>4.调度器返回下一个要爬取的URL给引擎，引擎将URL通过下载中间件(请求(request)方向)转发给下载器(Downloader)。</p>
+<p>5.一旦页面下载完毕，下载器生成一个该页面的Response，并将其通过下载中间件(返回(response)方向)发送给引擎。</p>
+<p>6.引擎从下载器中接收到Response并通过Spider中间件(输入方向)发送给Spider处理。</p>
+<p>7.Spider处理Response并返回爬取到的Item及(跟进的)新的Request给引擎。</p>
+<p>8.引擎将(Spider返回的)爬取到的Item给ItemPipeline，将(Spider返回的)Request给调度器。</p>
+<p>9.(从第二步)重复直到调度器中没有更多地request，引擎关闭该网站。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip <span class="keyword">install</span> Scrapy</span><br></pre></td></tr></table></figure>
+<p>缺少twisted装不上的直接去网上下载动态库：<a href="https://www.lfd.uci.edu/~gohlke/pythonlibs/#twisted" target="_blank" rel="noopener">https://www.lfd.uci.edu/~gohlke/pythonlibs/#twisted</a></p>
+<p>新建项目</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">scrapy</span> startproject <span class="string">'project_name'</span></span><br></pre></td></tr></table></figure>
+<p>scrapy 配置文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">==&gt;第一部分：基本配置&lt;===</span></span><br><span class="line"><span class="meta">#</span><span class="bash">1、项目名称，默认的USER_AGENT由它来构成，也作为日志记录的日志名</span></span><br><span class="line">BOT_NAME = 'Amazon'</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">2、爬虫应用路径</span></span><br><span class="line">SPIDER_MODULES = ['Amazon.spiders']</span><br><span class="line">NEWSPIDER_MODULE = 'Amazon.spiders'</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">3、客户端User-Agent请求头</span></span><br><span class="line"><span class="meta">#</span><span class="bash">USER_AGENT = <span class="string">'Amazon (+http://www.yourdomain.com)'</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">4、是否遵循爬虫协议</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Obey robots.txt rules</span></span><br><span class="line">ROBOTSTXT_OBEY = False</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">5、是否支持cookie，cookiejar进行操作cookie，默认开启</span></span><br><span class="line"><span class="meta">#</span><span class="bash">COOKIES_ENABLED = False</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">6、Telnet用于查看当前爬虫的信息，操作爬虫等...使用telnet ip port ，然后通过命令操作</span></span><br><span class="line"><span class="meta">#</span><span class="bash">TELNETCONSOLE_ENABLED = False</span></span><br><span class="line"><span class="meta">#</span><span class="bash">TELNETCONSOLE_HOST = <span class="string">'127.0.0.1'</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">TELNETCONSOLE_PORT = [6023,]</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">7、Scrapy发送HTTP请求默认使用的请求头</span></span><br><span class="line"><span class="meta">#</span><span class="bash">DEFAULT_REQUEST_HEADERS = &#123;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">   <span class="string">'Accept'</span>: <span class="string">'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'</span>,</span></span><br><span class="line"><span class="meta">#</span><span class="bash">   <span class="string">'Accept-Language'</span>: <span class="string">'en'</span>,</span></span><br><span class="line"><span class="meta">#</span><span class="bash">&#125;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">===&gt;第二部分：并发与延迟&lt;===</span></span><br><span class="line"><span class="meta">#</span><span class="bash">1、下载器总共最大处理的并发请求数,默认值16</span></span><br><span class="line"><span class="meta">#</span><span class="bash">CONCURRENT_REQUESTS = 32</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">2、每个域名能够被执行的最大并发请求数目，默认值8</span></span><br><span class="line"><span class="meta">#</span><span class="bash">CONCURRENT_REQUESTS_PER_DOMAIN = 16</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">3、能够被单个IP处理的并发请求数，默认值0，代表无限制，需要注意两点</span></span><br><span class="line"><span class="meta">#</span><span class="bash">I、如果不为零，那CONCURRENT_REQUESTS_PER_DOMAIN将被忽略，即并发数的限制是按照每个IP来计算，而不是每个域名</span></span><br><span class="line"><span class="meta">#</span><span class="bash">II、该设置也影响DOWNLOAD_DELAY，如果该值不为零，那么DOWNLOAD_DELAY下载延迟是限制每个IP而不是每个域</span></span><br><span class="line"><span class="meta">#</span><span class="bash">CONCURRENT_REQUESTS_PER_IP = 16</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">4、如果没有开启智能限速，这个值就代表一个规定死的值，代表对同一网址延迟请求的秒数</span></span><br><span class="line"><span class="meta">#</span><span class="bash">DOWNLOAD_DELAY = 3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">===&gt;第三部分：智能限速/自动节流：AutoThrottle extension&lt;===</span></span><br><span class="line"><span class="meta">#</span><span class="bash">一：介绍</span></span><br><span class="line">from scrapy.contrib.throttle import AutoThrottle #http://scrapy.readthedocs.io/en/latest/topics/autothrottle.html#topics-autothrottle</span><br><span class="line">设置目标：</span><br><span class="line">1、比使用默认的下载延迟对站点更好</span><br><span class="line">2、自动调整scrapy到最佳的爬取速度，所以用户无需自己调整下载延迟到最佳状态。用户只需要定义允许最大并发的请求，剩下的事情由该扩展组件自动完成</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">二：如何实现？</span></span><br><span class="line">在Scrapy中，下载延迟是通过计算建立TCP连接到接收到HTTP包头(header)之间的时间来测量的。</span><br><span class="line">注意，由于Scrapy可能在忙着处理spider的回调函数或者无法下载，因此在合作的多任务环境下准确测量这些延迟是十分苦难的。 不过，这些延迟仍然是对Scrapy(甚至是服务器)繁忙程度的合理测量，而这扩展就是以此为前提进行编写的。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">三：限速算法</span></span><br><span class="line">自动限速算法基于以下规则调整下载延迟</span><br><span class="line"><span class="meta">#</span><span class="bash">1、spiders开始时的下载延迟是基于AUTOTHROTTLE_START_DELAY的值</span></span><br><span class="line"><span class="meta">#</span><span class="bash">2、当收到一个response，对目标站点的下载延迟=收到响应的延迟时间/AUTOTHROTTLE_TARGET_CONCURRENCY</span></span><br><span class="line"><span class="meta">#</span><span class="bash">3、下一次请求的下载延迟就被设置成：对目标站点下载延迟时间和过去的下载延迟时间的平均值</span></span><br><span class="line"><span class="meta">#</span><span class="bash">4、没有达到200个response则不允许降低延迟</span></span><br><span class="line"><span class="meta">#</span><span class="bash">5、下载延迟不能变的比DOWNLOAD_DELAY更低或者比AUTOTHROTTLE_MAX_DELAY更高</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">四：配置使用</span></span><br><span class="line"><span class="meta">#</span><span class="bash">开启True，默认False</span></span><br><span class="line">AUTOTHROTTLE_ENABLED = True</span><br><span class="line"><span class="meta">#</span><span class="bash">起始的延迟</span></span><br><span class="line">AUTOTHROTTLE_START_DELAY = 5</span><br><span class="line"><span class="meta">#</span><span class="bash">最小延迟</span></span><br><span class="line">DOWNLOAD_DELAY = 3</span><br><span class="line"><span class="meta">#</span><span class="bash">最大延迟</span></span><br><span class="line">AUTOTHROTTLE_MAX_DELAY = 10</span><br><span class="line"><span class="meta">#</span><span class="bash">每秒并发请求数的平均值，不能高于 CONCURRENT_REQUESTS_PER_DOMAIN或CONCURRENT_REQUESTS_PER_IP，调高了则吞吐量增大强奸目标站点，调低了则对目标站点更加”礼貌“</span></span><br><span class="line"><span class="meta">#</span><span class="bash">每个特定的时间点，scrapy并发请求的数目都可能高于或低于该值，这是爬虫视图达到的建议值而不是硬限制</span></span><br><span class="line">AUTOTHROTTLE_TARGET_CONCURRENCY = 16.0</span><br><span class="line"><span class="meta">#</span><span class="bash">调试</span></span><br><span class="line">AUTOTHROTTLE_DEBUG = True</span><br><span class="line">CONCURRENT_REQUESTS_PER_DOMAIN = 16</span><br><span class="line">CONCURRENT_REQUESTS_PER_IP = 16</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">===&gt;第四部分：爬取深度与爬取方式&lt;===</span></span><br><span class="line"><span class="meta">#</span><span class="bash">1、爬虫允许的最大深度，可以通过meta查看当前深度；0表示无深度</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> DEPTH_LIMIT = 3</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">2、爬取时，0表示深度优先Lifo(默认)；1表示广度优先FiFo</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 后进先出，深度优先</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> DEPTH_PRIORITY = 0</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> SCHEDULER_DISK_QUEUE = <span class="string">'scrapy.squeue.PickleLifoDiskQueue'</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> SCHEDULER_MEMORY_QUEUE = <span class="string">'scrapy.squeue.LifoMemoryQueue'</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 先进先出，广度优先</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> DEPTH_PRIORITY = 1</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> SCHEDULER_DISK_QUEUE = <span class="string">'scrapy.squeue.PickleFifoDiskQueue'</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> SCHEDULER_MEMORY_QUEUE = <span class="string">'scrapy.squeue.FifoMemoryQueue'</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">3、调度器队列</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> SCHEDULER = <span class="string">'scrapy.core.scheduler.Scheduler'</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> from scrapy.core.scheduler import Scheduler</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">4、访问URL去重</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> DUPEFILTER_CLASS = <span class="string">'step8_king.duplication.RepeatUrl'</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">===&gt;第五部分：中间件、Pipelines、扩展&lt;===</span></span><br><span class="line"><span class="meta">#</span><span class="bash">1、Enable or <span class="built_in">disable</span> spider middlewares</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html</span></span><br><span class="line"><span class="meta">#</span><span class="bash">SPIDER_MIDDLEWARES = &#123;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    <span class="string">'Amazon.middlewares.AmazonSpiderMiddleware'</span>: 543,</span></span><br><span class="line"><span class="meta">#</span><span class="bash">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">2、Enable or <span class="built_in">disable</span> downloader middlewares</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html</span></span><br><span class="line">DOWNLOADER_MIDDLEWARES = &#123;</span><br><span class="line"><span class="meta">   #</span><span class="bash"> <span class="string">'Amazon.middlewares.DownMiddleware1'</span>: 543,</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">3、Enable or <span class="built_in">disable</span> extensions</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> See http://scrapy.readthedocs.org/en/latest/topics/extensions.html</span></span><br><span class="line"><span class="meta">#</span><span class="bash">EXTENSIONS = &#123;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    <span class="string">'scrapy.extensions.telnet.TelnetConsole'</span>: None,</span></span><br><span class="line"><span class="meta">#</span><span class="bash">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">4、Configure item pipelines</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html</span></span><br><span class="line">ITEM_PIPELINES = &#123;</span><br><span class="line"><span class="meta">   #</span><span class="bash"> <span class="string">'Amazon.pipelines.CustomPipeline'</span>: 200,</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">===&gt;第六部分：缓存&lt;===</span></span><br><span class="line">"""</span><br><span class="line">1. 启用缓存</span><br><span class="line">    目的用于将已经发送的请求或相应缓存下来，以便以后使用</span><br><span class="line"></span><br><span class="line">    from scrapy.downloadermiddlewares.httpcache import HttpCacheMiddleware</span><br><span class="line">    from scrapy.extensions.httpcache import DummyPolicy</span><br><span class="line">    from scrapy.extensions.httpcache import FilesystemCacheStorage</span><br><span class="line">"""</span><br><span class="line"><span class="meta">#</span><span class="bash"> 是否启用缓存策略</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> HTTPCACHE_ENABLED = True</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 缓存策略：所有请求均缓存，下次在请求直接访问原来的缓存即可</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> HTTPCACHE_POLICY = <span class="string">"scrapy.extensions.httpcache.DummyPolicy"</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 缓存策略：根据Http响应头：Cache-Control、Last-Modified 等进行缓存的策略</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> HTTPCACHE_POLICY = <span class="string">"scrapy.extensions.httpcache.RFC2616Policy"</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 缓存超时时间</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> HTTPCACHE_EXPIRATION_SECS = 0</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 缓存保存路径</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> HTTPCACHE_DIR = <span class="string">'httpcache'</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 缓存忽略的Http状态码</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> HTTPCACHE_IGNORE_HTTP_CODES = []</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 缓存存储的插件</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> HTTPCACHE_STORAGE = <span class="string">'scrapy.extensions.httpcache.FilesystemCacheStorage'</span></span></span><br></pre></td></tr></table></figure>
+<p>新建抓取脚本</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#导包</span></span><br><span class="line">import scrapy</span><br><span class="line">import os</span><br><span class="line"></span><br><span class="line"><span class="comment">#定义抓取类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span>(<span class="title">scrapy</span>.<span class="title">Spider</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#定义爬虫名称，和命令行运行时的名称吻合</span></span><br><span class="line">    name = <span class="string">"test"</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#定义头部信息</span></span><br><span class="line">    haders = &#123;</span><br><span class="line">        <span class="string">'User-Agent'</span>: <span class="string">'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/73.0.3683.86 Chrome/73.0.3683.86 Safari/537.36'</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#定义回调方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse</span><span class="params">(<span class="keyword">self</span>, response)</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="comment">#将抓取页面保存为文件</span></span><br><span class="line">        page = response.url.split(<span class="string">"/"</span>)[-<span class="number">2</span>]</span><br><span class="line">        filename = <span class="string">'test-%s.html'</span> % page</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(filename)<span class="symbol">:</span></span><br><span class="line">            with open(filename, <span class="string">'wb'</span>) as <span class="symbol">f:</span></span><br><span class="line">                f.write(response.body)</span><br><span class="line">        <span class="keyword">self</span>.log(<span class="string">'Saved file %s'</span> % filename)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">#匹配规则</span></span><br><span class="line"></span><br><span class="line">        content_left_div = response.xpath(<span class="string">'//*[@id="content-left"]'</span>)</span><br><span class="line">        content_list_div = content_left_div.xpath(<span class="string">'./div'</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> content_div <span class="keyword">in</span> <span class="symbol">content_list_div:</span></span><br><span class="line">            <span class="keyword">yield</span> &#123;</span><br><span class="line">                <span class="string">'author'</span>: content_div.xpath(<span class="string">'./div/a[2]/h2/text()'</span>).get(),</span><br><span class="line">                <span class="string">'content'</span>: content_div.xpath(<span class="string">'./a/div/span/text()'</span>).getall(),</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#定义列表方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">start_requests</span><span class="params">(<span class="keyword">self</span>)</span></span><span class="symbol">:</span></span><br><span class="line">        urls = [</span><br><span class="line">            <span class="string">'https://www.qiushibaike.com/text/page/1/'</span>,</span><br><span class="line">            <span class="string">'https://www.qiushibaike.com/text/page/2/'</span>,</span><br><span class="line">        ]</span><br><span class="line">        <span class="keyword">for</span> url <span class="keyword">in</span> <span class="symbol">urls:</span></span><br><span class="line">            <span class="comment">#如果想使用代理 可以加入代理参数 meta</span></span><br><span class="line">            <span class="comment">#meta=&#123;'proxy': 'http://proxy.yourproxy:8001'&#125;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">#抓取方法</span></span><br><span class="line">            <span class="keyword">yield</span> scrapy.Request(url=url, callback=<span class="keyword">self</span>.parse,headers=<span class="keyword">self</span>.haders)</span><br></pre></td></tr></table></figure>
+<p>执行抓取脚本 注意脚本名称和上文定义的name变量要吻合</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scrapy crawl <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+<h2 id="scrapy-中间件"><a href="#scrapy-中间件" class="headerlink" title="scrapy 中间件"></a>scrapy 中间件</h2><p>下载器中间件是介于Scrapy的request/response处理的钩子框架，是用于全局修改Scrapy request和response的一个轻量、底层的系统。</p>
+<p>开发代理中间件</p>
+<p>在爬虫开发中，更换代理IP是非常常见的情况，有时候每一次访问都需要随机选择一个代理IP来进行。</p>
+<p>中间件本身是一个Python的类，只要爬虫每次访问网站之前都先“经过”这个类，它就能给请求换新的代理IP，这样就能实现动态改变代理。</p>
+<p>在创建一个Scrapy工程以后，工程文件夹下会有一个middlewares.py文件</p>
+<p>在middlewares.py中添加下面一段代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">from</span> scrapy.conf <span class="keyword">import</span> settings</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProxyMiddleware</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span><span class="params">(self, request, spider)</span>:</span></span><br><span class="line">        proxy = random.choice(settings[<span class="string">'PROXIES'</span>])</span><br><span class="line">        request.meta[<span class="string">'proxy'</span>] = proxy</span><br></pre></td></tr></table></figure>
+<p>进入settings，开启中间件</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DOWNLOADER_MIDDLEWARES = &#123;</span><br><span class="line">  'AdvanceSpider.middlewares.ProxyMiddleware': 543,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置好后运行爬虫，scrapy会在每次请求之前随机分配一个代理，可以请求下面的网址查看是否用了代理</p>
+<p><a href="http://exercise.kingname.info/exercise_middleware_ip" target="_blank" rel="noopener">http://exercise.kingname.info/exercise_middleware_ip</a></p>
+<h2 id="分布式爬虫"><a href="#分布式爬虫" class="headerlink" title="分布式爬虫"></a>分布式爬虫</h2><p>Scrapy-Redis是一个基于Redis的Scrapy分布式组件。它利用Redis对用于爬取的请求(Requests)进行存储和调度(Schedule)，并对爬取产生的项目(items)存储以供后续处理使用。scrapy-redi重写了scrapy一些比较关键的代码，将scrapy变成一个可以在多个主机上同时运行的分布式爬虫。</p>
+<p>具体部署和使用攻略：<a href="https://v3u.cn/Index_a_id_83" target="_blank" rel="noopener">https://v3u.cn/Index_a_id_83</a></p>
+<p><img src="../img/scrapy_redis.jpeg" alt="img"></p>
+<p>说白了，就是使用redis来维护一个url队列,然后scrapy爬虫都连接这一个redis获取url,且当爬虫在redis处拿走了一个url后,redis会将这个url从队列中清除,保证不会被2个爬虫拿到同一个url,即使可能2个爬虫同时请求拿到同一个url,在返回结果的时候redis还会再做一次去重处理,所以这样就能达到分布式效果,我们拿一台主机做redis 队列,然后在其他主机上运行爬虫.且scrapy-redis会一直保持与redis的连接,所以即使当redis 队列中没有了url,爬虫会定时刷新请求,一旦当队列中有新的url后,爬虫就立即开始继续爬</p>
+<h2 id="应对反爬"><a href="#应对反爬" class="headerlink" title="应对反爬"></a>应对反爬</h2><h3 id="headers头文件"><a href="#headers头文件" class="headerlink" title="headers头文件"></a>headers头文件</h3><p>有些网站对爬虫反感，对爬虫请求一律拒绝，这时候我们需要伪装成浏览器，通过修改http中的headers来实现</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">headers = &#123;</span><br><span class="line">            <span class="string">'Host'</span>: <span class="string">"bj.lianjia.com"</span>,</span><br><span class="line">            <span class="string">'Accept'</span>: <span class="string">"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"</span>,</span><br><span class="line">            <span class="string">'Accept-Encoding'</span>: <span class="string">"gzip, deflate, sdch"</span>,</span><br><span class="line">            <span class="string">'Accept-Language'</span>: <span class="string">"zh-CN,zh;q=0.8"</span>,</span><br><span class="line">            <span class="string">'User-Agent'</span>: <span class="string">"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.87 Safari/537.36"</span>,</span><br><span class="line">            <span class="string">'Connection'</span>: <span class="string">"keep-alive"</span>,</span><br><span class="line">        &#125;</span><br><span class="line"><span class="selector-tag">p</span> = requests.get(url, headers=headers)</span><br><span class="line"><span class="function"><span class="title">print</span><span class="params">(p.content.decode(<span class="string">'utf-8'</span>)</span></span>)</span><br></pre></td></tr></table></figure>
+<h3 id="伪造Cookie"><a href="#伪造Cookie" class="headerlink" title="伪造Cookie"></a>伪造Cookie</h3><p>模拟登陆</p>
+<p>一般登录的过程都伴随有验证码，这里我们通过selenium自己构造post数据进行提交，将返回验证码图片的链接地址输出到控制台下，点击图片链接识别验证码，输入验证码并提交，完成登录</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.keys <span class="keyword">import</span> Keys    <span class="comment">#</span></span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.support.ui <span class="keyword">import</span> WebDriverWait   <span class="comment"># WebDriverWait的作用是等待某个条件的满足之后再往后运行</span></span><br><span class="line"><span class="keyword">from</span> selenium.webdriver <span class="keyword">import</span> ActionChains</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">driver = webdriver.PhantomJS(executable_path=<span class="string">'C:\PyCharm 2016.2.3\phantomjs\phantomjs.exe'</span>)  <span class="comment"># 构造网页驱动</span></span><br><span class="line"></span><br><span class="line">driver.get(<span class="string">'https://www.zhihu.com/#signin'</span>)       <span class="comment"># 打开网页</span></span><br><span class="line">driver.find_element_by_xpath(<span class="string">'//input[@name="password"]'</span>).send_keys(<span class="string">'your_password'</span>)</span><br><span class="line">driver.find_element_by_xpath(<span class="string">'//input[@name="account"]'</span>).send_keys(<span class="string">'your_account'</span>)</span><br><span class="line">driver.get_screenshot_as_file(<span class="string">'zhihu.jpg'</span>)                   <span class="comment"># 截取当前页面的图片</span></span><br><span class="line">input_solution = input(<span class="string">'请输入验证码 :'</span>)</span><br><span class="line">driver.find_element_by_xpath(<span class="string">'//input[@name="captcha"]'</span>).send_keys(input_solution)</span><br><span class="line">time.sleep(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">driver.find_element_by_xpath(<span class="string">'//form[@class="zu-side-login-box"]'</span>).submit()  <span class="comment"># 表单的提交  表单的提交，即可以选择登录按钮然后使用click方法，也可以选择表单然后使用submit方法</span></span><br><span class="line">sreach_widonw = driver.current_window_handle     <span class="comment"># 用来定位当前页面</span></span><br><span class="line"><span class="comment"># driver.find_element_by_xpath('//button[@class="sign-button submit"]').click()</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    dr = WebDriverWait(driver,<span class="number">5</span>)</span><br><span class="line">    <span class="comment"># dr.until(lambda the_driver: the_driver.find_element_by_xpath('//a[@class="zu-side-login-box"]').is_displayed())</span></span><br><span class="line">    <span class="keyword">if</span> driver.find_element_by_xpath(<span class="string">'//*[@id="zh-top-link-home"]'</span>):</span><br><span class="line">        print(<span class="string">'登录成功'</span>)</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    print(<span class="string">'登录失败'</span>)</span><br><span class="line">    driver.save_screenshot(<span class="string">'screen_shoot.jpg'</span>)     <span class="comment">#截取当前页面的图片</span></span><br><span class="line">    sys.exit(<span class="number">0</span>)</span><br><span class="line">driver.quit()   <span class="comment">#退出驱动</span></span><br></pre></td></tr></table></figure>
+<h3 id="代理ip"><a href="#代理ip" class="headerlink" title="代理ip"></a>代理ip</h3><p>当爬取速度过快时，当请求次数过多时都面临ip被封的可能。因此使用代理也是必备的。</p>
+<h3 id="代理池的概念"><a href="#代理池的概念" class="headerlink" title="代理池的概念"></a>代理池的概念</h3><p>抓取市面上所有免费代理网站的ip，比如西刺代理，快代理等</p>
+<p>代理池维护存储 redis 因为代理ip生命周期很短，属于热数据，不适合持久化存储</p>
+<p>使用时随机取出一个代理ip使用</p>
+<p>使用request加代理</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">proxies = &#123; <span class="string">"http"</span>: <span class="string">"http://10.10.1.10:3128"</span>,</span><br><span class="line">            <span class="string">"https"</span>: <span class="string">"http://10.10.1.10:1080"</span>,&#125;</span><br><span class="line"><span class="selector-tag">p</span> = request.get(<span class="string">"http://www.baidu.com"</span>, proxies = proxies)</span><br><span class="line"><span class="function"><span class="title">print</span><span class="params">(p.content.decode(<span class="string">'utf-8'</span>)</span></span>)</span><br></pre></td></tr></table></figure>
+<h2 id="抓取App端数据"><a href="#抓取App端数据" class="headerlink" title="抓取App端数据"></a>抓取App端数据</h2><p>使用Charles抓包</p>
+<p>软件地址 <a href="https://www.charlesproxy.com/download/" target="_blank" rel="noopener">https://www.charlesproxy.com/download/</a></p>
+<p>为什么选择Charles 跨平台，方便好用，可以抓取Android应用也可以抓取Ios</p>
+<p>可以抓取http https</p>
+<h2 id="抓取视频"><a href="#抓取视频" class="headerlink" title="抓取视频"></a>抓取视频</h2><p>使用三方库 you-get</p>
+<p>配合Fiddler抓包来抓取视频流</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

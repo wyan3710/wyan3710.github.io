@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        八大排序 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#插入排序"><span class="toc-text">插入排序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#冒泡排序"><span class="toc-text">冒泡排序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#快排"><span class="toc-text">快排</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选择排序"><span class="toc-text">选择排序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#归并排序"><span class="toc-text">归并排序</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        八大排序
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-04-22 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#算法" title="算法">算法</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><p>插入排序：插入排序的基本操作就是将一个数据插入到已经排好序的有序数据中，从而得到一个新的、个数加一的有序数据，算法适用于少量数据的排序；首先将第一个作为已经排好序的，然后每次从后的取出插入到前面并排序；</p>
+<p>时间复杂度：O(n²)</p>
+<p>空间复杂度：O(1)</p>
+<p>稳定性：稳定</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def insert_sort(<span class="keyword">ilist</span>):</span><br><span class="line">    <span class="keyword">for</span> i in <span class="built_in">range</span>(<span class="built_in">len</span>(<span class="keyword">ilist</span>)):</span><br><span class="line">        <span class="keyword">for</span> <span class="keyword">j</span> in <span class="built_in">range</span>(i):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">ilist</span>[i] &lt; <span class="keyword">ilist</span>[<span class="keyword">j</span>]:</span><br><span class="line">                <span class="keyword">ilist</span>.<span class="keyword">insert</span>(<span class="keyword">j</span>, <span class="keyword">ilist</span>.<span class="keyword">pop</span>(i))</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">ilist</span></span><br></pre></td></tr></table></figure>
+<h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><p>冒泡排序：它重复地走访过要排序的数列，一次比较两个元素，如果他们的顺序错误就把他们交换过来。走访数列的工作是重复地进行直到没有再需要交换，也就是说该数列已经排序完成</p>
+<p>时间复杂度：O(n²)</p>
+<p>空间复杂度：O(1)</p>
+<p>稳定性：稳定</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def <span class="keyword">bubble_sort(blist):</span></span><br><span class="line"><span class="keyword"> </span>   <span class="built_in">count</span> = len(<span class="keyword">blist)</span></span><br><span class="line"><span class="keyword"> </span>   for i in range(<span class="number">0</span>, <span class="built_in">count</span>):</span><br><span class="line">        for <span class="keyword">j </span>in range(i + <span class="number">1</span>, <span class="built_in">count</span>):</span><br><span class="line">            if <span class="keyword">blist[i] </span>&gt; <span class="keyword">blist[j]:</span></span><br><span class="line"><span class="keyword"> </span>               <span class="keyword">blist[i], </span><span class="keyword">blist[j] </span>= <span class="keyword">blist[j], </span><span class="keyword">blist[i]</span></span><br><span class="line"><span class="keyword"> </span>   return <span class="keyword">blist</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line"><span class="keyword">blist </span>= <span class="keyword">bubble_sort([4,5,6,7,3,2,6,9,8])</span></span><br><span class="line"><span class="keyword">print(blist)</span></span><br></pre></td></tr></table></figure>
+<h2 id="快排"><a href="#快排" class="headerlink" title="快排"></a>快排</h2><p>快速排序：通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列</p>
+<p>时间复杂度：O(nlog₂n)</p>
+<p>空间复杂度：O(nlog₂n)</p>
+<p>稳定性：不稳定</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quick_sort</span><span class="params">(qlist)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> qlist == []:</span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        qfirst = qlist[<span class="number">0</span>]</span><br><span class="line">        qless = quick_sort([l <span class="keyword">for</span> l <span class="keyword">in</span> qlist[<span class="number">1</span>:] <span class="keyword">if</span> l &lt; qfirst])</span><br><span class="line">        qmore = quick_sort([m <span class="keyword">for</span> m <span class="keyword">in</span> qlist[<span class="number">1</span>:] <span class="keyword">if</span> m &gt;= qfirst])</span><br><span class="line">        <span class="keyword">return</span> qless + [qfirst] + qmore</span><br><span class="line"></span><br><span class="line">qlist = quick_sort([<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">6</span>,<span class="number">9</span>,<span class="number">8</span>])</span><br></pre></td></tr></table></figure>
+<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><p>选择排序：第1趟，在待排序记录r1 ~ r[n]中选出最小的记录，将它与r1交换；第2趟，在待排序记录r2 ~ r[n]中选出最小的记录，将它与r2交换；以此类推，第i趟在待排序记录r[i] ~ r[n]中选出最小的记录，将它与r[i]交换，使有序序列不断增长直到全部排序完毕</p>
+<p>时间复杂度：O(n²)</p>
+<p>空间复杂度：O(1)</p>
+<p>稳定性：不稳定</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def select_sort(slist):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="keyword">range</span>(len(slist)):</span><br><span class="line">        x = <span class="built_in">i</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="keyword">range</span>(i, len(slist)):</span><br><span class="line">            <span class="keyword">if</span> slist[j] &lt; slist[x]:</span><br><span class="line">                x = <span class="built_in">j</span></span><br><span class="line">        slist[i], slist[x] = slist[x], slist[i]</span><br><span class="line">    <span class="keyword">return</span> slist</span><br><span class="line"></span><br><span class="line">slist = select_sort([4,5,6,7,3,2,6,9,8])</span><br></pre></td></tr></table></figure>
+<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><p>归并排序：采用分治法（Divide and Conquer）的一个非常典型的应用。将已有序的子序列合并，得到完全有序的序列；即先使每个子序列有序，再使子序列段间有序。若将两个有序表合并成一个有序表，称为二路归并</p>
+<p>时间复杂度：O(nlog₂n)</p>
+<p>空间复杂度：O(1)</p>
+<p>稳定性：稳定</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">def merge_sort(array):</span><br><span class="line">    def merge_arr(arr_l, arr_r):</span><br><span class="line">       <span class="built_in"> array </span>= []</span><br><span class="line">        while len(arr_l)<span class="built_in"> and </span>len(arr_r):</span><br><span class="line">           <span class="built_in"> if </span>arr_l[0] &lt;= arr_r[0]:</span><br><span class="line">                array.append(arr_l.pop(0))</span><br><span class="line">            elif arr_l[0] &gt; arr_r[0]:</span><br><span class="line">                array.append(arr_r.pop(0))</span><br><span class="line">       <span class="built_in"> if </span>len(arr_l) != 0:</span><br><span class="line">           <span class="built_in"> array </span>+= arr_l</span><br><span class="line">        elif len(arr_r) != 0:</span><br><span class="line">           <span class="built_in"> array </span>+= arr_r</span><br><span class="line">       <span class="built_in"> return </span>array</span><br><span class="line"></span><br><span class="line">    def recursive(array):</span><br><span class="line">       <span class="built_in"> if </span>len(array) == 1:</span><br><span class="line">           <span class="built_in"> return </span>array</span><br><span class="line">        mid = len(array) // 2</span><br><span class="line">        arr_l = recursive(array[:mid])</span><br><span class="line">        arr_r = recursive(array[mid:])</span><br><span class="line">       <span class="built_in"> return </span>merge_arr(arr_l, arr_r)</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> return </span>recursive(array)</span><br></pre></td></tr></table></figure>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>

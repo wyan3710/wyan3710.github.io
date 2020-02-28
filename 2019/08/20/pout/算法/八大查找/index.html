@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="王兴隆的博客">
+    <meta name="keyword"  content="腾讯">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        八大查找 - 王兴隆的博客 | wangxinglong&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> sometimes code， sometimes design </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>Wangxinglong</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#顺序查找"><span class="toc-text">顺序查找</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#折半查找"><span class="toc-text">折半查找</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#插值查找"><span class="toc-text">插值查找</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> sometimes code， sometimes design </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        八大查找
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-08-20 00:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#算法" title="算法">算法</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <!-- toc -->
+<h1 id="顺序查找"><a href="#顺序查找" class="headerlink" title="顺序查找"></a>顺序查找</h1><p>算法简介 顺序查找又称为线性查找，是一种最简单的查找方法。适用于线性表的顺序存储结构和链式存储结构。该算法的时间复杂度为O(n)。 基本思路 从第一个元素m开始逐个与需要查找的元素x进行比较，当比较到元素值相同(即m=x)时返回元素m的下标，如果比较到最后都没有找到，则返回-1。 优缺点 缺点：是当n 很大时，平均查找长度较大，效率低； 优点：是对表中数据元素的存储没有要求。另外，对于线性链表，只能进行顺序查找。 算法实现</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def sequential_search(lis, <span class="built_in">key</span>):</span><br><span class="line">  <span class="built_in">length</span> = len(lis)</span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">length</span>):</span><br><span class="line">    <span class="keyword">if</span> lis[i] == <span class="built_in">key</span>:</span><br><span class="line">      <span class="built_in">return</span> i</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">      <span class="built_in">return</span> False</span><br></pre></td></tr></table></figure>
+<h1 id="折半查找"><a href="#折半查找" class="headerlink" title="折半查找"></a>折半查找</h1><p>二分查找（Binary Search），是一种在有序数组中查找某一特定元素的查找算法。查找过程从数组的中间元素开始，如果中间元素正好是要查找的元素，则查找过程结束；如果某一特定元素大于或者小于中间元素，则在数组大于或小于中间元素的那一半中查找，而且跟开始一样从中间元素开始比较。如果在某一步骤数组为空，则代表找不到。 这种查找算法每一次比较都使查找范围缩小一半。</p>
+<p>算法描述 给予一个包含 个带值元素的数组A 1、 令 L为0 ， R为 n-1 2、 如果L&gt;R，则搜索以失败告终 3、 令 m (中间值元素)为 ⌊(L+R)/2⌋ 4、 如果 AmT，令 R为 m - 1 并回到步骤二 复杂度分析 时间复杂度：折半搜索每次把搜索区域减少一半，时间复杂度为 O(logn) 空间复杂度：O(1)</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">def binary_search(lis, key):</span><br><span class="line">  low = <span class="number">0</span></span><br><span class="line">  high = <span class="built_in">len</span>(lis) - <span class="number">1</span></span><br><span class="line">  <span class="built_in">time</span> = <span class="number">0</span></span><br><span class="line">  <span class="keyword">while</span> low &lt; high:</span><br><span class="line">    <span class="built_in">time</span> += <span class="number">1</span></span><br><span class="line">    <span class="keyword">mid</span> = int((low + high) / <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">if</span> key &lt; lis[<span class="keyword">mid</span>]:</span><br><span class="line">      high = <span class="keyword">mid</span> - <span class="number">1</span></span><br><span class="line">    elif key &gt; lis[<span class="keyword">mid</span>]:</span><br><span class="line">      low = <span class="keyword">mid</span> + <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">      <span class="comment"># 打印折半的次数</span></span><br><span class="line">      print(<span class="string">"times: %s"</span> % <span class="built_in">time</span>)</span><br><span class="line">      <span class="literal">return</span> <span class="keyword">mid</span></span><br><span class="line">  print(<span class="string">"times: %s"</span> % <span class="built_in">time</span>)</span><br><span class="line">  <span class="literal">return</span> False</span><br></pre></td></tr></table></figure>
+<h1 id="插值查找"><a href="#插值查找" class="headerlink" title="插值查找"></a>插值查找</h1><p>算法简介</p>
+<p>插值查找是根据要查找的关键字key与查找表中最大最小记录的关键字比较后的 查找方法，其核心就在于插值的计算公式 (key-a[low])/(a[high]-a[low])*(high-low)。 时间复杂度o(logn)但对于表长较大而关键字分布比较均匀的查找表来说，效率较高。</p>
+<p>算法思想 基于二分查找算法，将查找点的选择改进为自适应选择，可以提高查找效率。当然，差值查找也属于有序查找。 注：对于表长较大，而关键字分布又比较均匀的查找表来说，插值查找算法的平均性能比折半查找要好的多。反之，数组中如果分布非常不均匀，那么插值查找未必是很合适的选择。</p>
+<p>复杂度分析 时间复杂性：如果元素均匀分布，则O（log log n）），在最坏的情况下可能需要O（n）。 空间复杂度：O（1）。</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">def binary_search(lis, key):</span><br><span class="line">  low = <span class="number">0</span></span><br><span class="line">  high = <span class="built_in">len</span>(lis) - <span class="number">1</span></span><br><span class="line">  <span class="built_in">time</span> = <span class="number">0</span></span><br><span class="line">  <span class="keyword">while</span> low &lt; high:</span><br><span class="line">    <span class="built_in">time</span> += <span class="number">1</span></span><br><span class="line">    <span class="comment"># 计算mid值是插值算法的核心代码</span></span><br><span class="line">    <span class="keyword">mid</span> = low + int((high - low) * (key - lis[low])/(lis[high] - lis[low]))</span><br><span class="line">    print(<span class="string">"mid=%s, low=%s, high=%s"</span> % (<span class="keyword">mid</span>, low, high))</span><br><span class="line">    <span class="keyword">if</span> key &lt; lis[<span class="keyword">mid</span>]:</span><br><span class="line">      high = <span class="keyword">mid</span> - <span class="number">1</span></span><br><span class="line">    elif key &gt; lis[<span class="keyword">mid</span>]:</span><br><span class="line">      low = <span class="keyword">mid</span> + <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">      <span class="comment"># 打印查找的次数</span></span><br><span class="line">      print(<span class="string">"times: %s"</span> % <span class="built_in">time</span>)</span><br><span class="line">      <span class="literal">return</span> <span class="keyword">mid</span></span><br><span class="line">  print(<span class="string">"times: %s"</span> % <span class="built_in">time</span>)</span><br><span class="line">  <span class="literal">return</span> False</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">  LIST = [<span class="number">1</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">22</span>, <span class="number">54</span>, <span class="number">99</span>, <span class="number">123</span>, <span class="number">200</span>, <span class="number">222</span>, <span class="number">444</span>]</span><br><span class="line">  <span class="built_in">result</span> = binary_search(LIST, <span class="number">444</span>)</span><br><span class="line">  print(<span class="built_in">result</span>)</span><br></pre></td></tr></table></figure>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src="" data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+                
+
+                        
+                            <li>
+                                <a target="_blank" href="http://weibo.com/7300791812">
+                                    <span class="fa-stack fa-lg">
+                                  <i class="iconfont icon-weibo"></i>
+                            </span>
+                                </a>
+                            </li>
+                            
+
+                                
+
+                                        
+                                            <li>
+                                                <a target="_blank" href="https://github.com/wyan3710">
+                                                    <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+                                                </a>
+                                            </li>
+                                            
+
+                                                
+
+    </ul>
+    
+        <p>
+            <span>/</span>
+            
+                <span><a href="https://www.10000h.top">10000H</a></span>
+                <span>/</span>
+                
+                <span><a href="https://niexiaotao.com">LaoWang&#39;s Page</a></span>
+                <span>/</span>
+                
+                <span><a href="#">It helps SEO</a></span>
+                <span>/</span>
+                
+        </p>
+        
+            <p>
+                <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+                </span>
+                <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+                </span>
+                Created By <a href="https://hexo.io/">Hexo</a> Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+
+
+
+            <img src="https://static.dy208.cn/o_1dfilp8ruo521thr1hvf18ji17soa.png">
+            <a href="http://www.beian.miit.gov.cn/" style="color:#f72b07" target="_blank">京ICP备19052615号</a>
+</footer>
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>
